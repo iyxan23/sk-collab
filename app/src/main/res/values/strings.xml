@@ -9,4 +9,10 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="selamat_datang">Selamat Datang!</string>
+    <string name="register_body">Untuk mulai menggunakan SketchCollab, silahkan masukkan nama anda pada box dibawah</string>
+    <string name="body_login">Silahkan login untuk memakai SketchCollab</string>
 </resources>

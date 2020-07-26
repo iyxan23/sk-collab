@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "376012212948",
+    "firebase_url": "https://sk-collab23.firebaseio.com",
+    "project_id": "sk-collab23",
+    "storage_bucket": "sk-collab23.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:376012212948:android:04a98548cfea1586e5c941",
+        "android_client_info": {
+          "package_name": "com.ihsan.sketch.collab"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "376012212948-l811dvlnncapniijvm50r22hcdagl5bq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ihsan.sketch.collab",
+            "certificate_hash": "dbe29247d48eefa1f25ab976c9e3d957736100d5"
+          }
+        },
+        {
+          "client_id": "376012212948-b4e78ddu3mbav4ajhftlslrveq5jtv3p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7VZO5QE5hknhGG_4ugiH2g6kyVjLLvzM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "376012212948-b4e78ddu3mbav4ajhftlslrveq5jtv3p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
