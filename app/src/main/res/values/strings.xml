@@ -1,18 +1,15 @@
 <resources>
     <string name="app_name">SketchCollab</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
-    <string name="selamat_datang">Selamat Datang!</string>
-    <string name="register_body">Untuk mulai menggunakan SketchCollab, silahkan masukkan nama anda pada box dibawah</string>
-    <string name="body_login">Silahkan login untuk memakai SketchCollab</string>
+    <string name="selamat_datang">Welcome!</string>
+    <string name="register_body">To use SketchCollab for the first time, you must fill in your name in the box below, and then press next</string>
+    <string name="next">Next</string>
+    <string name="name">Name</string>
+    <string name="body_login">Please login to use SketchCollab</string>
+    <string name="email_empty">Please enter your email in this box</string>
+    <string name="email_not_valid">Email not valid</string>
+    <string name="pwd_length_less_5">Please enter password with length more than 4</string>
+    <string name="online_projects">Online projects</string>
 </resources>

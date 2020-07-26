@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SketchCollab</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="selamat_datang">Selamat Datang!</string>
+    <string name="register_body">Untuk mulai menggunakan SketchCollab, Silahkan masukkan nama anda pada box dibawah, Lalu pencet tombol Lanjut</string>
+    <string name="body_login">Silahkan login untuk memakai SketchCollab</string>
+    <string name="next">Lanjut</string>
+    <string name="name">Nama</string>
+    <string name="email_empty">Mohon masukkan email anda di box ini</string>
+    <string name="email_not_valid">Email tidak valid</string>
+    <string name="pwd_length_less_5">Mohon masukkan password yang lebih panjang dari 4</string>
+</resources>

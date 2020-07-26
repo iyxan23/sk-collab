@@ -5,8 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityOptionsCompat;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -30,6 +34,8 @@ public class LoginActivity extends AppCompatActivity {
 
         getSupportActionBar().hide();
 
+        auth = FirebaseAuth.getInstance();
+
         final TextInputLayout email = findViewById(R.id.email);
         final TextInputLayout passw = findViewById(R.id.passw);
         Button login = findViewById(R.id.login);
@@ -43,11 +49,11 @@ public class LoginActivity extends AppCompatActivity {
                 String email_text = email_.getText().toString().trim();
                 String password = passw_.getText().toString();
                 if (email_text.equals("")) {
-                    email.setError("Mohon jangan memasukkan email kosong");
+                    email.setError(getString(R.string.email_empty));
                 } else if (!isEmailValid(email_text)) {
-                    email.setError("Mohon masukkan email yang valid");
+                    email.setError(getString(R.string.email_not_valid));
                 } else if (password.length() <= 4) {
-                    passw.setError("Mohon masukkan password lebih dari 4");
+                    passw.setError(getString(R.string.pwd_length_less_5));
                 } else {
                     auth.signInWithEmailAndPassword(email_text, password)
                             .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
@@ -76,11 +82,11 @@ public class LoginActivity extends AppCompatActivity {
                 String email_text = email_.getText().toString().trim();
                 String password = passw_.getText().toString();
                 if (email_text.equals("")) {
-                    email.setError("Mohon jangan memasukkan email kosong");
+                    email.setError(getString(R.string.email_empty));
                 } else if (!isEmailValid(email_text)) {
-                    email.setError("Mohon masukkan email yang valid");
+                    email.setError(getString(R.string.email_not_valid));
                 } else if (password.length() <= 4) {
-                    passw.setError("Mohon masukkan password lebih dari 4");
+                    passw.setError(getString(R.string.pwd_length_less_5));
                 } else {
                     Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
                     i.putExtra("email", email_text);

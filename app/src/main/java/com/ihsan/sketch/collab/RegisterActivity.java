@@ -44,7 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
                 float finalRadius = (float) Math.hypot(cx, cy);
                 Animator anim = ViewAnimationUtils.createCircularReveal(top_reg, cx, cy, 0, finalRadius);
                 top_reg.setVisibility(View.VISIBLE);
-                anim.setDuration(500);
+                anim.setDuration(250);
                 anim.start();
             }
         });
@@ -55,6 +55,10 @@ public class RegisterActivity extends AppCompatActivity {
         lanjut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent i = new Intent(RegisterActivity.this, MainActivity.class);
+                startActivity(i);
+                finish();
+                /*
                 lanjut_p.setVisibility(View.VISIBLE);
                 FirebaseAuth auth = FirebaseAuth.getInstance();
                 auth.createUserWithEmailAndPassword(i.getStringExtra("email"), i.getStringExtra("password"))
@@ -68,8 +72,11 @@ public class RegisterActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(AuthResult authResult) {
                             lanjut_p.setVisibility(View.INVISIBLE);
+                            Intent i = new Intent(RegisterActivity.this, MainActivity.class);
+                            startActivity(i);
+                            finish();
                         }
-                    });
+                    });*/
             }
         });
     }
