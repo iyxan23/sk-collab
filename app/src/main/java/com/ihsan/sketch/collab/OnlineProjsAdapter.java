@@ -7,27 +7,33 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class OnlineProjsAdapter extends RecyclerView.Adapter<OnlineProjsAdapter.ViewHolder> {
+public class OnlineProjsAdapter extends RecyclerView.Adapter<OnlineProjsAdapter.ViewHolder> implements Filterable {
     private static final String TAG = "OnlineProjsAdapter";
 
     private ArrayList<OnlineProject> datas;
+    private ArrayList<OnlineProject> datas_full;
     private Activity activity;
 
     public OnlineProjsAdapter(ArrayList<OnlineProject> datas, Activity activity) {
         this.datas = datas;
         this.activity = activity;
+        this.datas_full = datas;
     }
 
     public void updateView(ArrayList<OnlineProject> datas) {
         this.datas = datas;
+        this.datas_full = datas;
     }
 
     @NonNull
@@ -106,4 +112,42 @@ public class OnlineProjsAdapter extends RecyclerView.Adapter<OnlineProjsAdapter.
         }
     }
 
+    @Override
+    public Filter getFilter() {
+        return projsFilter;
+    }
+
+    private Filter projsFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            ArrayList<OnlineProject> filtered = new ArrayList<>();
+
+            if (charSequence == null || charSequence.length() == 0) {
+                filtered.addAll(datas_full);
+            } else {
+                String pattern = charSequence.toString().toLowerCase().trim();
+
+                for (OnlineProject onlineProject : datas_full) {
+                    if (onlineProject.getTitle().contains(pattern)) {
+                        filtered.add(onlineProject);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filtered;
+
+            Log.d(TAG, "performFiltering: " + filtered.toString());
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            datas.clear();
+            datas.addAll((ArrayList) filterResults.values);
+            Log.d(TAG, "publishResults: " + filterResults.toString());
+            notifyDataSetChanged();
+        }
+    };
 }

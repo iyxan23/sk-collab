@@ -12,4 +12,5 @@
     <string name="email_not_valid">Email not valid</string>
     <string name="pwd_length_less_5">Please enter password with length more than 4</string>
     <string name="online_projects">Online projects</string>
+    <string name="search">Search</string>
 </resources>
