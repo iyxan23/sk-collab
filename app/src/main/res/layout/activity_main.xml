@@ -76,6 +76,7 @@
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
         android:src="@drawable/ic_baseline_cloud_upload_24"
+        android:transitionName="fab_transition"
         app:layout_anchor="@id/bottomAppBar"
         app:tint="#FFFFFF" />
 
