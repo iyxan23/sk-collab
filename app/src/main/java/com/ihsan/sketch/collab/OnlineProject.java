@@ -6,15 +6,15 @@ public class OnlineProject {
     private String version;
     private String author;
     private String description;
-    private boolean isopen;
-    public static boolean isExpanded;
+    boolean isopen;
+    boolean isExpanded;
 
     public OnlineProject(String title, String version, String author, boolean isopen, boolean isExpanded) {
         this.title = title;
         this.version = version;
         this.author = author;
         this.isopen = isopen;
-        OnlineProject.isExpanded = isExpanded;
+        this.isExpanded = isExpanded;
     }
 
     public String getTitle() {
@@ -55,5 +55,13 @@ public class OnlineProject {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isExpanded() {
+        return isExpanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        isExpanded = expanded;
     }
 }

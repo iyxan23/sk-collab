@@ -65,7 +65,6 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
                 android:singleLine="true"
-                android:textColor="#FFFFFF"
                 app:layout_constraintTop_toBottomOf="@+id/parent_main"
                 tools:layout_editor_absoluteX="6dp" />
 

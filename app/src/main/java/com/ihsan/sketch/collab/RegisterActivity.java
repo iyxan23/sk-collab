@@ -55,10 +55,6 @@ public class RegisterActivity extends AppCompatActivity {
         lanjut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(RegisterActivity.this, MainActivity.class);
-                startActivity(i);
-                finish();
-                /*
                 lanjut_p.setVisibility(View.VISIBLE);
                 FirebaseAuth auth = FirebaseAuth.getInstance();
                 auth.createUserWithEmailAndPassword(i.getStringExtra("email"), i.getStringExtra("password"))
@@ -72,11 +68,11 @@ public class RegisterActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(AuthResult authResult) {
                             lanjut_p.setVisibility(View.INVISIBLE);
-                            Intent i = new Intent(RegisterActivity.this, MainActivity.class);
+                            Intent i = new Intent(RegisterActivity.this, SplashActivity.class);
                             startActivity(i);
                             finish();
                         }
-                    });*/
+                    });
             }
         });
     }
