@@ -66,7 +66,7 @@
                 android:inputType="textPersonName"
                 android:singleLine="true"
                 android:textColor="#FFFFFF"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+                app:layout_constraintTop_toBottomOf="@+id/parent_main"
                 tools:layout_editor_absoluteX="6dp" />
 
         </com.google.android.material.textfield.TextInputLayout>

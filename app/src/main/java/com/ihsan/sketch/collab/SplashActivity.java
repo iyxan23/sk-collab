@@ -1,5 +1,6 @@
 package com.ihsan.sketch.collab;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -10,7 +11,13 @@ import android.os.Handler;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -30,10 +37,12 @@ public class SplashActivity extends AppCompatActivity {
             window.setStatusBarColor(Color.WHITE);
         }
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference status = database.getReference("status/open");
+
+        status.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void run() {
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (auth.getCurrentUser() == null) {
                     Intent i = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(i);
@@ -44,6 +53,13 @@ public class SplashActivity extends AppCompatActivity {
                     finish();
                 }
             }
-        }, 3000);
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Snackbar.make(findViewById(R.id.parent_splash), "ERROR: " + error.getMessage(), Snackbar.LENGTH_LONG)
+                .setBackgroundTint(Color.RED)
+                .show();
+            }
+        });
     }
 }
