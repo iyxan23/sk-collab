@@ -16,6 +16,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -63,6 +64,12 @@ public class MainActivity extends AppCompatActivity {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.GRAY);
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission("android.permission.READ_EXTERNAL_STORAGE") == PackageManager.PERMISSION_DENIED ||
+                    checkSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE") == PackageManager.PERMISSION_DENIED) {
+                requestPermissions(new String[]{"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"}, 1000);
+            }
+        }
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference ref = database.getReference("projects");
 
@@ -78,6 +85,9 @@ public class MainActivity extends AppCompatActivity {
                 int id = item.getItemId();
                 switch (id) {
                     case R.id.projects:
+                        Intent i = new Intent(MainActivity.this, ProjectsActivity.class);
+                        startActivity(i);
+                        overridePendingTransition(R.anim.slide_right, R.anim.slide_out_left);
                         break;
                     case R.id.settings:
                         break;
@@ -90,9 +100,6 @@ public class MainActivity extends AppCompatActivity {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-                getWindow().setExitTransition(new Explode());
-                getWindow().setEnterTransition(new Slide());
                 ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeClipRevealAnimation(upload, 0, 0, upload.getMeasuredWidth(), upload.getMeasuredHeight());
                 Intent i = new Intent(MainActivity.this, UploadActivity.class);
                 startActivity(i, optionsCompat.toBundle());
