@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/drawer_home"
+            android:icon="@drawable/ic_home"
+            android:title="@string/home"/>
+        <item
+            android:id="@+id/drawer_projects"
+            android:icon="@drawable/ic_projects"
+            android:title="@string/projects"/>
+        <item
+            android:id="@+id/drawer_online_proj"
+            android:icon="@drawable/ic_public_24px"
+            android:title="@string/projects"/>
+        <item
+            android:id="@+id/drawer_collaborate"
+            android:icon="@drawable/ic_baseline_people_24"
+            android:title="@string/projects"/>
+    </group>
+    <item android:title="@string/collaborate">
+        <menu>
+            <item
+                android:title="@string/share"
+                android:id="@+id/drawer_share"
+                android:icon="@drawable/ic_baseline_share_24"/>
+        </menu>
+    </item>
+</menu>

@@ -14,4 +14,8 @@
     <string name="online_projects">Online projects</string>
     <string name="search">Search</string>
     <string name="projects">Projects</string>
+    <string name="offline_projects">Offline Projects</string>
+    <string name="home">Home</string>
+    <string name="collaborate">Collaborate</string>
+    <string name="share">Share</string>
 </resources>
