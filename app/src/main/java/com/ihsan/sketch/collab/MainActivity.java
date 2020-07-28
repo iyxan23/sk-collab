@@ -20,6 +20,8 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.transition.Explode;
+import android.transition.Slide;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -88,27 +90,13 @@ public class MainActivity extends AppCompatActivity {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bottomAppBar.performHide();
-                AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.upload_fab);
-                set.setTarget(upload);
-                set.start();
-                Handler handler2 = new Handler();
-                handler2.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        final Intent i = new Intent(MainActivity.this, UploadActivity.class);
-                        final ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, upload, "fab_transition");
-                        startActivity(i, optionsCompat.toBundle());
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                bottomAppBar.performShow();
-                                upload.setTranslationY(0);
-                            }
-                        },2000);
-                    }
-                }, 1400);
+                getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+                getWindow().setExitTransition(new Explode());
+                getWindow().setEnterTransition(new Slide());
+                ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeClipRevealAnimation(upload, 0, 0, upload.getMeasuredWidth(), upload.getMeasuredHeight());
+                Intent i = new Intent(MainActivity.this, UploadActivity.class);
+                startActivity(i, optionsCompat.toBundle());
+                overridePendingTransition(R.anim.slide_right, R.anim.slide_out_left);
             }
         });
 

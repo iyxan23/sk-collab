@@ -12,4 +12,7 @@
     <string name="email_empty">Mohon masukkan email anda di box ini</string>
     <string name="email_not_valid">Email tidak valid</string>
     <string name="pwd_length_less_5">Mohon masukkan password yang lebih panjang dari 4</string>
+    <string name="online_projects">Projek Online</string>
+    <string name="search">Cari</string>
+    <string name="projects">Projects</string>
 </resources>
