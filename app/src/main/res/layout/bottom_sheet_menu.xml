@@ -9,7 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:background="@drawable/ripple_grey"
-        android:id="@+id/constraintLayout2"
+        android:id="@+id/collaborate_bsd"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -18,7 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
+        app:layout_constraintTop_toBottomOf="@+id/online_projects_bsd">
 
         <ImageView
             android:id="@+id/imageView32"
@@ -49,7 +49,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:background="@drawable/ripple_grey"
-        android:id="@+id/constraintLayout3"
+        android:id="@+id/online_projects_bsd"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -58,7 +58,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout22">
+        app:layout_constraintTop_toBottomOf="@+id/projects_bsd">
 
         <ImageView
             android:id="@+id/imageView31"
@@ -89,7 +89,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:background="@drawable/ripple_grey"
-        android:id="@+id/constraintLayout4"
+        android:id="@+id/settings_bsd"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -175,7 +175,7 @@
         app:layout_constraintTop_toBottomOf="@+id/pfp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
+        android:id="@+id/profile_bsd"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -215,7 +215,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:background="@drawable/ripple_grey"
-        android:id="@+id/constraintLayout22"
+        android:id="@+id/projects_bsd"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -223,7 +223,7 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+        app:layout_constraintTop_toBottomOf="@+id/profile_bsd">
 
         <ImageView
             android:id="@+id/imageView322"
@@ -273,7 +273,7 @@
         android:layout_marginEnd="1dp"
         android:layout_marginBottom="8dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout4"
+        app:layout_constraintBottom_toTopOf="@+id/settings_bsd"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
