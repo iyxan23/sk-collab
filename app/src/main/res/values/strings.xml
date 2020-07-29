@@ -26,4 +26,5 @@
     <string name="no_proj_error_home_button">Click here to upload a project</string>
     <string name="register">register</string>
     <string name="credit">Made By Iyxan23</string>
+    <string name="no_sw_proj_detected">No sketchware projects detected.</string>
 </resources>

@@ -189,13 +189,13 @@
             android:layout_height="40dp"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
-            android:textAlignment="center"
-            android:text="@string/no_proj_error_home"
             android:fontFamily="@font/manrope_medium"
-            app:layout_constraintBottom_toBottomOf="@+id/recyclerView"
+            android:text="@string/no_proj_error_home"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@+id/divider6"
             app:layout_constraintEnd_toEndOf="@+id/recyclerView"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+            app:layout_constraintTop_toTopOf="@+id/recyclerView" />
 
         <Button
             android:id="@+id/btn_no_online_projects"
