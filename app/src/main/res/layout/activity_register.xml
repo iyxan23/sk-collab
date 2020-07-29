@@ -14,7 +14,7 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/top_reg"
         android:elevation="10dp"
-
+        android:transitionName="top_login_reg"
         app:layout_constraintBottom_toTopOf="@+id/lanjut"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
                 android:singleLine="true"
-                app:layout_constraintTop_toBottomOf="@+id/parent_main"
+                app:layout_constraintTop_toBottomOf="@+id/top_login"
                 tools:layout_editor_absoluteX="6dp" />
 
         </com.google.android.material.textfield.TextInputLayout>

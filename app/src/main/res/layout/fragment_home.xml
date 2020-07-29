@@ -127,7 +127,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_offline_proj_home"
             android:layout_width="0dp"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -213,7 +213,8 @@
             android:id="@+id/no_sw_proj_detected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="No sketchware projects detected."
+            android:text="@string/no_sw_proj_detected"
+            android:visibility="gone"
             android:fontFamily="@font/manrope_medium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

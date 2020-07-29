@@ -31,4 +31,5 @@
     <string name="name_not_ascii">Non-ASCII characters are not allowed</string>
     <string name="welcome">Welcome</string>
     <string name="err_set_name">Click here to set your name</string>
+    <string name="change_name">Change Name</string>
 </resources>

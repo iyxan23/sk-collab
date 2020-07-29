@@ -8,11 +8,12 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/parent_main"
+        android:id="@+id/top_login"
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:background="@drawable/top_login"
         android:elevation="20dp"
+        android:transitionName="top_login_reg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,14 +56,14 @@
         android:hint="@string/email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/parent_main"
+        app:layout_constraintTop_toBottomOf="@+id/top_login"
         app:startIconDrawable="@drawable/ic_email">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            app:layout_constraintTop_toBottomOf="@+id/parent_main"
+            app:layout_constraintTop_toBottomOf="@+id/top_login"
             tools:layout_editor_absoluteX="6dp" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -86,7 +87,7 @@
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:singleLine="true"
-            app:layout_constraintTop_toBottomOf="@+id/parent_main"
+            app:layout_constraintTop_toBottomOf="@+id/top_login"
             tools:layout_editor_absoluteX="6dp" />
 
     </com.google.android.material.textfield.TextInputLayout>

@@ -3,6 +3,7 @@ package com.ihsan.sketch.collab;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.graphics.Color;
@@ -37,8 +38,7 @@ public class SplashActivity extends AppCompatActivity {
         ImageView icon = findViewById(R.id.splash_icon);
         ObjectAnimator animator = new ObjectAnimator();
         animator.setPropertyName("translationY");
-        animator.setFloatValues(0f, -300f);
-        animator.setDuration(1000);
+        animator.setFloatValues(0f, -100f);
         animator.setRepeatMode(ObjectAnimator.REVERSE);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setTarget(icon);

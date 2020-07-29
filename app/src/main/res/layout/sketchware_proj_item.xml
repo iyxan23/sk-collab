@@ -33,50 +33,39 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
             android:fontFamily="@font/manrope_medium"
             android:text="SampleProject • com.sample.project"
             android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/upload_swp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title_swp" />
-
-        <ImageView
-            android:id="@+id/cloud_swp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:tint="@color/colorAccent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/subtitle_swp"
-            app:srcCompat="@drawable/ic_cloud_off" />
 
         <TextView
             android:id="@+id/version_swp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:fontFamily="@font/manrope_medium"
             android:text="1.0"
             android:textSize="12sp"
             app:layout_constraintBottom_toTopOf="@+id/subtitle_swp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/upload_swp"
             app:layout_constraintStart_toEndOf="@+id/title_swp" />
 
-        <TextView
-            android:id="@+id/status_cloud_swp"
+        <Button
+            android:id="@+id/upload_swp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="16dp"
-            android:fontFamily="@font/manrope_medium"
-            android:text="Offline project"
-            android:textColor="@color/colorAccent"
-            android:textSize="12sp"
+            android:layout_marginEnd="13dp"
+            android:text="Upload"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/cloud_swp"
-            app:layout_constraintTop_toBottomOf="@+id/subtitle_swp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

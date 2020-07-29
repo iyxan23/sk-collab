@@ -1,69 +1,86 @@
 package com.ihsan.sketch.collab;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class MainFragment extends Fragment {
     private static final String TAG = "MainFragment";
-    private FirebaseDatabase database;
-    private FirebaseAuth auth;
+
+    private FirebaseUser user;
+    private String name;
+    private View.OnClickListener nameClick;
+    private ArrayList<SketchwareProject> offlineProjects;
+    private NavigationView nv;
+    private MaterialToolbar toolbar;
+
+    public MainFragment(FirebaseUser user, @Nullable String name, @Nullable View.OnClickListener nameClick, ArrayList<SketchwareProject> swprojs, NavigationView nv, MaterialToolbar toolbar) {
+        this.user = user;
+        this.name = name;
+        this.nameClick = nameClick;
+        this.offlineProjects = swprojs;
+        this.nv = nv;
+        this.toolbar = toolbar;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        database = FirebaseDatabase.getInstance();
-        auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
-        DatabaseReference userdata = database.getReference("userdata");
-
-        if (user == null) {
-            // Mod user detected
-            Intent i = new Intent(getActivity(), LoginActivity.class);
-            startActivity(i);
-            getActivity().finish();
-        }
-
-        final TextView welcome = view.findViewById(R.id.welcome_home);
-        final TextView name = view.findViewById(R.id.fullname_home);
+        TextView welcome = view.findViewById(R.id.welcome_home);
+        TextView name = view.findViewById(R.id.fullname_home);
         TextView email = view.findViewById(R.id.email_home);
+        RecyclerView offline = view.findViewById(R.id.rv_offline_proj_home);
 
-        email.setText(user.getEmail());
-
-        userdata.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        View openOffline = view.findViewById(R.id.open_more_offline_proj_home);
+        openOffline.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.child("name").exists()) {
-                    welcome.setText(getString(R.string.welcome).concat("! ").concat(snapshot.child("name").getValue(String.class)));
-                    name.setText(snapshot.child("name").getValue(String.class));
-                } else {
-                    welcome.setText(getString(R.string.welcome).concat("!"));
-                    name.setText(getString(R.string.err_set_name));
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+            public void onClick(View view) {
+                nv.setCheckedItem(R.id.drawer_projects);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framelayout,
+                        new ProjectsFragment(offlineProjects)).commit();
+                toolbar.setTitle("Projects");
             }
         });
 
+        offline.setAdapter(new RecyclerViewSketchwareProjectsAdapter(offlineProjects, getActivity()));
+        offline.setLayoutManager(new LinearLayoutManager(getContext()) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
+        offline.setHasFixedSize(true);
+
+        if (offlineProjects.size() == 0) {
+            view.findViewById(R.id.no_sw_proj_detected).setVisibility(View.VISIBLE);
+            offline.setVisibility(View.GONE);
+        }
+
+        if (this.name != null) {
+            name.setText(this.name);
+            welcome.setText(getString(R.string.welcome).concat("! ").concat(this.name));
+        } else {
+            name.setText(getString(R.string.err_set_name));
+            name.setOnClickListener(nameClick);
+            welcome.setText(getString(R.string.welcome).concat("!"));
+        }
+        email.setText(user.getEmail());
         return view;
     }
 }

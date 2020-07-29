@@ -51,11 +51,38 @@ import javax.crypto.spec.SecretKeySpec;
 public class ProjectsFragment extends Fragment {
 
     private static final String TAG = "ProjectsActivity";
+    private ArrayList<SketchwareProject> swproj;
+
+    public ProjectsFragment(ArrayList<SketchwareProject> swproj) {
+        this.swproj = swproj;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.projects_fragment, container, false);
+        View view = inflater.inflate(R.layout.projects_fragment, container, false);
+
+        View notfound = view.findViewById(R.id.img_no_project);
+        View notfound1 = view.findViewById(R.id.no_projects);
+
+        RecyclerView projects = view.findViewById(R.id.recyclerview_projects);
+
+        if (swproj.size() == 0) {
+            projects.setVisibility(View.GONE);
+        } else {
+            notfound.setVisibility(View.GONE);
+            notfound1.setVisibility(View.GONE);
+            projects.setAdapter(new RecyclerViewSketchwareProjectsAdapter(swproj, getActivity()));
+            projects.setLayoutManager(new LinearLayoutManager(getContext()) {
+                @Override
+                public boolean canScrollVertically() {
+                    return false;
+                }
+            });
+            projects.setHasFixedSize(true);
+        }
+
+        return view;
     }
 
     /*

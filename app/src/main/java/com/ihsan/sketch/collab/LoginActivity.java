@@ -2,10 +2,14 @@ package com.ihsan.sketch.collab;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityOptionsCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.transition.Explode;
+import android.transition.Slide;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -22,6 +26,9 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+        getWindow().setEnterTransition(new Slide());
+        getWindow().setExitTransition(new Explode());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -52,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
                             .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                 @Override
                                 public void onSuccess(AuthResult authResult) {
-                                    Intent i = new Intent(LoginActivity.this, MainFragment.class);
+                                    Intent i = new Intent(LoginActivity.this, HomeActivity.class);
                                     startActivity(i);
                                     finish();
                                 }
@@ -82,10 +89,10 @@ public class LoginActivity extends AppCompatActivity {
                     passw.setError(getString(R.string.pwd_length_less_5));
                 } else {
                     Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
+                    ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(LoginActivity.this, findViewById(R.id.top_login), "top_login_reg");
                     i.putExtra("email", email_text);
                     i.putExtra("password", password);
-                    startActivity(i);
-                    finish();
+                    startActivity(i, optionsCompat.toBundle());
                 }
             }
         });

@@ -63,16 +63,12 @@ public class RecyclerViewSketchwareProjectsAdapter extends RecyclerView.Adapter<
         TextView title;
         TextView subtitle;
         TextView version;
-        TextView cloud_status;
-        ImageView cloud;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title_swp);
             subtitle = itemView.findViewById(R.id.subtitle_swp);
             version = itemView.findViewById(R.id.version_swp);
-            cloud = itemView.findViewById(R.id.cloud_swp);
-            cloud_status = itemView.findViewById(R.id.status_cloud_swp);
         }
     }
 }

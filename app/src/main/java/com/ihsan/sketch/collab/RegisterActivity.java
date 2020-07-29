@@ -40,20 +40,6 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        final View top_reg = findViewById(R.id.part_reg);
-        top_reg.post(new Runnable() {
-            @Override
-            public void run() {
-                int cx = top_reg.getWidth() / 2;
-                int cy = top_reg.getHeight() / 2;
-                float finalRadius = (float) Math.hypot(cx, cy);
-                Animator anim = ViewAnimationUtils.createCircularReveal(top_reg, cx, cy, 0, finalRadius);
-                top_reg.setVisibility(View.VISIBLE);
-                anim.setDuration(250);
-                anim.start();
-            }
-        });
-
         final Button lanjut = findViewById(R.id.lanjut);
         final ProgressBar lanjut_p = findViewById(R.id.loadingLanjut);
         final Intent i = getIntent();
