@@ -12,22 +12,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".HomeActivity"></activity>
-        <activity android:name=".CollaborateActivity" />
-        <activity android:name=".ProfileActivity" />
+        <activity android:name=".HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".UploadActivity"
-            android:parentActivityName=".MainActivity">
+            android:name=".ProjectsFragment"
+            android:parentActivityName=".MainFragment">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
-        <activity
-            android:name=".ProjectsActivity"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".MainFragment" />
         </activity>
         <activity android:name=".RegisterActivity" />
         <activity android:name=".LoginActivity" />
@@ -39,7 +31,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".MainFragment"
             android:windowSoftInputMode="adjustPan|stateHidden" />
     </application>
 

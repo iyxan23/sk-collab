@@ -18,4 +18,12 @@
     <string name="home">Home</string>
     <string name="collaborate">Collaborate</string>
     <string name="share">Share</string>
+    <string name="open_drawer">Open Drawer</string>
+    <string name="close_drawer">Close Drawer</string>
+    <string name="other">Other</string>
+    <string name="share_text">Hey! Do you hate collaborating sketchware project with uploading the file every single time? Try using SketchCollab! SkectchCollab is designed to make collaboration in sketchware easier, Firstly upload your project on the cloud, Second invite your friends to collaborate on your sketchware project, Third Code, Fourth Release your application to the public! Why use SketchCollab? SketchCollab is just one of the sketchware projects marketplace right? Wrong, we dont store apks more like a marketpalce, SketchCollab is a platform for developers to collaborate easier, not like app market. Start using SketchCollab for your sketchware collaboration, Its FREEEEEEEEE!!!!!!</string>
+    <string name="no_proj_error_home">Hmm, looks like you haven\'t uploaded any projects yet</string>
+    <string name="no_proj_error_home_button">Click here to upload a project</string>
+    <string name="register">register</string>
+    <string name="credit">Made By Iyxan23</string>
 </resources>

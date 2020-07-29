@@ -15,4 +15,14 @@
     <string name="online_projects">Projek Online</string>
     <string name="search">Cari</string>
     <string name="projects">Projects</string>
+    <string name="open_drawer">Buka drawer</string>
+    <string name="close_drawer">Tutup drawer</string>
+    <string name="offline_projects">Projek offline</string>
+    <string name="home">Beranda</string>
+    <string name="collaborate">Kolaborasi</string>
+    <string name="share">Bagikan</string>
+    <string name="other">Lain-Lain</string>
+    <string name="share_text">Hei! Apakah Anda benci berkolaborasi dengan proyek sketsa dengan mengunggah file setiap saat? Coba gunakan SketchCollab! SkectchCollab dirancang untuk membuat kolaborasi dalam sketchware lebih mudah, Pertama mengunggah proyek Anda di cloud, Kedua mengundang teman Anda untuk berkolaborasi pada proyek sketchware Anda, Kode Ketiga, Rilis Keempat aplikasi Anda ke publik! Mengapa menggunakan SketchCollab? SketchCollab hanyalah salah satu dari proyek sketsa di pasar, kan? Salah, kami tidak menyimpan apks lebih seperti marketpalce, SketchCollab adalah platform bagi pengembang untuk berkolaborasi dengan lebih mudah, tidak seperti pasar aplikasi. Mulai gunakan SketchCollab untuk kolaborasi sketchware Anda, Ini GRATEEESSS !!!!!!</string>
+    <string name="no_proj_error_home">Hmm, sepertinya anda belum mengupload projek apapun..</string>
+    <string name="no_proj_error_home_button">Klik disini untuk mengupload projek</string>
 </resources>

@@ -14,13 +14,13 @@
         <item
             android:id="@+id/drawer_online_proj"
             android:icon="@drawable/ic_public_24px"
-            android:title="@string/projects"/>
+            android:title="@string/online_projects"/>
         <item
             android:id="@+id/drawer_collaborate"
             android:icon="@drawable/ic_baseline_people_24"
-            android:title="@string/projects"/>
+            android:title="@string/collaborate"/>
     </group>
-    <item android:title="@string/collaborate">
+    <item android:title="@string/other">
         <menu>
             <item
                 android:title="@string/share"

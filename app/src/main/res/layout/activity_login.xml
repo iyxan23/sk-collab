@@ -114,7 +114,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="32dp"
         android:background="@drawable/button_round"
-        android:text="register"
+        android:text="@string/register"
         style="?attr/materialButtonOutlinedStyle"
         android:transitionName="register"
         android:textColor="@color/colorAccent"

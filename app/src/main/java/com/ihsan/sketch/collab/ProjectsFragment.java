@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -16,7 +17,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
@@ -45,9 +48,17 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-public class ProjectsActivity extends AppCompatActivity {
+public class ProjectsFragment extends Fragment {
 
     private static final String TAG = "ProjectsActivity";
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.projects_fragment, container, false);
+    }
+
+    /*
 
     private FirebaseDatabase database;
     RecyclerViewSketchwareProjectsAdapter projectsAdapter;
@@ -56,7 +67,7 @@ public class ProjectsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_projects);
+        setContentView(R.layout.projects_fragment);
 
         database = FirebaseDatabase.getInstance();
         getSupportActionBar().setTitle(getString(R.string.projects));
@@ -194,5 +205,6 @@ public class ProjectsActivity extends AppCompatActivity {
         }
         return arrayList;
     }
+     */
 
 }

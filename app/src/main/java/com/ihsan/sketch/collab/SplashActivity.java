@@ -37,8 +37,8 @@ public class SplashActivity extends AppCompatActivity {
         ImageView icon = findViewById(R.id.splash_icon);
         ObjectAnimator animator = new ObjectAnimator();
         animator.setPropertyName("translationY");
-        animator.setFloatValues(0f, -100f);
-        animator.setDuration(500);
+        animator.setFloatValues(0f, -300f);
+        animator.setDuration(1000);
         animator.setRepeatMode(ObjectAnimator.REVERSE);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setTarget(icon);
@@ -61,7 +61,7 @@ public class SplashActivity extends AppCompatActivity {
                     startActivity(i);
                     finish();
                 } else {
-                    Intent i = new Intent(SplashActivity.this, MainActivity.class);
+                    Intent i = new Intent(SplashActivity.this, HomeActivity.class);
                     startActivity(i);
                     finish();
                 }
