@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/fullname_home"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -25,11 +25,11 @@
             android:text="My Full Name"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@+id/textView15" />
+            app:layout_constraintStart_toEndOf="@+id/pfp_home"
+            app:layout_constraintTop_toBottomOf="@+id/welcome_home" />
 
         <TextView
-            android:id="@+id/textView7"
+            android:id="@+id/email_home"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -37,8 +37,8 @@
             android:fontFamily="@font/manrope_medium"
             android:text="email@email.com"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@+id/textView6" />
+            app:layout_constraintStart_toEndOf="@+id/pfp_home"
+            app:layout_constraintTop_toBottomOf="@+id/fullname_home" />
 
         <ImageView
             android:id="@+id/imageView5"
@@ -51,13 +51,13 @@
             app:srcCompat="@drawable/ic_baseline_add_photo_alternate_24" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/pfp_home"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView15"
+            app:layout_constraintTop_toBottomOf="@+id/welcome_home"
             app:srcCompat="@drawable/ic_person_round" />
 
         <TextView
@@ -84,7 +84,7 @@
             app:srcCompat="@drawable/ic_cloud" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+            android:id="@+id/rv_online_home"
             android:layout_width="0dp"
             android:layout_height="200dp"
             android:layout_marginTop="16dp"
@@ -122,10 +122,10 @@
             android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+            app:layout_constraintTop_toBottomOf="@+id/rv_online_home" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView2"
+            android:id="@+id/rv_offline_proj_home"
             android:layout_width="0dp"
             android:layout_height="200dp"
             android:layout_marginTop="16dp"
@@ -141,10 +141,10 @@
             android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+            app:layout_constraintTop_toBottomOf="@+id/pfp_home" />
 
         <TextView
-            android:id="@+id/textView15"
+            android:id="@+id/welcome_home"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -158,12 +158,12 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView9"
+            android:id="@+id/open_more_online_proj_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:tint="@color/colorPrimary"
-            app:layout_constraintBottom_toTopOf="@+id/recyclerView"
+            app:layout_constraintBottom_toTopOf="@+id/rv_online_home"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/textView13"
@@ -171,12 +171,12 @@
             app:srcCompat="@drawable/ic_baseline_open_in_new_24" />
 
         <ImageView
-            android:id="@+id/imageView10"
+            android:id="@+id/open_more_offline_proj_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:tint="@color/colorAccent"
-            app:layout_constraintBottom_toTopOf="@+id/recyclerView2"
+            app:layout_constraintBottom_toTopOf="@+id/rv_offline_proj_home"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/textView14"
@@ -193,9 +193,9 @@
             android:text="@string/no_proj_error_home"
             android:textAlignment="center"
             app:layout_constraintBottom_toTopOf="@+id/divider6"
-            app:layout_constraintEnd_toEndOf="@+id/recyclerView"
+            app:layout_constraintEnd_toEndOf="@+id/rv_online_home"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/recyclerView" />
+            app:layout_constraintTop_toTopOf="@+id/rv_online_home" />
 
         <Button
             android:id="@+id/btn_no_online_projects"
@@ -218,7 +218,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/recyclerView2" />
+            app:layout_constraintTop_toTopOf="@+id/rv_offline_proj_home" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

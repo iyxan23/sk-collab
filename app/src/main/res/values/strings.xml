@@ -27,4 +27,8 @@
     <string name="register">register</string>
     <string name="credit">Made By Iyxan23</string>
     <string name="no_sw_proj_detected">No sketchware projects detected.</string>
+    <string name="name_empty">Name cannot be empty</string>
+    <string name="name_not_ascii">Non-ASCII characters are not allowed</string>
+    <string name="welcome">Welcome</string>
+    <string name="err_set_name">Click here to set your name</string>
 </resources>
