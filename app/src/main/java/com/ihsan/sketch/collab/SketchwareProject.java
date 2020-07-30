@@ -1,5 +1,7 @@
 package com.ihsan.sketch.collab;
 
+import androidx.annotation.NonNull;
+
 public class SketchwareProject {
     String package_;
     String version;
@@ -15,13 +17,9 @@ public class SketchwareProject {
         this.id = id;
     }
 
+    @NonNull
     @Override
     public String toString() {
-        return "SketchwareProject{" +
-                "package_='" + package_ + '\'' +
-                ", version='" + version + '\'' +
-                ", name='" + name + '\'' +
-                ", coname='" + coname + '\'' +
-                '}';
+        return name + " - " + package_;
     }
 }

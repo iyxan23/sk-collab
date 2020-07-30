@@ -28,4 +28,19 @@
     <string name="register">daftar</string>
     <string name="credit">Dibuat oleh NurIhsan</string>
     <string name="no_sw_proj_detected">Tidak ada projek sketchware terdeteksi.</string>
+    <string name="name_empty">Nama tidak boleh kosong</string>
+    <string name="name_not_ascii">Karakter Non-ASCII tidak diperbolehkan</string>
+    <string name="welcome">Selamat Datang</string>
+    <string name="err_set_name">Klik disini untuk mengganti namamu</string>
+    <string name="change_name">Ganti Nama</string>
+    <string name="upload_projects">Upload Projek</string>
+    <string name="upload">Upload</string>
+    <string name="description">Deskripsi</string>
+    <string name="toolong_loading">Sepertinya loadingnya lama yah?\\nCoba cek koneksi internetmu</string>
+    <string name="no_offline_projects_detected">Tidak ada projek sketchware terdeteksi</string>
+    <string name="open_source_upload">Open Source (Siapapun bisa mendownload projek ini)</string>
+    <string name="private_upload">Privat (Hanya kamu yang bisa melihat projek ini)</string>
+    <string name="cancel">Batal</string>
+    <string name="upload_now">Upload Sekarang</string>
+    <string name="pick_top_upload">Pilih projek yang ingin di upload</string>
 </resources>

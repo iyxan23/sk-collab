@@ -54,7 +54,7 @@ public class RegisterActivity extends AppCompatActivity {
                     input.setError(getString(R.string.name_not_ascii));
                 } else {
                 lanjut_p.setVisibility(View.VISIBLE);
-                FirebaseAuth auth = FirebaseAuth.getInstance();
+                final FirebaseAuth auth = FirebaseAuth.getInstance();
                 auth.createUserWithEmailAndPassword(i.getStringExtra("email"), i.getStringExtra("password"))
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -68,6 +68,9 @@ public class RegisterActivity extends AppCompatActivity {
                         lanjut_p.setVisibility(View.INVISIBLE);
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                         DatabaseReference userdata = database.getReference("userdata");
+                        userdata.child(authResult.getUser().getUid())
+                                .child("uid")
+                                .setValue(authResult.getUser().getUid());
                         userdata.child(authResult.getUser().getUid())
                                 .child("name")
                                 .setValue(name).addOnSuccessListener(new OnSuccessListener<Void>() {

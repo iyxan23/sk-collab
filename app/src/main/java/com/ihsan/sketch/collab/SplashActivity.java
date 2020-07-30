@@ -10,10 +10,12 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,20 +37,18 @@ public class SplashActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         getSupportActionBar().hide();
 
-        ImageView icon = findViewById(R.id.splash_icon);
-        ObjectAnimator animator = new ObjectAnimator();
-        animator.setPropertyName("translationY");
-        animator.setFloatValues(0f, -100f);
-        animator.setRepeatMode(ObjectAnimator.REVERSE);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.setTarget(icon);
-        animator.start();
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.WHITE);
+            window.setStatusBarColor(Color.GRAY);
         }
+
+        findViewById(R.id.toolong_loading).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                findViewById(R.id.toolong_loading).setVisibility(View.VISIBLE);
+            }
+        }, 3000);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference status = database.getReference("status/open");
@@ -56,6 +56,7 @@ public class SplashActivity extends AppCompatActivity {
         status.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                findViewById(R.id.toolong_loading).setVisibility(View.GONE);
                 if (auth.getCurrentUser() == null) {
                     Intent i = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(i);
@@ -69,9 +70,10 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Snackbar.make(findViewById(R.id.parent_splash), "ERROR: " + error.getMessage(), Snackbar.LENGTH_LONG)
-                .setBackgroundTint(Color.RED)
-                .show();
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
+                findViewById(R.id.toolong_loading).setVisibility(View.VISIBLE);
+                TextView toolong = findViewById(R.id.toolong_loading);
+                toolong.setText(error.getMessage());
             }
         });
     }

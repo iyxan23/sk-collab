@@ -32,4 +32,14 @@
     <string name="welcome">Welcome</string>
     <string name="err_set_name">Click here to set your name</string>
     <string name="change_name">Change Name</string>
+    <string name="upload_projects">Upload Project</string>
+    <string name="upload">Upload</string>
+    <string name="description">Description</string>
+    <string name="toolong_loading">Looks like the loading takes forever huh?\nTry checking your internet connection.</string>
+    <string name="no_offline_projects_detected">No offline sketchware projects detected</string>
+    <string name="open_source_upload">Open Source (Anyone can download this project)</string>
+    <string name="private_upload">Private (Only you can see this project)</string>
+    <string name="cancel">Cancel</string>
+    <string name="upload_now">Upload Now</string>
+    <string name="pick_top_upload">Pick a project you want to Upload</string>
 </resources>

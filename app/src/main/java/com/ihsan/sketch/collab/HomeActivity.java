@@ -177,6 +177,10 @@ public class HomeActivity extends AppCompatActivity {
                         Intent shareIntent = Intent.createChooser(sendIntent, null);
                         startActivity(shareIntent);
                         break;
+                    case R.id.drawer_upload:
+                        Intent i = new Intent(HomeActivity.this, UploadActivity.class);
+                        startActivity(i);
+                        break;
                     default:
                         Toast.makeText(HomeActivity.this, "ERROR", Toast.LENGTH_LONG);
                 }

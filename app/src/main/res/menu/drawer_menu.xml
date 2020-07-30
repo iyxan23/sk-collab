@@ -23,6 +23,10 @@
     <item android:title="@string/other">
         <menu>
             <item
+                android:title="@string/upload"
+                android:id="@+id/drawer_upload"
+                android:icon="@drawable/ic_baseline_cloud_upload_24"/>
+            <item
                 android:title="@string/share"
                 android:id="@+id/drawer_share"
                 android:icon="@drawable/ic_baseline_share_24"/>
