@@ -55,7 +55,7 @@ public class HomeActivity extends AppCompatActivity {
     private boolean letGo = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
@@ -64,29 +64,10 @@ public class HomeActivity extends AppCompatActivity {
         final FirebaseUser user = auth.getCurrentUser();
         final String[] name = new String[1];
 
+        drawerLayout = findViewById(R.id.drawer_layout);
+        final NavigationView nv = findViewById(R.id.navview);
+
         storagePerms();
-
-        database.getReference("userdata/".concat(user.getUid()))
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.child("name").exists()) {
-                            name[0] = snapshot.child("name").getValue(String.class);
-                        } else {
-                            name[0] = null;
-                        }
-                        letGo = true;
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        letGo = true;
-                        Snackbar.make(findViewById(R.id.framelayout), error.getMessage(), Snackbar.LENGTH_LONG)
-                                .show();
-                    }
-                });
-
-        while (!letGo);
 
         if (user == null) {
             // Mod user detected
@@ -146,8 +127,36 @@ public class HomeActivity extends AppCompatActivity {
             }
         };
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        final NavigationView nv = findViewById(R.id.navview);
+        database.getReference("userdata/".concat(user.getUid()))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.child("name").exists()) {
+                            name[0] = snapshot.child("name").getValue(String.class);
+                        } else {
+                            name[0] = null;
+                        }
+
+                        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(HomeActivity.this, drawerLayout, R.string.open_drawer, R.string.close_drawer);
+                        drawerLayout.addDrawerListener(toggle);
+                        toggle.syncState();
+
+                        if (savedInstanceState == null) {
+                            getSupportFragmentManager().beginTransaction().replace(R.id.framelayout,
+                                    new MainFragment(user, name[0], changeName, sketchwareProjects, nv, toolbar)).commit();
+                            findViewById(R.id.progressHome).setVisibility(View.GONE);
+                            nv.setCheckedItem(R.id.drawer_home);
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Snackbar.make(findViewById(R.id.framelayout), error.getMessage(), Snackbar.LENGTH_LONG)
+                                .show();
+                    }
+                });
+
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -191,16 +200,6 @@ public class HomeActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open_drawer, R.string.close_drawer);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.framelayout,
-                    new MainFragment(user, name[0], changeName, sketchwareProjects, nv, toolbar)).commit();
-            nv.setCheckedItem(R.id.drawer_home);
-        }
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
