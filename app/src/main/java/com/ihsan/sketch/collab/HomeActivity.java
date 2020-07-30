@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -51,7 +52,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private ArrayList<SketchwareProject> sketchwareProjects = new ArrayList<>();
-    private ProgressDialog progdialog;
+    private boolean letGo = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,6 @@ public class HomeActivity extends AppCompatActivity {
 
         storagePerms();
 
-        progdialog.setTitle("Getting name from the database...");
         database.getReference("userdata/".concat(user.getUid()))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -75,15 +75,18 @@ public class HomeActivity extends AppCompatActivity {
                         } else {
                             name[0] = null;
                         }
-                        progdialog.setTitle("Done");
-                        progdialog.dismiss();
+                        letGo = true;
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
+                        letGo = true;
+                        Snackbar.make(findViewById(R.id.framelayout), error.getMessage(), Snackbar.LENGTH_LONG)
+                                .show();
                     }
                 });
+
+        while (!letGo);
 
         if (user == null) {
             // Mod user detected
@@ -194,14 +197,9 @@ public class HomeActivity extends AppCompatActivity {
         toggle.syncState();
 
         if (savedInstanceState == null) {
-            progdialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialogInterface) {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.framelayout,
-                            new MainFragment(user, name[0], changeName, sketchwareProjects, nv, toolbar)).commit();
-                    nv.setCheckedItem(R.id.drawer_home);
-                }
-            });
+            getSupportFragmentManager().beginTransaction().replace(R.id.framelayout,
+                    new MainFragment(user, name[0], changeName, sketchwareProjects, nv, toolbar)).commit();
+            nv.setCheckedItem(R.id.drawer_home);
         }
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -260,10 +258,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void getSketchwareProjects() {
-        progdialog = new ProgressDialog(this);
-        progdialog.setCancelable(false);
-        progdialog.show();
-        progdialog.setTitle("Getting Sketchware Projects..");
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/";
         Log.d(TAG, "getSketchwareProjects: " +path);
         for (String pat: listDir(path)) {
@@ -276,7 +270,6 @@ public class HomeActivity extends AppCompatActivity {
                         project.getString("my_sc_pkg_name"),
                         project.getString("my_ws_name"),
                         project.getString("sc_id"));
-                progdialog.setTitle("Getting ID: ".concat(project.getString("sc_id")));
                 Toast.makeText(this, project.getString("my_app_name"), Toast.LENGTH_SHORT);
                 sketchwareProjects.add(0, sw_proj);
             } catch (Exception e) {
@@ -284,7 +277,6 @@ public class HomeActivity extends AppCompatActivity {
                 Log.e(TAG, "getSketchwareProjects: " + e.toString());
             }
         }
-        progdialog.setTitle("Done getting sketchware projects!");
     }
 
     private String decrypt(String path) {
