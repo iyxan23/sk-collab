@@ -1,5 +1,6 @@
 package com.ihsan.sketch.collab;
 
+import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -99,6 +100,7 @@ public class UploadActivity extends AppCompatActivity {
                 try {
                     SketchwareProject project = (SketchwareProject) spinner.getSelectedItem();
                     String data_path = Environment.getExternalStorageDirectory() + "/.sketchware/data/" + project.id + "/";
+                    Log.e("UplaodActivity", "onClick: " + data_path);
 
                     RandomAccessFile file = null;
                     file = new RandomAccessFile(data_path + "file", "r");
@@ -108,22 +110,22 @@ public class UploadActivity extends AppCompatActivity {
 
                     file = new RandomAccessFile(data_path + "view", "r");
                     byte[] bArr1 = new byte[((int) file.length())];
-                    file.readFully(bArr);
+                    file.readFully(bArr1);
                     String view_ = new String(bArr1);
 
                     file = new RandomAccessFile(data_path + "logic", "r");
                     byte[] bArr2 = new byte[((int) file.length())];
-                    file.readFully(bArr);
+                    file.readFully(bArr2);
                     String logic_ = new String(bArr2);
 
                     file = new RandomAccessFile(data_path + "resource", "r");
                     byte[] bArr3 = new byte[((int) file.length())];
-                    file.readFully(bArr);
+                    file.readFully(bArr3);
                     String resource = new String(bArr3);
 
                     file = new RandomAccessFile(data_path + "library", "r");
                     byte[] bArr4 = new byte[((int) file.length())];
-                    file.readFully(bArr);
+                    file.readFully(bArr4);
                     String library = new String(bArr4);
 
                     SketchwareProjectData swdata = new SketchwareProjectData(file_, view_, resource, logic_, library, project);
@@ -151,7 +153,7 @@ public class UploadActivity extends AppCompatActivity {
                     HashMap<String, Object> snapshot = new HashMap<>();
                     data.put("author", user.getUid());
                     data.put("name", project.name);
-                    data.put("version", Integer.parseInt(project.version));
+                    data.put("version", Double.valueOf(project.version));
                     data.put("open", isOpenSource);
                     data.put("desc", desc);
 
@@ -176,6 +178,7 @@ public class UploadActivity extends AppCompatActivity {
                             });
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Log.e("UPLOAD", "onClick: " + e.toString());
                     dieError(e.getMessage());
                 }
             }
