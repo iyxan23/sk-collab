@@ -16,9 +16,12 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.transition.Explode;
+import android.transition.Slide;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -52,10 +55,11 @@ public class HomeActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private ArrayList<SketchwareProject> sketchwareProjects = new ArrayList<>();
-    private boolean letGo = false;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+        getWindow().setExitTransition(new Explode());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 

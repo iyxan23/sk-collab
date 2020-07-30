@@ -3,6 +3,7 @@ package com.ihsan.sketch.collab;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.InputType;
 import android.transition.Explode;
 import android.transition.Slide;
 import android.util.Log;
@@ -38,7 +39,7 @@ public class UploadActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
-        getWindow().setEnterTransition(new Slide());
+        getWindow().setEnterTransition(new Explode());
         getWindow().setExitTransition(new Explode());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
@@ -50,6 +51,9 @@ public class UploadActivity extends AppCompatActivity {
 
         final Button upload = findViewById(R.id.upload_upload);
         final Button cancel = findViewById(R.id.cancel_upload);
+
+        TextInputLayout textInputLayout = findViewById(R.id.desc_upload);
+        textInputLayout.getEditText().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         final FirebaseUser user = auth.getCurrentUser();
@@ -208,7 +212,7 @@ public class UploadActivity extends AppCompatActivity {
         findViewById(R.id.progressUpload).setVisibility(View.GONE);
         findViewById(R.id.status_upload).setVisibility(View.GONE);
         Toast.makeText(this, "Success!", Toast.LENGTH_LONG).show();
-        finish();
+        onBackPressed();
     }
 
     private void dieError(String error) {

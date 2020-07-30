@@ -1,5 +1,6 @@
 package com.ihsan.sketch.collab;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -66,6 +68,15 @@ public class MainFragment extends Fragment {
             }
         });
         offline.setHasFixedSize(true);
+
+        view.findViewById(R.id.btn_no_online_projects).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), UploadActivity.class);
+                ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), view.findViewById(R.id.btn_no_online_projects), "upload_transition");
+                getActivity().startActivity(i, optionsCompat.toBundle());
+            }
+        });
 
         if (offlineProjects.size() == 0) {
             view.findViewById(R.id.no_sw_proj_detected).setVisibility(View.VISIBLE);
