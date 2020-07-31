@@ -8,13 +8,15 @@ public class OnlineProject {
     private String description;
     boolean isopen;
     boolean isExpanded;
+    private String key;
 
-    public OnlineProject(String title, String version, String author, boolean isopen, boolean isExpanded) {
+    public OnlineProject(String title, String version, String author, boolean isopen, boolean isExpanded, String key) {
         this.title = title;
         this.version = version;
         this.author = author;
         this.isopen = isopen;
         this.isExpanded = isExpanded;
+        this.key = key;
     }
 
     public String getTitle() {
@@ -63,5 +65,13 @@ public class OnlineProject {
 
     public void setExpanded(boolean expanded) {
         isExpanded = expanded;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

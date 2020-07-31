@@ -2,6 +2,7 @@ package com.ihsan.sketch.collab;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,7 +58,7 @@ public class RecyclerViewOnlineProjectsAdapter extends RecyclerView.Adapter<Recy
         holder.body.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent i = new Intent(activity, ViewOnlineProjectActivity.class);
             }
         });
     }
