@@ -41,6 +41,6 @@
     <string name="open_source_upload">Open Source (Siapapun bisa mendownload projek ini)</string>
     <string name="private_upload">Privat (Hanya kamu yang bisa melihat projek ini)</string>
     <string name="cancel">Batal</string>
-    <string name="upload_now">Upload Sekarang</string>
+    <string name="upload_now">Upload</string>
     <string name="pick_top_upload">Pilih projek yang ingin di upload</string>
 </resources>

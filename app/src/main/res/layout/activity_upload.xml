@@ -15,6 +15,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="20dp"
         android:spinnerMode="dialog"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -128,23 +130,26 @@
         android:id="@+id/desc_upload"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         android:hint="@string/description"
-        app:counterMaxLength="200"
         app:counterEnabled="true"
+        app:counterMaxLength="200"
         app:layout_constraintBottom_toTopOf="@+id/private_upload"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/no_sw_proj_detected_upload">
+        app:layout_constraintTop_toBottomOf="@+id/no_sw_proj_detected_upload"
+        app:layout_constraintVertical_bias="0.0">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:inputType="textLongMessage"
+            android:inputType="textMultiLine"
+            android:maxLines="5"
+            android:transitionName="upload_transition"
             app:layout_constraintTop_toBottomOf="@+id/top_login"
             tools:layout_editor_absoluteX="6dp" />
 

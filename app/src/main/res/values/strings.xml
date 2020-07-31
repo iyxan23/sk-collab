@@ -40,6 +40,6 @@
     <string name="open_source_upload">Open Source (Anyone can download this project)</string>
     <string name="private_upload">Private (Only you can see this project)</string>
     <string name="cancel">Cancel</string>
-    <string name="upload_now">Upload Now</string>
+    <string name="upload_now">Upload</string>
     <string name="pick_top_upload">Pick a project you want to Upload</string>
 </resources>

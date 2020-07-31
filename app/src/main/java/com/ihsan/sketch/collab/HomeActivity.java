@@ -16,9 +16,12 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.transition.Explode;
+import android.transition.Slide;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -26,6 +29,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -51,10 +55,11 @@ public class HomeActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private ArrayList<SketchwareProject> sketchwareProjects = new ArrayList<>();
-    private ProgressDialog progdialog;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+        getWindow().setExitTransition(new Explode());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
@@ -63,27 +68,10 @@ public class HomeActivity extends AppCompatActivity {
         final FirebaseUser user = auth.getCurrentUser();
         final String[] name = new String[1];
 
+        drawerLayout = findViewById(R.id.drawer_layout);
+        final NavigationView nv = findViewById(R.id.navview);
+
         storagePerms();
-
-        progdialog.setTitle("Getting name from the database...");
-        database.getReference("userdata/".concat(user.getUid()))
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.child("name").exists()) {
-                            name[0] = snapshot.child("name").getValue(String.class);
-                        } else {
-                            name[0] = null;
-                        }
-                        progdialog.setTitle("Done");
-                        progdialog.dismiss();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
 
         if (user == null) {
             // Mod user detected
@@ -143,8 +131,36 @@ public class HomeActivity extends AppCompatActivity {
             }
         };
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        final NavigationView nv = findViewById(R.id.navview);
+        database.getReference("userdata/".concat(user.getUid()))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.child("name").exists()) {
+                            name[0] = snapshot.child("name").getValue(String.class);
+                        } else {
+                            name[0] = null;
+                        }
+
+                        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(HomeActivity.this, drawerLayout, R.string.open_drawer, R.string.close_drawer);
+                        drawerLayout.addDrawerListener(toggle);
+                        toggle.syncState();
+
+                        if (savedInstanceState == null) {
+                            getSupportFragmentManager().beginTransaction().replace(R.id.framelayout,
+                                    new MainFragment(user, name[0], changeName, sketchwareProjects, nv, toolbar)).commit();
+                            findViewById(R.id.progressHome).setVisibility(View.GONE);
+                            nv.setCheckedItem(R.id.drawer_home);
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Snackbar.make(findViewById(R.id.framelayout), error.getMessage(), Snackbar.LENGTH_LONG)
+                                .show();
+                    }
+                });
+
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -188,21 +204,6 @@ public class HomeActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open_drawer, R.string.close_drawer);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
-        if (savedInstanceState == null) {
-            progdialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialogInterface) {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.framelayout,
-                            new MainFragment(user, name[0], changeName, sketchwareProjects, nv, toolbar)).commit();
-                    nv.setCheckedItem(R.id.drawer_home);
-                }
-            });
-        }
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -260,10 +261,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void getSketchwareProjects() {
-        progdialog = new ProgressDialog(this);
-        progdialog.setCancelable(false);
-        progdialog.show();
-        progdialog.setTitle("Getting Sketchware Projects..");
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/";
         Log.d(TAG, "getSketchwareProjects: " +path);
         for (String pat: listDir(path)) {
@@ -276,7 +273,6 @@ public class HomeActivity extends AppCompatActivity {
                         project.getString("my_sc_pkg_name"),
                         project.getString("my_ws_name"),
                         project.getString("sc_id"));
-                progdialog.setTitle("Getting ID: ".concat(project.getString("sc_id")));
                 Toast.makeText(this, project.getString("my_app_name"), Toast.LENGTH_SHORT);
                 sketchwareProjects.add(0, sw_proj);
             } catch (Exception e) {
@@ -284,7 +280,6 @@ public class HomeActivity extends AppCompatActivity {
                 Log.e(TAG, "getSketchwareProjects: " + e.toString());
             }
         }
-        progdialog.setTitle("Done getting sketchware projects!");
     }
 
     private String decrypt(String path) {
