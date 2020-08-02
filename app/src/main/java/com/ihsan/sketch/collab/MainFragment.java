@@ -63,7 +63,12 @@ public class MainFragment extends Fragment {
         });
 
         online.setAdapter(new RecyclerViewOnlineProjectsAdapter(onlineProjects, getActivity()));
-        online.setLayoutManager(new LinearLayoutManager(getContext()));
+        online.setLayoutManager(new LinearLayoutManager(getContext()) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
         online.setHasFixedSize(true);
 
         offline.setAdapter(new RecyclerViewSketchwareProjectsAdapter(offlineProjects, getActivity()));

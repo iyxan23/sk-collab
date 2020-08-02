@@ -73,12 +73,7 @@ public class ProjectsFragment extends Fragment {
             notfound.setVisibility(View.GONE);
             notfound1.setVisibility(View.GONE);
             projects.setAdapter(new RecyclerViewSketchwareProjectsAdapter(swproj, getActivity()));
-            projects.setLayoutManager(new LinearLayoutManager(getContext()) {
-                @Override
-                public boolean canScrollVertically() {
-                    return false;
-                }
-            });
+            projects.setLayoutManager(new LinearLayoutManager(getContext()));
             projects.setHasFixedSize(true);
         }
 

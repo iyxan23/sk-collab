@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
 
 import org.json.JSONObject;
 
@@ -15,12 +16,14 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class Util {
+    public static Hashtable<String, String> key2name = new Hashtable<>();
     private static final String TAG = "Util";
 
     public static String base64encrypt(String txt) {

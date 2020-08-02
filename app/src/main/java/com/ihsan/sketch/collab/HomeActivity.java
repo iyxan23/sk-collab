@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.transition.Explode;
 import android.util.Log;
 import android.view.MenuItem;
@@ -39,6 +40,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -140,14 +142,37 @@ public class HomeActivity extends AppCompatActivity {
                             name[0] = null;
                         }
 
+                        for (DataSnapshot snapshot1: snapshot.child("userdata").getChildren()) {
+                            Util.key2name.put(snapshot1.getKey(), snapshot1.child("name").getValue(String.class));
+                        }
+
                         for (DataSnapshot data: snapshot.child("projects").getChildren()) {
+                            ArrayList<Commit> commits = new ArrayList<>();
+                            ArrayList<String> collaborators = new ArrayList<>();
+
+                            for (DataSnapshot collaborator: data.child("collaborators").getChildren()) {
+                                collaborators.add(collaborator.getValue(String.class));
+                            }
+
+                            for (DataSnapshot commits_: data.child("commits").getChildren()) {
+                                commits.add(new Commit(
+                                        commits_.child("author").getValue(String.class),
+                                        snapshot.child("userdata").child(commits_.child("author").getValue(String.class)).child("name").getValue(String.class),
+                                        commits_.child("timestamp").getValue(int.class),
+                                        commits_.child("changes").getValue(String.class)
+                                ));
+                            }
+
                             OnlineProject project = new OnlineProject(
                                     data.child("name").getValue(String.class),
                                     String.valueOf(data.child("version").getValue(double.class)),
                                     data.child("author").getValue(String.class),
+                                    snapshot.child("userdata").child(data.child("author").getValue(String.class)).child("name").getValue(String.class),
                                     data.child("open").getValue(Boolean.class),
                                     false,
-                                    data.getKey());
+                                    data.getKey(),
+                                    commits,
+                                    collaborators);
 
                             if (Objects.equals(data.child("author").getValue(String.class), user.getUid())) {
                                 onlineProjects.add(project);
@@ -156,13 +181,32 @@ public class HomeActivity extends AppCompatActivity {
                         }
 
                         for (DataSnapshot data: userdata.child("projects").getChildren()) {
+                            ArrayList<Commit> commits = new ArrayList<>();
+                            ArrayList<String> collaborators = new ArrayList<>();
+
+                            for (DataSnapshot collaborator: data.child("collaborators").getChildren()) {
+                                collaborators.add(collaborator.getValue(String.class));
+                            }
+
+                            for (DataSnapshot commits_: data.child("commits").getChildren()) {
+                                commits.add(new Commit(
+                                        commits_.child("author").getValue(String.class),
+                                        snapshot.child("userdata").child(commits_.child("author").getValue(String.class)).child("name").getValue(String.class),
+                                        commits_.child("timestamp").getValue(int.class),
+                                        commits_.child("changes").getValue(String.class)
+                                ));
+                            }
+
                             onlineProjects.add(new OnlineProject(
                                     data.child("name").getValue(String.class),
                                     String.valueOf(data.child("version").getValue(double.class)),
                                     data.child("author").getValue(String.class),
+                                    snapshot.child("userdata").child(data.child("author").getValue(String.class)).child("name").getValue(String.class),
                                     data.child("open").getValue(Boolean.class),
                                     false,
-                                    data.getKey()));
+                                    data.getKey(),
+                                    commits,
+                                    collaborators));
                         }
 
                         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(HomeActivity.this, drawerLayout, R.string.open_drawer, R.string.close_drawer);
@@ -204,8 +248,9 @@ public class HomeActivity extends AppCompatActivity {
                         toolbar.setTitle("Online Projects");
                         break;
                     case R.id.drawer_collaborate:
+                        Log.d(TAG, "onNavigationItemSelected: " + onlineProjects.toString());
                         getSupportFragmentManager().beginTransaction().replace(R.id.framelayout,
-                                new CollaborateFragment()).commit();
+                                new CollaborateFragment(onlineProjects)).commit();
                         toolbar.setTitle("Collaborate");
                         break;
                     case R.id.drawer_share:

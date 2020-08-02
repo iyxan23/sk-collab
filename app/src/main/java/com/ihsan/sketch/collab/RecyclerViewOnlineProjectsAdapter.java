@@ -50,11 +50,10 @@ public class RecyclerViewOnlineProjectsAdapter extends RecyclerView.Adapter<Recy
         final OnlineProject project = datas.get(position);
         holder.title.setText(project.getTitle());
         holder.version.setText(project.getVersionProject());
-        holder.author.setText(project.getAuthor());
+        holder.author.setText("Uploaded by " + project.getUser_author_name());
         //holder.desc.setText(project.getDescription());
         holder.isopensourced.setTextColor(activity.getResources().getColor(project.isopen ? R.color.colorPrimary : R.color.colorAccent));
         holder.isopensourced.setText(project.getOpen());
-        holder.desc.setText(project.getDescription());
 
         holder.body.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +65,7 @@ public class RecyclerViewOnlineProjectsAdapter extends RecyclerView.Adapter<Recy
                         0,
                         holder.body.getMeasuredWidth(),
                         holder.body.getMeasuredHeight());
+                i.putExtra("key", project.getKey());
                 activity.startActivity(i, optionsCompat.toBundle());
             }
         });
@@ -82,7 +82,6 @@ public class RecyclerViewOnlineProjectsAdapter extends RecyclerView.Adapter<Recy
         TextView version;
         TextView author;
         TextView isopensourced;
-        TextView desc;
         View body;
 
         public ViewHolder(@NonNull View itemView) {

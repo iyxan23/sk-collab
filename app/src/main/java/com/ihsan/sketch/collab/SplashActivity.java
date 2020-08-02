@@ -48,7 +48,7 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 findViewById(R.id.toolong_loading).setVisibility(View.VISIBLE);
             }
-        }, 3000);
+        }, 7000);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference status = database.getReference("status/open");

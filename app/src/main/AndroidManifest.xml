@@ -15,8 +15,7 @@
         <activity android:name=".CollaborateActivity"></activity>
         <activity
             android:name=".ViewOnlineProjectActivity"
-            android:parentActivityName=".HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:parentActivityName=".HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".HomeActivity" />
