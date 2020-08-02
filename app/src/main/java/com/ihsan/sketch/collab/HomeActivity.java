@@ -4,11 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,7 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.transition.Explode;
-import android.transition.Slide;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,7 +26,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,12 +35,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -55,6 +51,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private ArrayList<SketchwareProject> sketchwareProjects = new ArrayList<>();
+    private ArrayList<OnlineProject> onlineProjects = new ArrayList<>();
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -131,14 +128,37 @@ public class HomeActivity extends AppCompatActivity {
             }
         };
 
-        database.getReference("userdata/".concat(user.getUid()))
+        database.getReference("/")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.child("name").exists()) {
-                            name[0] = snapshot.child("name").getValue(String.class);
+                        DataSnapshot userdata = snapshot.child("userdata").child(user.getUid());
+                        if (userdata.child("name").exists()) {
+                            name[0] = userdata.child("name").getValue(String.class);
                         } else {
                             name[0] = null;
+                        }
+
+                        for (DataSnapshot data: snapshot.child("projects").getChildren()) {
+                            if (Objects.equals(data.child("author").getValue(String.class), user.getUid())) {
+                                onlineProjects.add(new OnlineProject(
+                                        data.child("name").getValue(String.class),
+                                        String.valueOf(data.child("version").getValue(double.class)),
+                                        data.child("author").getValue(String.class),
+                                        data.child("open").getValue(Boolean.class),
+                                        false,
+                                        data.getKey()));
+                            }
+                        }
+
+                        for (DataSnapshot data: userdata.child("projects").getChildren()) {
+                            onlineProjects.add(new OnlineProject(
+                                    data.child("name").getValue(String.class),
+                                    String.valueOf(data.child("version").getValue(double.class)),
+                                    data.child("author").getValue(String.class),
+                                    data.child("open").getValue(Boolean.class),
+                                    false,
+                                    data.getKey()));
                         }
 
                         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(HomeActivity.this, drawerLayout, R.string.open_drawer, R.string.close_drawer);
@@ -147,11 +167,10 @@ public class HomeActivity extends AppCompatActivity {
 
                         if (savedInstanceState == null) {
                             getSupportFragmentManager().beginTransaction().replace(R.id.framelayout,
-                                    new MainFragment(user, name[0], changeName, sketchwareProjects, nv, toolbar)).commit();
+                                    new MainFragment(user, name[0], changeName, sketchwareProjects, nv, toolbar, onlineProjects)).commit();
                             findViewById(R.id.progressHome).setVisibility(View.GONE);
                             nv.setCheckedItem(R.id.drawer_home);
                         }
-
                     }
 
                     @Override
@@ -167,7 +186,7 @@ public class HomeActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.drawer_home:
                         getSupportFragmentManager().beginTransaction().replace(R.id.framelayout,
-                                new MainFragment(user, name[0], changeName, sketchwareProjects, nv, toolbar)).commit();
+                                new MainFragment(user, name[0], changeName, sketchwareProjects, nv, toolbar, onlineProjects)).commit();
                         toolbar.setTitle("Home");
                         break;
                     case R.id.drawer_projects:

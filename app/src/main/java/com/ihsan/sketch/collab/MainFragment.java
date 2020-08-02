@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,14 +29,16 @@ public class MainFragment extends Fragment {
     private ArrayList<SketchwareProject> offlineProjects;
     private NavigationView nv;
     private MaterialToolbar toolbar;
+    private ArrayList<OnlineProject> onlineProjects;
 
-    public MainFragment(FirebaseUser user, @Nullable String name, @Nullable View.OnClickListener nameClick, ArrayList<SketchwareProject> swprojs, NavigationView nv, MaterialToolbar toolbar) {
+    public MainFragment(FirebaseUser user, @Nullable String name, @Nullable View.OnClickListener nameClick, ArrayList<SketchwareProject> swprojs, NavigationView nv, MaterialToolbar toolbar, ArrayList<OnlineProject> onlineProjects) {
         this.user = user;
         this.name = name;
         this.nameClick = nameClick;
         this.offlineProjects = swprojs;
         this.nv = nv;
         this.toolbar = toolbar;
+        this.onlineProjects = onlineProjects;
     }
 
     @Nullable
@@ -48,6 +49,7 @@ public class MainFragment extends Fragment {
         TextView name = view.findViewById(R.id.fullname_home);
         TextView email = view.findViewById(R.id.email_home);
         RecyclerView offline = view.findViewById(R.id.rv_offline_proj_home);
+        RecyclerView online = view.findViewById(R.id.rv_online_home);
 
         View openOffline = view.findViewById(R.id.open_more_offline_proj_home);
         openOffline.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +61,10 @@ public class MainFragment extends Fragment {
                 toolbar.setTitle("Projects");
             }
         });
+
+        online.setAdapter(new RecyclerViewOnlineProjectsAdapter(onlineProjects, getActivity()));
+        online.setLayoutManager(new LinearLayoutManager(getContext()));
+        online.setHasFixedSize(true);
 
         offline.setAdapter(new RecyclerViewSketchwareProjectsAdapter(offlineProjects, getActivity()));
         offline.setLayoutManager(new LinearLayoutManager(getContext()) {
@@ -77,6 +83,12 @@ public class MainFragment extends Fragment {
                 getActivity().startActivity(i, optionsCompat.toBundle());
             }
         });
+
+        if (onlineProjects.size() == 0) {
+            online.setVisibility(View.GONE);
+            view.findViewById(R.id.text_no_online_projects).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.btn_no_online_projects).setVisibility(View.VISIBLE);
+        }
 
         if (offlineProjects.size() == 0) {
             view.findViewById(R.id.no_sw_proj_detected).setVisibility(View.VISIBLE);

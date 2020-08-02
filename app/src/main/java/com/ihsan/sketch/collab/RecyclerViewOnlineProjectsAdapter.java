@@ -12,6 +12,7 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
@@ -59,6 +60,13 @@ public class RecyclerViewOnlineProjectsAdapter extends RecyclerView.Adapter<Recy
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(activity, ViewOnlineProjectActivity.class);
+                ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeClipRevealAnimation(
+                        holder.body,
+                        0,
+                        0,
+                        holder.body.getMeasuredWidth(),
+                        holder.body.getMeasuredHeight());
+                activity.startActivity(i, optionsCompat.toBundle());
             }
         });
     }

@@ -192,6 +192,7 @@
             android:fontFamily="@font/manrope_medium"
             android:text="@string/no_proj_error_home"
             android:textAlignment="center"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/divider6"
             app:layout_constraintEnd_toEndOf="@+id/rv_online_home"
             app:layout_constraintStart_toStartOf="parent"
@@ -199,12 +200,13 @@
 
         <Button
             android:id="@+id/btn_no_online_projects"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/no_proj_error_home_button"
             android:fontFamily="@font/manrope_semibold"
+            android:text="@string/no_proj_error_home_button"
             android:textSize="12sp"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_no_online_projects" />
