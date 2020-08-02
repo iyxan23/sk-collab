@@ -52,6 +52,7 @@ public class HomeActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ArrayList<SketchwareProject> sketchwareProjects = new ArrayList<>();
     private ArrayList<OnlineProject> onlineProjects = new ArrayList<>();
+    private ArrayList<OnlineProject> allOnlineProjects = new ArrayList<>();
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -140,15 +141,18 @@ public class HomeActivity extends AppCompatActivity {
                         }
 
                         for (DataSnapshot data: snapshot.child("projects").getChildren()) {
+                            OnlineProject project = new OnlineProject(
+                                    data.child("name").getValue(String.class),
+                                    String.valueOf(data.child("version").getValue(double.class)),
+                                    data.child("author").getValue(String.class),
+                                    data.child("open").getValue(Boolean.class),
+                                    false,
+                                    data.getKey());
+
                             if (Objects.equals(data.child("author").getValue(String.class), user.getUid())) {
-                                onlineProjects.add(new OnlineProject(
-                                        data.child("name").getValue(String.class),
-                                        String.valueOf(data.child("version").getValue(double.class)),
-                                        data.child("author").getValue(String.class),
-                                        data.child("open").getValue(Boolean.class),
-                                        false,
-                                        data.getKey()));
+                                onlineProjects.add(project);
                             }
+                            allOnlineProjects.add(project);
                         }
 
                         for (DataSnapshot data: userdata.child("projects").getChildren()) {
@@ -196,7 +200,7 @@ public class HomeActivity extends AppCompatActivity {
                         break;
                     case R.id.drawer_online_proj:
                         getSupportFragmentManager().beginTransaction().replace(R.id.framelayout,
-                                new OnlineFragment()).commit();
+                                new OnlineFragment(allOnlineProjects)).commit();
                         toolbar.setTitle("Online Projects");
                         break;
                     case R.id.drawer_collaborate:
