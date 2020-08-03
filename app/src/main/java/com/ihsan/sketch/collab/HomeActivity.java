@@ -72,6 +72,7 @@ public class HomeActivity extends AppCompatActivity {
         final NavigationView nv = findViewById(R.id.navview);
 
         storagePerms();
+        Util.localProjects = sketchwareProjects;
 
         if (user == null) {
             // Mod user detected

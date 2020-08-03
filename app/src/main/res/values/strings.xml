@@ -42,4 +42,6 @@
     <string name="cancel">Cancel</string>
     <string name="upload_now">Upload</string>
     <string name="pick_top_upload">Pick a project you want to Upload</string>
+    <string name="project">Project</string>
+    <string name="logic">Logic</string>
 </resources>

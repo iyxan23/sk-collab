@@ -15,6 +15,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -24,7 +26,34 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class Util {
     public static Hashtable<String, String> key2name = new Hashtable<>();
+    public static ArrayList<SketchwareProject> localProjects = new ArrayList<>();
     private static final String TAG = "Util";
+
+    public static String md5(final String s) {
+        final String MD5 = "MD5";
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest
+                    .getInstance(MD5);
+            digest.update(s.getBytes());
+            byte messageDigest[] = digest.digest();
+
+            // Create Hex String
+            StringBuilder hexString = new StringBuilder();
+            for (byte aMessageDigest : messageDigest) {
+                String h = Integer.toHexString(0xFF & aMessageDigest);
+                while (h.length() < 2)
+                    h = "0" + h;
+                hexString.append(h);
+            }
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
 
     public static String base64encrypt(String txt) {
         byte[] data = txt.getBytes();
@@ -44,6 +73,10 @@ public class Util {
             try {
                 Log.d(TAG, "getSketchwareProjects: " + pat + "/project");
                 JSONObject project = new JSONObject(decrypt(pat + "/project"));
+                Log.d(TAG, "getSketchwareProjects PROJECT: " + decrypt(pat + "/project"));
+                Log.d(TAG, "getSketchwareProjects LOGIC: " + decrypt(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/" + project.getString("sc_id") + "/logic"));
+                Log.d(TAG, "getSketchwareProjects VIEW: " + decrypt(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/" + project.getString("sc_id") + "/view"));
+                Log.d(TAG, "getSketchwareProjects FILE: " + decrypt(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/" + project.getString("sc_id") + "/file"));
                 SketchwareProject sw_proj = new SketchwareProject(
                         project.getString("my_app_name"),
                         project.getString("sc_ver_name"),
