@@ -44,4 +44,5 @@
     <string name="pick_top_upload">Pick a project you want to Upload</string>
     <string name="project">Project</string>
     <string name="logic">Logic</string>
+    <string name="your_local_projects">Your local projects</string>
 </resources>

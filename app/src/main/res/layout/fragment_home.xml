@@ -110,7 +110,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:fontFamily="@font/manrope_bold"
-            android:text="@string/offline_projects"
+            android:text="@string/your_local_projects"
             android:textColor="@color/colorAccent"
             app:layout_constraintStart_toEndOf="@+id/imageView8"
             app:layout_constraintTop_toBottomOf="@+id/divider6" />
