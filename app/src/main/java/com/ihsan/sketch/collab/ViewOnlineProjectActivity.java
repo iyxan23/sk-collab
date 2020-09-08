@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.transition.Explode;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,8 +27,12 @@ import org.w3c.dom.Text;
 
 public class ViewOnlineProjectActivity extends AppCompatActivity {
 
+    String project_id;
+    String project_name;
+    String project_author;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
         getWindow().setEnterTransition(new Explode());
         getWindow().setExitTransition(new Explode());
@@ -38,8 +43,10 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
         getSupportActionBar().setElevation(0);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        Button clone_button = findViewById(R.id.view_clone_button);
+
         Intent i = getIntent();
-        String project_id = i.getStringExtra("key");
+        project_id = i.getStringExtra("key");
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("/projects/" + project_id);
@@ -53,27 +60,42 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
                     TextView source = findViewById(R.id.view_source);
                     final TextView collaborators = findViewById(R.id.authors_col);
 
-                    collaborators.setText("");
+// Coming soon
+//                    for (DataSnapshot collaborator: snapshot.child("collaborators").getChildren()) {
+//                        collaborators.setText(collaborators.getText().toString().concat(" ").concat(Util.key2name.get(collaborator.getValue(String.class))));
+//                    }
 
-                    for (DataSnapshot collaborator: snapshot.child("collaborators").getChildren()) {
-                        collaborators.setText(collaborators.getText().toString().concat(" ").concat(Util.key2name.get(collaborator.getValue(String.class))));
-                    }
-
+                    collaborators.setText(snapshot.child("author").getValue(String.class));
                     appname.setText(snapshot.child("name").getValue(String.class));
                     desc.setText(snapshot.child("desc").getValue(String.class));
                     source.setText(snapshot.child("open").getValue(Boolean.class) ? "Open-sourced" : "Not Open-sourced");
 
+                    project_name = snapshot.child("name").getValue(String.class);
+                    project_author = snapshot.child("author").getValue(String.class);
+
                     if (!snapshot.child("open").getValue(Boolean.class)) {
+                        // Public project, clone
                         MaterialButton clone = findViewById(R.id.view_clone_button);
-                        clone.setText("Request");
-                        clone.setIcon(getDrawable(R.drawable.ic_baseline_people_24));
+                        clone.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                cloneProject();
+                            }
+                        });
                     }
 
                     if (snapshot.child("author").getValue(String.class).equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                        // Own Project
                         MaterialButton clone = findViewById(R.id.view_clone_button);
                         clone.setText("Delete project");
                         clone.setIcon(getDrawable(R.drawable.ic_delete));
                         clone.setBackgroundColor(ContextCompat.getColor(ViewOnlineProjectActivity.this, R.color.colorAccent));
+                        clone.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                deleteProject();
+                            }
+                        });
                     }
 
                     database.getReference("userdata/" + snapshot.child("author").getValue(String.class) + "/name")
@@ -109,5 +131,17 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void cloneProject() {
+        Intent i = new Intent(getApplicationContext(), CloneActivity.class);
+        i.putExtra("id", project_id);
+        i.putExtra("author", project_author);
+        i.putExtra("name", project_name);
+        startActivity(i);
+    }
+
+    private void deleteProject() {
+
     }
 }

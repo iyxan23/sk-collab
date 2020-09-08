@@ -47,9 +47,6 @@ public class CollaborateActivity extends AppCompatActivity {
             Toast.makeText(this, "ERROR CA47 : NO SKETCHWARE PROJECT FOUND (" + id + ")", Toast.LENGTH_LONG).show();
             finish();
         }
-
-
-
     }
 
     private void storagePerms() {

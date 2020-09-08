@@ -98,10 +98,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:tint="@color/colorAccent"
+            android:tint="@color/colorPrimaryDark"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider6"
-            app:srcCompat="@drawable/ic_cloud_off" />
+            app:srcCompat="@drawable/ic_phone" />
 
         <TextView
             android:id="@+id/textView14"
@@ -111,7 +111,7 @@
             android:layout_marginTop="16dp"
             android:fontFamily="@font/manrope_bold"
             android:text="@string/your_local_projects"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorPrimaryDark"
             app:layout_constraintStart_toEndOf="@+id/imageView8"
             app:layout_constraintTop_toBottomOf="@+id/divider6" />
 
@@ -175,7 +175,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:tint="@color/colorAccent"
+            android:tint="@color/colorPrimaryDark"
             app:layout_constraintBottom_toTopOf="@+id/rv_offline_proj_home"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
