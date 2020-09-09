@@ -45,4 +45,5 @@
     <string name="project">Project</string>
     <string name="logic">Logic</string>
     <string name="your_local_projects">Your local projects</string>
+    <string name="logout">Logout</string>
 </resources>

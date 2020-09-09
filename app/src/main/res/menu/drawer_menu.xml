@@ -30,6 +30,10 @@
                 android:title="@string/share"
                 android:id="@+id/drawer_share"
                 android:icon="@drawable/ic_baseline_share_24"/>
+            <item
+                android:title="@string/logout"
+                android:id="@+id/drawer_logout"
+                android:icon="@drawable/ic_exit"/>
         </menu>
     </item>
 </menu>

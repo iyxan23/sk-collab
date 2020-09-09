@@ -231,8 +231,12 @@ public class HomeActivity extends AppCompatActivity {
                         Intent i = new Intent(HomeActivity.this, UploadActivity.class);
                         startActivity(i);
                         break;
+                    case R.id.drawer_logout:
+                        Intent login = new Intent(HomeActivity.this, SplashActivity.class);
+                        auth.signOut();
+                        startActivity(login);
                     default:
-                        Toast.makeText(HomeActivity.this, "ERROR", Toast.LENGTH_LONG);
+                        Toast.makeText(HomeActivity.this, "ERROR", Toast.LENGTH_LONG).show();
                 }
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
