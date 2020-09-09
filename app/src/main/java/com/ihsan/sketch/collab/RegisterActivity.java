@@ -27,6 +27,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 public class RegisterActivity extends AppCompatActivity {
 
     @Override
@@ -96,16 +99,9 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
-    public static boolean isAsciiPrintable(String str) {
-        if (str == null) {
-            return false;
-        }
-        int sz = str.length();
-        for (int i = 0; i < sz; i++) {
-            if (!isAsciiPrintable(String.valueOf(str.charAt(i)))) {
-                return false;
-            }
-        }
-        return true;
+
+    public static boolean isAsciiPrintable(String v) {
+        return StandardCharsets.US_ASCII.newEncoder().canEncode(v);
     }
+
 }
