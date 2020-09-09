@@ -105,7 +105,6 @@ public class Util {
     }
 
     public static String encrypt(String str) {
-        // The boolean is to determine if the process is successful or not
         try {
             Cipher instance = Cipher.getInstance("AES/CBC/PKCS5Padding");
             byte[] bytes = "sketchwaresecure".getBytes();

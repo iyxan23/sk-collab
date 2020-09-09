@@ -1,16 +1,33 @@
 package com.ihsan.sketch.collab;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 public class CloneActivity extends AppCompatActivity {
 
-    String project_id;
+    String project_key;
     String project_name;
     String project_author;
 
@@ -22,7 +39,7 @@ public class CloneActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Clone Project");
 
         Intent i = getIntent();
-        project_id = i.getStringExtra("id");
+        project_key = i.getStringExtra("key");
         project_author = i.getStringExtra("author");
         project_name = i.getStringExtra("name");
 
@@ -35,7 +52,9 @@ public class CloneActivity extends AppCompatActivity {
         clone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cloneProject(project_id);
+                findViewById(R.id.loading_overlay_clone).setVisibility(View.VISIBLE);
+                cloneProject(project_key);
+                finish();
             }
         });
 
@@ -47,7 +66,70 @@ public class CloneActivity extends AppCompatActivity {
         });
     }
 
-    private void cloneProject(String project_id) {
-        
+    private void cloneProject(String project_key) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference project_reference = database.getReference("projects/" + project_key);
+
+        project_reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                String file =       Util.base64decrypt(snapshot.child("snapshot").child("file").getValue(String.class));
+                String view =       Util.base64decrypt(snapshot.child("snapshot").child("view").getValue(String.class));
+                String resource =   Util.base64decrypt(snapshot.child("snapshot").child("resource").getValue(String.class));
+                String logic =      Util.base64decrypt(snapshot.child("snapshot").child("logic").getValue(String.class));
+                String library =    Util.base64decrypt(snapshot.child("snapshot").child("library").getValue(String.class));
+                String project =    Util.base64decrypt(snapshot.child("snapshot").child("project").getValue(String.class));
+                
+                String listing_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/";
+                String data_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/";
+
+                // Temporary
+                int local_projects_length = Util.listDir(listing_path).size();
+                // Get available folder
+                int available_id = local_projects_length + 600;
+                listing_path += String.valueOf(available_id) + "/";
+                data_path += String.valueOf(available_id) + "/";
+
+                try {
+                    writeToFile(listing_path, "project", project);
+
+                    writeToFile(data_path, "file", file);
+                    writeToFile(data_path, "view", view);
+                    writeToFile(data_path, "resource", resource);
+                    writeToFile(data_path, "logic", logic);
+                    writeToFile(data_path, "library", library);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "ERROR WHILE CLONING: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) { }
+        });
+    }
+
+    private void writeToFile(String path, String filename, String data) throws IOException {
+        File file = new File(path, filename);
+        if (!file.exists()) {
+            boolean newFile = file.createNewFile();
+            if (!newFile) {
+                // Error
+                throw new IOException("Cannot create file");
+            }
+        }
+        FileOutputStream stream = new FileOutputStream(file);
+        try {
+            stream.write(data.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

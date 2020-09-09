@@ -27,7 +27,7 @@ import org.w3c.dom.Text;
 
 public class ViewOnlineProjectActivity extends AppCompatActivity {
 
-    String project_id;
+    String project_key;
     String project_name;
     String project_author;
 
@@ -46,10 +46,10 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
         Button clone_button = findViewById(R.id.view_clone_button);
 
         Intent i = getIntent();
-        project_id = i.getStringExtra("key");
+        project_key = i.getStringExtra("key");
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("/projects/" + project_id);
+        DatabaseReference ref = database.getReference("/projects/" + project_key);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -135,7 +135,7 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
 
     private void cloneProject() {
         Intent i = new Intent(getApplicationContext(), CloneActivity.class);
-        i.putExtra("id", project_id);
+        i.putExtra("key", project_key);
         i.putExtra("author", project_author);
         i.putExtra("name", project_name);
         startActivity(i);

@@ -144,6 +144,13 @@ public class UploadActivity extends AppCompatActivity {
                     String library = new String(bArr4);
                     uploadProgress.setProgress(60);
 
+                    status.setText("Getting project");
+                    file = new RandomAccessFile(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/" + project.id + "/project", "r");
+                    byte[] bArr5 = new byte[((int) file.length())];
+                    file.readFully(bArr5);
+                    String project_ = new String(bArr5);
+                    uploadProgress.setProgress(60);
+
                     status.setText("Saving data to object");
                     SketchwareProjectData swdata = new SketchwareProjectData(file_, view_, resource, logic_, library, project);
 
@@ -184,6 +191,7 @@ public class UploadActivity extends AppCompatActivity {
                     snapshot.put("resource", swdata.getEncryptedResource());
                     snapshot.put("logic", swdata.getEncryptedLogic());
                     snapshot.put("library", swdata.getEncryptedLibrary());
+                    snapshot.put("project", Util.base64encrypt(project_));
                     data.put("snapshot", snapshot);
                     status.setText("Updating database");
                     uploadProgress.setProgress(90);

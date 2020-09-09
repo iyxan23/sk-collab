@@ -52,6 +52,8 @@ public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
 
     private DrawerLayout drawerLayout;
+    private FirebaseDatabase database;
+    private FirebaseAuth auth;
     private ArrayList<SketchwareProject> sketchwareProjects = new ArrayList<>();
     private ArrayList<OnlineProject> onlineProjects = new ArrayList<>();
     private ArrayList<OnlineProject> allOnlineProjects = new ArrayList<>();
@@ -63,19 +65,22 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        // Initialize
+        auth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
         final FirebaseUser user = auth.getCurrentUser();
         final String[] name = new String[1];
 
         drawerLayout = findViewById(R.id.drawer_layout);
         final NavigationView nv = findViewById(R.id.navview);
 
+        // Check storage perms
         storagePerms();
         Util.localProjects = sketchwareProjects;
 
         if (user == null) {
             // Mod user detected
+            String hey = "HEY YOU, DON'T YOU DARE MAKE A MOD OF THIS APP";
             Intent i = new Intent(HomeActivity.this, LoginActivity.class);
             startActivity(i);
             finish();
@@ -87,48 +92,7 @@ public class HomeActivity extends AppCompatActivity {
         final View.OnClickListener changeName = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final DatabaseReference db = database.getReference("userdata/".concat(user.getProviderId()));
-                final EditText edittext = new EditText(HomeActivity.this);
-                AlertDialog.Builder alert = new AlertDialog.Builder(HomeActivity.this);
-                alert.setTitle(getString(R.string.change_name));
-
-                alert.setView(edittext);
-
-                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        String text = edittext.getText().toString().trim();
-                        if (text.equals("")) {
-                            edittext.setError(getString(R.string.name_empty));
-                        } else if (!RegisterActivity.isAsciiPrintable(text)) {
-                            edittext.setError(getString(R.string.name_not_ascii));
-                        } else {
-                            db.child("name").setValue(text)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Toast.makeText(HomeActivity.this, "Success, Refresh to see your new name!", Toast.LENGTH_SHORT)
-                                            .show();
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(HomeActivity.this, "ERROR: ".concat(e.getMessage()), Toast.LENGTH_SHORT)
-                                            .show();
-                                        }
-                                    });
-                            dialog.dismiss();
-                        }
-                    }
-                });
-
-                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.dismiss();
-                    }
-                });
-
-                alert.show();
+                changeName();
             }
         };
 
@@ -136,6 +100,7 @@ public class HomeActivity extends AppCompatActivity {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        // Currently inefficient, finding for another alternative
                         DataSnapshot userdata = snapshot.child("userdata").child(user.getUid());
                         if (userdata.child("name").exists()) {
                             name[0] = userdata.child("name").getValue(String.class);
@@ -284,6 +249,52 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void changeName() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference db = database.getReference("userdata/".concat(auth.getCurrentUser().getUid()));
+        final EditText edittext = new EditText(HomeActivity.this);
+        AlertDialog.Builder alert = new AlertDialog.Builder(HomeActivity.this);
+        alert.setTitle(getString(R.string.change_name));
+
+        alert.setView(edittext);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String text = edittext.getText().toString().trim();
+                if (text.equals("")) {
+                    edittext.setError(getString(R.string.name_empty));
+                } else if (!RegisterActivity.isAsciiPrintable(text)) {
+                    edittext.setError(getString(R.string.name_not_ascii));
+                } else {
+                    db.child("name").setValue(text)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(HomeActivity.this, "Success, Refresh to see your new name!", Toast.LENGTH_SHORT)
+                                            .show();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(HomeActivity.this, "ERROR: ".concat(e.getMessage()), Toast.LENGTH_SHORT)
+                                            .show();
+                                }
+                            });
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.dismiss();
+            }
+        });
+
+        alert.show();
     }
 
     @Override
