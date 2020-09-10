@@ -73,7 +73,7 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
                     project_name = snapshot.child("name").getValue(String.class);
                     project_author = snapshot.child("author").getValue(String.class);
 
-                    if (!snapshot.child("open").getValue(Boolean.class)) {
+                    if (snapshot.child("open").getValue(Boolean.class)) {
                         // Public project, clone
                         MaterialButton clone = findViewById(R.id.view_clone_button);
                         clone.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +82,9 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
                                 cloneProject();
                             }
                         });
+                    } else {
+                        MaterialButton clone = findViewById(R.id.view_clone_button);
+                        clone.setEnabled(false);
                     }
 
                     if (snapshot.child("author").getValue(String.class).equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
@@ -142,6 +145,6 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
     }
 
     private void deleteProject() {
-
+        Toast.makeText(this, "delete unfinished", Toast.LENGTH_LONG).show();
     }
 }
