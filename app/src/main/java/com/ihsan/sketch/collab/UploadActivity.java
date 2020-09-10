@@ -152,19 +152,6 @@ public class UploadActivity extends AppCompatActivity {
                     uploadProgress.setProgress(60);
 
                     status.setText("Saving data to object");
-                    SketchwareProjectData swdata = new SketchwareProjectData(file_, view_, resource, logic_, library, project);
-
-                    // Empty the variables to reduce memory usage
-                    file_ = null;
-                    bArr = null;
-                    view_ = null;
-                    bArr1 = null;
-                    resource = null;
-                    bArr2 = null;
-                    logic_ = null;
-                    bArr3 = null;
-                    library = null;
-                    bArr4 = null;
 
                     status.setText("Starting to upload..");
                     // Start uploading
@@ -186,12 +173,12 @@ public class UploadActivity extends AppCompatActivity {
                     uploadProgress.setProgress(80);
 
                     status.setText("Getting project data");
-                    snapshot.put("file", swdata.getEncryptedFile());
-                    snapshot.put("view", swdata.getEncryptedView_());
-                    snapshot.put("resource", swdata.getEncryptedResource());
-                    snapshot.put("logic", swdata.getEncryptedLogic());
-                    snapshot.put("library", swdata.getEncryptedLibrary());
-                    snapshot.put("project", Util.base64encrypt(project_));
+                    snapshot.put("file", Util.base64encrypt(Util.decrypt(file_)));
+                    snapshot.put("view", Util.base64encrypt(Util.decrypt(view_)));
+                    snapshot.put("resource", Util.base64encrypt(Util.decrypt(resource)));
+                    snapshot.put("logic", Util.base64encrypt(Util.decrypt(logic_)));
+                    snapshot.put("library", Util.base64encrypt(Util.decrypt(library)));
+                    snapshot.put("project", Util.base64encrypt(Util.decrypt(project_)));
                     data.put("snapshot", snapshot);
                     status.setText("Updating database");
                     uploadProgress.setProgress(90);

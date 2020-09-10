@@ -7,6 +7,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 
@@ -104,15 +106,16 @@ public class Util {
         return "ERROR WHILE DECRYPTING";
     }
 
-    public static String encrypt(String str) {
+    @Nullable
+    public static byte[] encrypt(String str) {
         try {
             Cipher instance = Cipher.getInstance("AES/CBC/PKCS5Padding");
             byte[] bytes = "sketchwaresecure".getBytes();
             instance.init(1, new SecretKeySpec(bytes, "AES"), new IvParameterSpec(bytes));
-            byte[] doFinal = instance.doFinal(str.getBytes());
-            return new String(doFinal);
+            return instance.doFinal(str.getBytes());
+            // return new String(doFinal);
         } catch (Exception ignored) { }
-        return "ERROR WHILE ENCRYPTING";
+        return null;
     }
 
     public static ArrayList<String> listDir(String str) {

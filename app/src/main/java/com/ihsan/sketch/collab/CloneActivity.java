@@ -74,20 +74,20 @@ public class CloneActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                String file =       Util.base64decrypt(snapshot.child("snapshot").child("file").getValue(String.class));
-                String view =       Util.base64decrypt(snapshot.child("snapshot").child("view").getValue(String.class));
-                String resource =   Util.base64decrypt(snapshot.child("snapshot").child("resource").getValue(String.class));
-                String logic =      Util.base64decrypt(snapshot.child("snapshot").child("logic").getValue(String.class));
-                String library =    Util.base64decrypt(snapshot.child("snapshot").child("library").getValue(String.class));
-                String project =    Util.base64decrypt(snapshot.child("snapshot").child("project").getValue(String.class));
+                byte[] file =       Util.encrypt(Util.base64decrypt(snapshot.child("snapshot").child("file").getValue(String.class)));
+                byte[] view =       Util.encrypt(Util.base64decrypt(snapshot.child("snapshot").child("view").getValue(String.class)));
+                byte[] resource =   Util.encrypt(Util.base64decrypt(snapshot.child("snapshot").child("resource").getValue(String.class)));
+                byte[] logic =      Util.encrypt(Util.base64decrypt(snapshot.child("snapshot").child("logic").getValue(String.class)));
+                byte[] library =    Util.encrypt(Util.base64decrypt(snapshot.child("snapshot").child("library").getValue(String.class)));
+                byte[] project =    Util.encrypt(Util.base64decrypt(snapshot.child("snapshot").child("project").getValue(String.class)));
                 
                 String listing_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/";
                 String data_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/";
 
                 // Temporary
-                int local_projects_length = Util.listDir(listing_path).size();
+                int local_projects_length = Integer.parseInt(Util.listDir(listing_path).get(Util.listDir(listing_path).size() - 1));
                 // Get available folder
-                int available_id = local_projects_length + 600;
+                int available_id = local_projects_length + 1;
                 listing_path += String.valueOf(available_id) + "/";
                 data_path += String.valueOf(available_id) + "/";
 
@@ -110,7 +110,7 @@ public class CloneActivity extends AppCompatActivity {
         });
     }
 
-    private void writeToFile(String path, String filename, String data) throws IOException {
+    private void writeToFile(String path, String filename, byte[] data) throws IOException {
         File file = new File(path, filename);
         if (!file.exists()) {
             boolean newFile = file.createNewFile();
@@ -121,7 +121,7 @@ public class CloneActivity extends AppCompatActivity {
         }
         FileOutputStream stream = new FileOutputStream(file);
         try {
-            stream.write(data.getBytes());
+            stream.write(data);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
