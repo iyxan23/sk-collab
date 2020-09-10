@@ -19,6 +19,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -79,7 +82,6 @@ public class CloneActivity extends AppCompatActivity {
                 byte[] resource =   Util.encrypt(Util.base64decrypt(snapshot.child("snapshot").child("resource").getValue(String.class)));
                 byte[] logic =      Util.encrypt(Util.base64decrypt(snapshot.child("snapshot").child("logic").getValue(String.class)));
                 byte[] library =    Util.encrypt(Util.base64decrypt(snapshot.child("snapshot").child("library").getValue(String.class)));
-                byte[] project =    Util.encrypt(Util.base64decrypt(snapshot.child("snapshot").child("project").getValue(String.class)));
                 
                 String listing_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/";
                 String data_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/";
@@ -90,6 +92,16 @@ public class CloneActivity extends AppCompatActivity {
                 int available_id = local_projects_length + 1;
                 listing_path += String.valueOf(available_id) + "/";
                 data_path += String.valueOf(available_id) + "/";
+
+                String project_string = Util.base64decrypt(snapshot.child("snapshot").child("project").getValue(String.class));
+                JSONObject project_json = null;
+                try {
+                    project_json = new JSONObject(project_string);
+                    project_json.put("sc_id", available_id);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                byte[] project = Util.encrypt(project_json.toString());
 
                 try {
                     writeToFile(listing_path, "project", project);
