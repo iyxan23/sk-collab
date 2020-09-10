@@ -59,6 +59,7 @@ public class RecyclerViewSketchwareProjectsAdapter extends RecyclerView.Adapter<
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(activity, UploadActivity.class);
+                i.putExtra("swproj_index", position);
                 ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, holder.upload, "upload_transition");
                 activity.startActivity(i, optionsCompat.toBundle());
             }

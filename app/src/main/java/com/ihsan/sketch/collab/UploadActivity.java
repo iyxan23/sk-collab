@@ -66,6 +66,9 @@ public class UploadActivity extends AppCompatActivity {
 
         ArrayList<SketchwareProject> swprojs = Util.getSketchwareProjects();
 
+        // Cek kalo activity sebelumnya nunjuk ke projek
+        Intent i = getIntent();
+
         if (swprojs.size() == 0) {
             upload.setEnabled(false);
             private_switch.setEnabled(false);
@@ -75,6 +78,7 @@ public class UploadActivity extends AppCompatActivity {
             ArrayAdapter<SketchwareProject> spinnerArrayAdapter = new ArrayAdapter<>(this,
                     android.R.layout.simple_spinner_dropdown_item, swprojs);
             spinner.setAdapter(spinnerArrayAdapter);
+            spinner.setSelection(i.getIntExtra("swproj_index", 0));
         }
 
         cancel.setOnClickListener(new View.OnClickListener() {
