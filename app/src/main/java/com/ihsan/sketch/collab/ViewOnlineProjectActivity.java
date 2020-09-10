@@ -82,9 +82,6 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
                                 cloneProject();
                             }
                         });
-                    } else {
-                        MaterialButton clone = findViewById(R.id.view_clone_button);
-                        clone.setEnabled(false);
                     }
 
                     if (snapshot.child("author").getValue(String.class).equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {

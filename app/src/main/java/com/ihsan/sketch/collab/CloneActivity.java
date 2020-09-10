@@ -115,6 +115,7 @@ public class CloneActivity extends AppCompatActivity {
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(), "ERROR WHILE CLONING: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
+                Toast.makeText(getApplicationContext(), "Success cloning", Toast.LENGTH_LONG).show();
             }
 
             @Override
