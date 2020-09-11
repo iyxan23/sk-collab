@@ -105,13 +105,13 @@ public class UploadActivity extends AppCompatActivity {
                 upload.setEnabled(false);
                 cancel.setEnabled(false);
 
-                try {
-                    status.setText("Getting file path..");
-                    SketchwareProject project = (SketchwareProject) spinner.getSelectedItem();
-                    String data_path = Environment.getExternalStorageDirectory() + "/.sketchware/data/" + project.id + "/";
-                    Log.e("UplaodActivity", "onClick: " + data_path);
-                    uploadProgress.setProgress(10);
+                status.setText("Getting file path..");
+                SketchwareProject project = (SketchwareProject) spinner.getSelectedItem();
+                String data_path = Environment.getExternalStorageDirectory() + "/.sketchware/data/" + project.id + "/";
+                Log.d("UploadActivity", "onClick: " + data_path);
+                uploadProgress.setProgress(10);
 
+                    /*
                     status.setText("Getting file");
                     RandomAccessFile file = null;
                     file = new RandomAccessFile(data_path + "file", "r");
@@ -154,60 +154,56 @@ public class UploadActivity extends AppCompatActivity {
                     file.readFully(bArr5);
                     String project_ = new String(bArr5);
                     uploadProgress.setProgress(60);
+                     */
 
-                    status.setText("Saving data to object");
+                status.setText("Saving data to object");
 
-                    status.setText("Starting to upload..");
-                    // Start uploading
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    String uploadLocation = isPublic ? "/projects/" : "/userdata/" + user.getUid() + "/projects/";
-                    DatabaseReference ref = database.getReference(uploadLocation);
-                    String key = ref.push().getKey();
-                    assert key != null;
-                    uploadProgress.setProgress(70);
+                status.setText("Starting to upload..");
+                // Start uploading
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                String uploadLocation = isPublic ? "/projects/" : "/userdata/" + user.getUid() + "/projects/";
+                DatabaseReference ref = database.getReference(uploadLocation);
+                String key = ref.push().getKey();
+                assert key != null;
+                uploadProgress.setProgress(70);
 
-                    status.setText("Placing data to the specified location");
-                    HashMap<String, Object> data = new HashMap<>();
-                    HashMap<String, Object> snapshot = new HashMap<>();
-                    data.put("author", user.getUid());
-                    data.put("name", project.name);
-                    data.put("version", Double.valueOf(project.version));
-                    data.put("open", isOpenSource);
-                    data.put("desc", desc);
-                    uploadProgress.setProgress(80);
+                status.setText("Placing data to the specified location");
+                HashMap<String, Object> data = new HashMap<>();
+                HashMap<String, Object> snapshot = new HashMap<>();
+                data.put("author", user.getUid());
+                data.put("name", project.name);
+                data.put("version", Double.valueOf(project.version));
+                data.put("open", isOpenSource);
+                data.put("desc", desc);
+                uploadProgress.setProgress(80);
 
-                    status.setText("Getting project data");
-                    snapshot.put("file", Util.base64encrypt(Util.decrypt(file_)));
-                    snapshot.put("view", Util.base64encrypt(Util.decrypt(view_)));
-                    snapshot.put("resource", Util.base64encrypt(Util.decrypt(resource)));
-                    snapshot.put("logic", Util.base64encrypt(Util.decrypt(logic_)));
-                    snapshot.put("library", Util.base64encrypt(Util.decrypt(library)));
-                    snapshot.put("project", Util.base64encrypt(Util.decrypt(project_)));
-                    data.put("snapshot", snapshot);
-                    status.setText("Updating database");
-                    uploadProgress.setProgress(90);
-                    ref.child(key).updateChildren(data)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    uploadProgress.setProgress(100);
-                                    status.setText("Success!");
-                                    success();
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    status.setText("Error occurred");
-                                    dieError(e.getMessage());
-                                    uploadProgress.setProgress(0);
-                                }
-                            });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.e("UPLOAD", "onClick: " + e.toString());
-                    dieError(e.getMessage());
-                }
+                status.setText("Getting project data");
+                snapshot.put("file", Util.decrypt(data_path + "file"));
+                snapshot.put("view", Util.decrypt(data_path + "view"));
+                snapshot.put("resource", Util.decrypt(data_path + "resource"));
+                snapshot.put("logic", Util.decrypt(data_path + "logic"));
+                snapshot.put("library", Util.decrypt(data_path + "library"));
+                snapshot.put("project", Util.decrypt(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/" + project.id + "/project"));
+                data.put("snapshot", snapshot);
+                status.setText("Updating database");
+                uploadProgress.setProgress(90);
+                ref.child(key).updateChildren(data)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                uploadProgress.setProgress(100);
+                                status.setText("Success!");
+                                success();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                status.setText("Error occurred");
+                                dieError(e.getMessage());
+                                uploadProgress.setProgress(0);
+                            }
+                        });
             }
         });
     }
