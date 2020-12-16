@@ -102,20 +102,27 @@ public class Util {
             byte[] bArr = new byte[((int) randomAccessFile.length())];
             randomAccessFile.readFully(bArr);
             return new String(instance.doFinal(bArr));
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            Log.e("Util", "Error while decrypting, at path: " + path);
+            e.printStackTrace();
+        }
         return "ERROR WHILE DECRYPTING";
     }
 
-    @Nullable
-    public static byte[] encrypt(String str) {
+    public static void encrypt(String str, String path) {
         try {
             Cipher instance = Cipher.getInstance("AES/CBC/PKCS5Padding");
             byte[] bytes = "sketchwaresecure".getBytes();
             instance.init(1, new SecretKeySpec(bytes, "AES"), new IvParameterSpec(bytes));
-            return instance.doFinal(str.getBytes());
+            byte[] doFinal = instance.doFinal(str.getBytes());
+            final RandomAccessFile randomAccessFile = new RandomAccessFile(path, "rw");
+            randomAccessFile.setLength(0L);
+            randomAccessFile.write(doFinal);
             // return new String(doFinal);
-        } catch (Exception ignored) { }
-        return null;
+        } catch (Exception e) {
+            Log.e("Util", "Error while encrypting: " + str + ", at path: " + path);
+            e.printStackTrace();
+        }
     }
 
     public static ArrayList<String> listDir(String str) {
