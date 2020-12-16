@@ -109,7 +109,7 @@ public class Util {
         return "ERROR WHILE DECRYPTING";
     }
 
-    public static void encrypt(String str, String path) {
+    public static void encrypt(String path, String str) {
         try {
             Cipher instance = Cipher.getInstance("AES/CBC/PKCS5Padding");
             byte[] bytes = "sketchwaresecure".getBytes();

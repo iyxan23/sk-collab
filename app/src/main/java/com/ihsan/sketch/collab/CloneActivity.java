@@ -77,11 +77,19 @@ public class CloneActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
+                /*
                 byte[] file =       Util.encrypt(Util.base64decrypt(snapshot.child("snapshot").child("file").getValue(String.class)));
                 byte[] view =       Util.encrypt(Util.base64decrypt(snapshot.child("snapshot").child("view").getValue(String.class)));
                 byte[] resource =   Util.encrypt(Util.base64decrypt(snapshot.child("snapshot").child("resource").getValue(String.class)));
                 byte[] logic =      Util.encrypt(Util.base64decrypt(snapshot.child("snapshot").child("logic").getValue(String.class)));
                 byte[] library =    Util.encrypt(Util.base64decrypt(snapshot.child("snapshot").child("library").getValue(String.class)));
+                 */
+
+                String file =       Util.base64decrypt(snapshot.child("snapshot").child("file").getValue(String.class));
+                String view =       Util.base64decrypt(snapshot.child("snapshot").child("view").getValue(String.class));
+                String resource =   Util.base64decrypt(snapshot.child("snapshot").child("resource").getValue(String.class));
+                String logic =      Util.base64decrypt(snapshot.child("snapshot").child("logic").getValue(String.class));
+                String library =    Util.base64decrypt(snapshot.child("snapshot").child("library").getValue(String.class));
                 
                 String listing_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/";
                 String data_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/";
@@ -90,8 +98,8 @@ public class CloneActivity extends AppCompatActivity {
                 int local_projects_length = Integer.parseInt(Util.listDir(listing_path).get(Util.listDir(listing_path).size() - 1));
                 // Get available folder
                 int available_id = local_projects_length + 1;
-                listing_path += String.valueOf(available_id) + "/";
-                data_path += String.valueOf(available_id) + "/";
+                listing_path += available_id + "/";
+                data_path += available_id + "/";
 
                 String project_string = Util.base64decrypt(snapshot.child("snapshot").child("project").getValue(String.class));
                 JSONObject project_json = null;
@@ -101,48 +109,32 @@ public class CloneActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                byte[] project = Util.encrypt(project_json.toString());
 
-                try {
-                    writeToFile(listing_path, "project", project);
+                /*
+                writeToFile(listing_path, "project", project);
 
-                    writeToFile(data_path, "file", file);
-                    writeToFile(data_path, "view", view);
-                    writeToFile(data_path, "resource", resource);
-                    writeToFile(data_path, "logic", logic);
-                    writeToFile(data_path, "library", library);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "ERROR WHILE CLONING: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-                Toast.makeText(getApplicationContext(), "Success cloning", Toast.LENGTH_LONG).show();
+                writeToFile(data_path, "file", file);
+                writeToFile(data_path, "view", view);
+                writeToFile(data_path, "resource", resource);
+                writeToFile(data_path, "logic", logic);
+                writeToFile(data_path, "library", library);
+                */
+
+                Util.encrypt(listing_path + "project", project_json.toString());
+
+                Util.encrypt(data_path +"file", file);
+                Util.encrypt(data_path + "view", view);
+                Util.encrypt(data_path + "resource", resource);
+                Util.encrypt(data_path + "logic", logic);
+                Util.encrypt(data_path + "library", library);
+
+                Toast.makeText(getApplicationContext(), "Clone Successful", Toast.LENGTH_LONG).show();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) { }
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(CloneActivity.this, "Error while cloning, " + error.getMessage(), Toast.LENGTH_LONG).show();
+            }
         });
-    }
-
-    private void writeToFile(String path, String filename, byte[] data) throws IOException {
-        File file = new File(path, filename);
-        if (!file.exists()) {
-            boolean newFile = file.createNewFile();
-            if (!newFile) {
-                // Error
-                throw new IOException("Cannot create file");
-            }
-        }
-        FileOutputStream stream = new FileOutputStream(file);
-        try {
-            stream.write(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                stream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }
