@@ -21,7 +21,7 @@
 
     <ProgressBar
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:id="@+id/progressBar"
+        android:id="@+id/progressBar_check"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -41,9 +41,9 @@
         android:text="Checking if server is online..."
         android:textColor="#FFFFFF"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/progressBar"
-        app:layout_constraintEnd_toEndOf="@+id/progressBar"
-        app:layout_constraintStart_toStartOf="@+id/progressBar" />
+        app:layout_constraintBottom_toTopOf="@+id/progressBar_check"
+        app:layout_constraintEnd_toEndOf="@+id/progressBar_check"
+        app:layout_constraintStart_toStartOf="@+id/progressBar_check" />
 
     <ImageView
         android:id="@+id/imageView2"
