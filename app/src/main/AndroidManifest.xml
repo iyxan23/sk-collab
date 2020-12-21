@@ -14,7 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SketchCollab">
         <!-- Checks if the server is open -->
-        <activity android:name=".CheckActivity">
+        <activity
+            android:name=".CheckActivity"
+            android:theme="@style/Theme.SketchCollab.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,10 +25,14 @@
         </activity>
 
         <!-- Basically login -->
-        <activity android:name=".LoginActivity"/>
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/Theme.SketchCollab.NoActionBar"/>
 
         <!-- The Homepage -->
-        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/Theme.SketchCollab.NoActionBar"/>
     </application>
 
 </manifest>
