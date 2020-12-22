@@ -1,4 +1,4 @@
-<img src="https://github.com/Iyxan23/sk-collab/blob/main/sk-collab-icon-v2.png" width="250" height="250"/>
+<img src="https://github.com/Iyxan23/sk-collab/blob/main/sk-collab-icon-v2.png" width="150" height="150"/>
 
 Release Version: Unreleased (Still in development stage), Development version: Unknown (Project is unfinished)
 
