@@ -20,3 +20,7 @@ SketchCollab break these limits, SketchCollab allows you to edit the project at 
 <br/>
 
 Note: I do not invent this method, this is basically a version control for sketchware projects / apps
+
+## Branches
+ - main: Latest tested and stable branch
+ - dev: Development branch, unstable, unchecked, and untested
