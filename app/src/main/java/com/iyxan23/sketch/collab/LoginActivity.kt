@@ -14,8 +14,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.transition.TransitionManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class LoginActivity : AppCompatActivity() {
 
@@ -82,22 +85,52 @@ class LoginActivity : AppCompatActivity() {
 
             if (status == 0) {
                 // Great, we can login / register now
-                auth.signInWithEmailAndPassword(
-                        emailEditText.text.toString(),
-                        passwordEditText.text.toString()
-                ).addOnSuccessListener {
-                    // Success! redirect user to the MainActivity
-                    startActivity(mainActivityIntent);
-                    finishActivity(0);
+                if (isRegister) {
 
-                }.addOnFailureListener {
-                    // Something went wrong!
-                    // Show a snackbar
-                    Snackbar.make(findViewById(R.id.root_login), "Something went wrong!", Snackbar.LENGTH_LONG)
-                            .setBackgroundTint(resources.getColor(R.color.colorAccent))  // Red color
-                            .show()
+                    // Register user's account
+                    auth.createUserWithEmailAndPassword(
+                            emailEditText.text.toString().trim(),
+                            passwordEditText.text.toString()
+                    ).addOnSuccessListener {
+                        // Get the firebase database
+                        val database = FirebaseDatabase.getInstance()
+                        val usersRef = database.getReference("/userdata/")
+
+                        // Build the user's data
+                        val userdata = HashMap<String, Any>()
+                        userdata["name"] = usernameEditText.text.toString()
+                        userdata["uid"] = it.user!!.uid
+
+                        // Add the user in the database
+                        usersRef.setValue(userdata)
+
+                        // Done! Redirect user to MainActivity
+                        startActivity(mainActivityIntent)
+
+                    }.addOnFailureListener {
+                        // Something went wrong..
+                        Snackbar.make(findViewById<ConstraintLayout>(R.id.root_login), "An Error Occured: " + it.message, Snackbar.LENGTH_LONG)
+                                .setBackgroundTint(resources.getColor(R.color.colorAccent))
+                                .show()
+                    }
+                } else {
+                    // Login
+                    auth.signInWithEmailAndPassword(
+                            emailEditText.text.toString(),
+                            passwordEditText.text.toString()
+                    ).addOnSuccessListener {
+                        // Success! redirect user to the MainActivity
+                        startActivity(mainActivityIntent);
+                        finishActivity(0);
+
+                    }.addOnFailureListener {
+                        // Something went wrong!
+                        // Show a snackbar
+                        Snackbar.make(findViewById(R.id.root_login), "Something went wrong!", Snackbar.LENGTH_LONG)
+                                .setBackgroundTint(resources.getColor(R.color.colorAccent))  // Red color
+                                .show()
+                    }
                 }
-
             } else {
                 // Something doesn't seem right
                 if (status and PASSWORD_LESS_THAN_6 != 0)
@@ -134,24 +167,53 @@ class LoginActivity : AppCompatActivity() {
         val loginText: TextView = findViewById(R.id.login_text)
         val registerText: TextView = findViewById(R.id.register_text)
 
+        // Other stuff
+        val rootLogin       : ConstraintLayout = findViewById(R.id.root_login)
         val usernameEditText: EditText = findViewById(R.id.username_login_text)
 
+        val loginButton: Button = findViewById(R.id.login_button)
+
         if (isRegister) {
+            // Email EditText animation
+            TransitionManager.beginDelayedTransition(rootLogin)
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(rootLogin)
+            constraintSet.connect(R.id.email_login, ConstraintSet.TOP, R.id.username_login, ConstraintSet.BOTTOM)
+            constraintSet.applyTo(rootLogin)
+
+            // Add / Display the username edit text, because we're registering
             usernameEditText.visibility = View.VISIBLE
 
+            // Change the color and sizes of the "tabs"
             registerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
             registerText.setTextColor(0xFFFFFF);
 
             loginText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
             loginText.setTextColor(0x747474);
+
+            // Change the text on the login button
+            loginButton.text = "Register"
+
         } else {
+            // Email EditText animation
+            TransitionManager.beginDelayedTransition(rootLogin)
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(rootLogin)
+            constraintSet.connect(R.id.email_login, ConstraintSet.TOP, R.id.app_bar_main, ConstraintSet.BOTTOM)
+            constraintSet.applyTo(rootLogin)
+
+            // Remove the username edit text, because we're logging in
             usernameEditText.visibility = View.GONE
 
+            // Change the color and sizes of the "tabs"
             loginText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
             loginText.setTextColor(0xFFFFFF);
 
             registerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
             registerText.setTextColor(0x747474);
+
+            // Change the text on the login button
+            loginButton.text = "Login"
         }
     }
 
