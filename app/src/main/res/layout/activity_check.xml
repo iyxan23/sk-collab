@@ -15,9 +15,9 @@
         android:text="SketchCollab"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/imageView2"
-        app:layout_constraintStart_toStartOf="@+id/imageView2"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        app:layout_constraintEnd_toEndOf="@+id/logo_green_part_check"
+        app:layout_constraintStart_toStartOf="@+id/logo_green_part_check"
+        app:layout_constraintTop_toBottomOf="@+id/logo_green_part_check" />
 
     <ProgressBar
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -46,7 +46,7 @@
         app:layout_constraintStart_toStartOf="@+id/progressBar_check" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/logo_green_part_check"
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -56,7 +56,7 @@
         app:srcCompat="@drawable/logo_green" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/logo_red_part_check"
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -66,7 +66,7 @@
         app:srcCompat="@drawable/log_red" />
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/logo_branch_part_check"
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
