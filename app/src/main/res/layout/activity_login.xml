@@ -55,6 +55,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:textColorHint="#A5A5A5"
+        android:visibility="gone"
         app:boxStrokeErrorColor="@color/colorAccent"
         app:errorIconTint="@color/colorAccent"
         app:errorTextColor="@color/colorAccent"
@@ -71,7 +72,6 @@
             android:fontFamily="@font/sourcecodepro_regular"
             android:hint="Username"
             android:inputType="textPersonName"
-            android:text="Iyxan23"
             android:textColor="#FFFFFF" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -90,7 +90,7 @@
         app:hintEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username_login">
+        app:layout_constraintTop_toBottomOf="@+id/app_bar_main">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/email_login_text"
@@ -100,7 +100,6 @@
             android:fontFamily="@font/sourcecodepro_regular"
             android:hint="Email"
             android:inputType="textEmailAddress"
-            android:text="hmm@test.com"
             android:textColor="#FFFFFF" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -129,7 +128,6 @@
             android:fontFamily="@font/sourcecodepro_regular"
             android:hint="Password"
             android:inputType="textPassword"
-            android:text="hmm"
             android:textColor="#FFFFFF" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -148,4 +146,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/errorText_login"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/colorAccent"
+        android:fontFamily="@font/sourcecodepro_regular"
+        app:layout_constraintBottom_toTopOf="@+id/login_button"
+        app:layout_constraintEnd_toEndOf="@+id/login_button"
+        app:layout_constraintStart_toStartOf="@+id/login_button" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,24 +1,20 @@
 package com.iyxan23.sketch.collab
 
-import android.animation.ObjectAnimator
 import android.content.Intent
-import android.icu.number.NumberFormatter
-import android.opengl.Visibility
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.util.Property
 import android.util.TypedValue
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+
 
 class LoginActivity : AppCompatActivity() {
 
@@ -79,6 +75,11 @@ class LoginActivity : AppCompatActivity() {
         val passwordEditText: EditText = findViewById(R.id.password_login_text)
         val usernameEditText: EditText = findViewById(R.id.username_login_text)
 
+        val errorText: TextView = findViewById(R.id.errorText_login)
+
+        // Focus on Email EditText
+        emailEditText.requestFocus()
+
         loginButton.setOnClickListener {
             // Check if the inputs are filled
             val status: Int = checkFields()
@@ -109,9 +110,7 @@ class LoginActivity : AppCompatActivity() {
 
                     }.addOnFailureListener {
                         // Something went wrong..
-                        Snackbar.make(findViewById<ConstraintLayout>(R.id.root_login), "An Error Occured: " + it.message, Snackbar.LENGTH_LONG)
-                                .setBackgroundTint(resources.getColor(R.color.colorAccent))
-                                .show()
+                        errorText.text = it.message
                     }
                 } else {
                     // Login
@@ -126,35 +125,33 @@ class LoginActivity : AppCompatActivity() {
                     }.addOnFailureListener {
                         // Something went wrong!
                         // Show a snackbar
-                        Snackbar.make(findViewById(R.id.root_login), it.message.toString(), Snackbar.LENGTH_LONG)
-                                .setBackgroundTint(resources.getColor(R.color.colorAccent))  // Red color
-                                .show()
+                        errorText.text = it.message
                     }
                 }
             } else {
                 // Something doesn't seem right
                 if (status and PASSWORD_LESS_THAN_6 != 0)
                     // Password is less than 6 characters
-                    emailEditText.setError("Password cannot be less than 6 characters")
+                    errorText.text = "Password cannot be less than 6 characters"
 
                 if (status and PASSWORD_EMPTY != 0)
                     // Password is empty
-                    passwordEditText.setError("Password cannot be empty")
+                    errorText.text = "Password cannot be empty"
 
                 if (status and USERNAME_INVALID != 0 && isRegister)
-                    usernameEditText.setError("Username can only contain A-Z 0-9 -_.")
+                    errorText.text = "Username can only contain A-Z 0-9 -_."
 
                 if (status and USERNAME_EMPTY != 0 && isRegister)
                     // Username is empty
-                    usernameEditText.setError("Username cannot be empty")
+                    errorText.text = "Username cannot be empty"
 
                 if (status and EMAIL_INVALID != 0)
                     // Email is Invalid
-                    emailEditText.setError("Email is invalid")
+                    errorText.text = "Email is invalid"
 
                 if (status and EMAIL_EMPTY != 0)
                     // Email is empty
-                    emailEditText.setError("Email cannot be empty")
+                    errorText.text = "Email cannot be empty"
 
             }
         }
@@ -173,6 +170,9 @@ class LoginActivity : AppCompatActivity() {
 
         val loginButton: Button = findViewById(R.id.login_button)
 
+        val autoTransition = AutoTransition()
+        autoTransition.excludeChildren(R.id.app_bar_main, true)
+
         if (isRegister) {
             // Change the color and sizes of the "tabs"
             registerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
@@ -182,7 +182,7 @@ class LoginActivity : AppCompatActivity() {
             loginText.setTextColor(0x747474);
 
             // Email EditText animation
-            TransitionManager.beginDelayedTransition(rootLogin)
+            TransitionManager.beginDelayedTransition(rootLogin, autoTransition)
             val constraintSet = ConstraintSet()
             constraintSet.clone(rootLogin)
             constraintSet.connect(R.id.email_login, ConstraintSet.TOP, R.id.username_login, ConstraintSet.BOTTOM)
@@ -203,7 +203,7 @@ class LoginActivity : AppCompatActivity() {
             registerText.setTextColor(0x747474);
 
             // Email EditText animation
-            TransitionManager.beginDelayedTransition(rootLogin)
+            TransitionManager.beginDelayedTransition(rootLogin, autoTransition)
             val constraintSet = ConstraintSet()
             constraintSet.clone(rootLogin)
             constraintSet.connect(R.id.email_login, ConstraintSet.TOP, R.id.app_bar_main, ConstraintSet.BOTTOM)
