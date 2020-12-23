@@ -170,19 +170,18 @@ class LoginActivity : AppCompatActivity() {
 
         val loginButton: Button = findViewById(R.id.login_button)
 
-        val autoTransition = AutoTransition()
-        autoTransition.excludeChildren(R.id.app_bar_main, true)
-
         if (isRegister) {
             // Change the color and sizes of the "tabs"
+            /*
             registerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
             registerText.setTextColor(0xFFFFFF);
 
             loginText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
             loginText.setTextColor(0x747474);
+            */
 
             // Email EditText animation
-            TransitionManager.beginDelayedTransition(rootLogin, autoTransition)
+            TransitionManager.beginDelayedTransition(rootLogin)
             val constraintSet = ConstraintSet()
             constraintSet.clone(rootLogin)
             constraintSet.connect(R.id.email_login, ConstraintSet.TOP, R.id.username_login, ConstraintSet.BOTTOM)
@@ -196,21 +195,23 @@ class LoginActivity : AppCompatActivity() {
 
         } else {
             // Change the color and sizes of the "tabs"
+            /*
             loginText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
             loginText.setTextColor(0xFFFFFF);
 
             registerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
             registerText.setTextColor(0x747474);
+            */
 
             // Email EditText animation
-            TransitionManager.beginDelayedTransition(rootLogin, autoTransition)
+            TransitionManager.beginDelayedTransition(rootLogin)
             val constraintSet = ConstraintSet()
             constraintSet.clone(rootLogin)
             constraintSet.connect(R.id.email_login, ConstraintSet.TOP, R.id.app_bar_main, ConstraintSet.BOTTOM)
             constraintSet.applyTo(rootLogin)
 
             // Remove the username edit text, because we're logging in
-            usernameEditText.visibility = View.GONE
+            usernameEditText.visibility = View.INVISIBLE
 
             // Change the text on the login button
             loginButton.text = "Login"
