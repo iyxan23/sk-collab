@@ -65,11 +65,14 @@ class CheckActivity : AppCompatActivity() {
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
 
+                loading_text.text = "Information recieved"
+
                 // Save it into a variable
                 val isOpen: Int? = snapshot.child("open").getValue(Int::class.java)
 
                 // Check if it is 1 (open) or 0 (closed)
                 if (isOpen == 1) {
+                    loading_text.text = "Server is open, Redirecting to Login Page"
                     val intent = Intent(this@CheckActivity, LoginActivity::class.java)
                     startActivity(intent);
                 } else {

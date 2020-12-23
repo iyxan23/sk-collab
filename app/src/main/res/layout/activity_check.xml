@@ -20,8 +20,8 @@
         app:layout_constraintTop_toBottomOf="@+id/logo_green_part_check" />
 
     <ProgressBar
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:id="@+id/progressBar_check"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"

@@ -174,6 +174,13 @@ class LoginActivity : AppCompatActivity() {
         val loginButton: Button = findViewById(R.id.login_button)
 
         if (isRegister) {
+            // Change the color and sizes of the "tabs"
+            registerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
+            registerText.setTextColor(0xFFFFFF);
+
+            loginText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
+            loginText.setTextColor(0x747474);
+
             // Email EditText animation
             TransitionManager.beginDelayedTransition(rootLogin)
             val constraintSet = ConstraintSet()
@@ -184,17 +191,17 @@ class LoginActivity : AppCompatActivity() {
             // Add / Display the username edit text, because we're registering
             usernameEditText.visibility = View.VISIBLE
 
-            // Change the color and sizes of the "tabs"
-            registerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
-            registerText.setTextColor(0xFFFFFF);
-
-            loginText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
-            loginText.setTextColor(0x747474);
-
             // Change the text on the login button
             loginButton.text = "Register"
 
         } else {
+            // Change the color and sizes of the "tabs"
+            loginText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
+            loginText.setTextColor(0xFFFFFF);
+
+            registerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
+            registerText.setTextColor(0x747474);
+
             // Email EditText animation
             TransitionManager.beginDelayedTransition(rootLogin)
             val constraintSet = ConstraintSet()
@@ -204,13 +211,6 @@ class LoginActivity : AppCompatActivity() {
 
             // Remove the username edit text, because we're logging in
             usernameEditText.visibility = View.GONE
-
-            // Change the color and sizes of the "tabs"
-            loginText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
-            loginText.setTextColor(0xFFFFFF);
-
-            registerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
-            registerText.setTextColor(0x747474);
 
             // Change the text on the login button
             loginButton.text = "Login"
