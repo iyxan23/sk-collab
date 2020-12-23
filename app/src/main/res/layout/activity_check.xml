@@ -38,6 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:fontFamily="@font/sourcecodepro_regular"
         android:text="Checking if server is online..."
         android:textColor="#FFFFFF"
         android:textSize="12sp"
