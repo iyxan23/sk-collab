@@ -37,13 +37,13 @@ class CheckActivity : AppCompatActivity() {
             override fun onAnimationEnd(animation: Animation?) {
                 when (animationIndex) {
                     0 -> {
-                        logoRed.startAnimation(bump_animation)
-                    }
-                    1 -> {
                         logoGreen.startAnimation(bump_animation)
                     }
-                    2 -> {
+                    1 -> {
                         logoBranch.startAnimation(bump_animation)
+                    }
+                    2 -> {
+                        logoRed.startAnimation(bump_animation)
                     }
                 }
                 // Set animationIndex to be +1 if animationIndex is not 2, otherwise, set it to 0
@@ -52,6 +52,8 @@ class CheckActivity : AppCompatActivity() {
 
             override fun onAnimationRepeat(animation: Animation?) {}
         })
+
+        logoRed.startAnimation(bump_animation)
 
         // Initialize the Firebase Database
         val database: FirebaseDatabase = FirebaseDatabase.getInstance()
