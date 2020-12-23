@@ -126,7 +126,7 @@ class LoginActivity : AppCompatActivity() {
                     }.addOnFailureListener {
                         // Something went wrong!
                         // Show a snackbar
-                        Snackbar.make(findViewById(R.id.root_login), "Something went wrong!", Snackbar.LENGTH_LONG)
+                        Snackbar.make(findViewById(R.id.root_login), it.message.toString(), Snackbar.LENGTH_LONG)
                                 .setBackgroundTint(resources.getColor(R.color.colorAccent))  // Red color
                                 .show()
                     }
