@@ -75,6 +75,8 @@ class LoginActivity : AppCompatActivity() {
         val passwordEditText: EditText = findViewById(R.id.password_login_text)
         val usernameEditText: EditText = findViewById(R.id.username_login_text)
 
+        usernameEditText.visibility = View.GONE
+
         val errorText: TextView = findViewById(R.id.errorText_login)
 
         // Focus on Email EditText
@@ -207,11 +209,11 @@ class LoginActivity : AppCompatActivity() {
             TransitionManager.beginDelayedTransition(rootLogin)
             val constraintSet = ConstraintSet()
             constraintSet.clone(rootLogin)
-            constraintSet.connect(R.id.email_login, ConstraintSet.TOP, R.id.app_bar_main, ConstraintSet.BOTTOM)
+            constraintSet.connect(R.id.email_login, ConstraintSet.TOP, R.id.textView3, ConstraintSet.BOTTOM)
             constraintSet.applyTo(rootLogin)
 
             // Remove the username edit text, because we're logging in
-            usernameEditText.visibility = View.INVISIBLE
+            usernameEditText.visibility = View.GONE
 
             // Change the text on the login button
             loginButton.text = "Login"
