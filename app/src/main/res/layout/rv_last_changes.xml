@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorBackground">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/bg_card"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/project_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/roboto_medium"
+            android:text="Project Name"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/project_details"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="marquee"
+            android:fontFamily="@font/roboto_regular"
+            android:singleLine="true"
+            android:text="com.iyxan23.something (603)"
+            android:textColor="#B7B7B7"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/project_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/project_name" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/roboto_regular"
+            android:text="Logic"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toStartOf="@+id/project_name"
+            app:layout_constraintTop_toBottomOf="@+id/project_name" />
+
+        <ProgressBar
+            android:id="@+id/addition_logic"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:progress="40"
+            android:progressBackgroundTint="#383838"
+            android:progressTint="@color/colorPrimary"
+            app:layout_constraintEnd_toStartOf="@+id/change_summary_logic"
+            app:layout_constraintStart_toEndOf="@+id/textView10"
+            app:layout_constraintTop_toTopOf="@+id/textView10" />
+
+        <ProgressBar
+            android:id="@+id/deletion_logic"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:progress="20"
+            android:progressBackgroundTint="#383838"
+            android:progressTint="@color/colorAccent"
+            app:layout_constraintEnd_toStartOf="@+id/change_summary_logic"
+            app:layout_constraintStart_toEndOf="@+id/textView10"
+            app:layout_constraintTop_toTopOf="@+id/addition_logic" />
+
+        <TextView
+            android:id="@+id/change_summary_logic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/sourcecodepro_semibold"
+            android:text="+40 -10"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@+id/project_details"
+            app:layout_constraintTop_toBottomOf="@+id/project_details" />
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/roboto_regular"
+            android:text="View"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toStartOf="@+id/textView10"
+            app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
+        <ProgressBar
+            android:id="@+id/addition_view"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:progress="40"
+            android:progressBackgroundTint="#383838"
+            android:progressTint="@color/colorPrimary"
+            app:layout_constraintEnd_toStartOf="@+id/change_summary_logic"
+            app:layout_constraintStart_toEndOf="@+id/textView10"
+            app:layout_constraintTop_toTopOf="@+id/textView12" />
+
+        <ProgressBar
+            android:id="@+id/deletion_view"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:progress="20"
+            android:progressBackgroundTint="#383838"
+            android:progressTint="@color/colorAccent"
+            app:layout_constraintEnd_toStartOf="@+id/change_summary_logic"
+            app:layout_constraintStart_toEndOf="@+id/textView10"
+            app:layout_constraintTop_toTopOf="@+id/addition_view" />
+
+        <TextView
+            android:id="@+id/change_summary_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/sourcecodepro_semibold"
+            android:text="+40 -10"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@+id/project_details"
+            app:layout_constraintTop_toBottomOf="@+id/change_summary_logic" />
+
+        <TextView
+            android:id="@+id/details"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="Local branch is at commit e3adf6a"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@+id/push_rv"
+            app:layout_constraintStart_toStartOf="@+id/textView12"
+            app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/push_rv"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:text="Push"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/change_summary_view"
+            app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
