@@ -79,7 +79,7 @@ class LastChangedRecyclerViewAdapter(var data: ArrayList<HashMap<String, Any>>, 
             chg_summary_logic = itemView.findViewById(R.id.change_summary_logic)
             chg_summary_view = itemView.findViewById(R.id.change_summary_view)
             details = itemView.findViewById(R.id.details)
-            push_button = itemView.findViewById(R.id.push_rv)
+            push_button = itemView.findViewById(R.id.upload_button)
         }
     }
 }
