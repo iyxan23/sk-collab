@@ -1,7 +1,11 @@
 package com.iyxan23.sketch.collab
 
+import android.os.Environment
 import android.util.Base64
 import android.util.Log
+import com.iyxan23.sketch.collab.models.SketchwareProject
+import com.iyxan23.sketch.collab.models.SketchwareProjectMeta
+import org.json.JSONObject
 import java.io.File
 import java.io.RandomAccessFile
 import java.security.MessageDigest
@@ -10,6 +14,7 @@ import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
+import kotlin.collections.ArrayList
 
 object Util {
     var key2name = Hashtable<String, String>()
@@ -47,33 +52,53 @@ object Util {
         return String(data)
     }
 
-    /*
-    public static ArrayList<SketchwareProject> getSketchwareProjects() {
-        ArrayList<SketchwareProject> sketchwareProjects = new ArrayList<>();
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/";
-        Log.d(TAG, "getSketchwareProjects: " +path);
-        for (String pat: listDir(path)) {
-            try {
-                Log.d(TAG, "getSketchwareProjects: " + pat + "/project");
-                JSONObject project = new JSONObject(decrypt(pat + "/project"));
-                Log.d(TAG, "getSketchwareProjects PROJECT: " + decrypt(pat + "/project"));
-                Log.d(TAG, "getSketchwareProjects LOGIC: " + decrypt(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/" + project.getString("sc_id") + "/logic"));
-                Log.d(TAG, "getSketchwareProjects VIEW: " + decrypt(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/" + project.getString("sc_id") + "/view"));
-                Log.d(TAG, "getSketchwareProjects FILE: " + decrypt(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/" + project.getString("sc_id") + "/file"));
-                SketchwareProject sw_proj = new SketchwareProject(
-                        project.getString("my_app_name"),
-                        project.getString("sc_ver_name"),
-                        project.getString("my_sc_pkg_name"),
-                        project.getString("my_ws_name"),
-                        project.getString("sc_id"));
-                sketchwareProjects.add(0, sw_proj);
-            } catch (Exception e) {
-                Log.e(TAG, "getSketchwareProjects: " + e.toString());
-            }
+
+    fun getSketchwareProjects(): ArrayList<SketchwareProject> {
+        val sketchwareProjects: ArrayList<SketchwareProject> = ArrayList()
+
+        val path: String = Environment.getExternalStorageDirectory().absolutePath + "/.sketchware/mysc/list/"
+        val pathFiles: String = Environment.getExternalStorageDirectory().absolutePath + "/.sketchware/data/"
+
+        Log.d(TAG, "getSketchwareProjects: $path");
+        Log.d(TAG, "getSketchwareProjects: $pathFiles");
+
+        val projectData: ArrayList<String> = listDir(pathFiles)
+
+        for ((index, pat) in listDir(path).withIndex()) {
+            val project = JSONObject(decrypt("$pat/project"));
+
+            /*
+            Log.d(TAG, "getSketchwareProjects PROJECT: " + decrypt(pat + "/project"));
+            Log.d(TAG, "getSketchwareProjects LOGIC: " + decrypt(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/" + project.getString("sc_id") + "/logic"));
+            Log.d(TAG, "getSketchwareProjects VIEW: " + decrypt(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/" + project.getString("sc_id") + "/view"));
+            Log.d(TAG, "getSketchwareProjects FILE: " + decrypt(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/" + project.getString("sc_id") + "/file"));
+             */
+
+            val dataPath: String = projectData[index]
+            val swProjMeta = SketchwareProjectMeta(
+                    project.getString("my_app_name"),
+                    project.getString("sc_ver_name"),
+                    project.getString("my_sc_pkg_name"),
+                    project.getString("my_ws_name"),
+                    project.getString("sc_id").toInt()
+            )
+
+            val swProj = SketchwareProject(
+                    decrypt("$dataPath/project"),
+                    decrypt("$dataPath/logic"),
+                    decrypt("$dataPath/view"),
+                    decrypt("$dataPath/resource"),
+                    decrypt("$dataPath/library"),
+                    decrypt("$dataPath/file"),
+                    swProjMeta
+            )
+
+            sketchwareProjects.add(0, swProj)
+
         }
-        return sketchwareProjects;
+        return sketchwareProjects
     }
-     */
+
     fun decrypt(path: String): String {
         try {
             val instance = Cipher.getInstance("AES/CBC/PKCS5Padding")
