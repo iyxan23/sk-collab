@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             1 -> {
                 if (resultCode == PackageManager.PERMISSION_GRANTED) {
-                    TODO("Fetch sketchware projects")
+                    // TODO: Fetch sketchware projects
                 }
             }
         }
