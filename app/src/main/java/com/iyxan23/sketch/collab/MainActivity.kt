@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                Toast.makeText(this@MainActivity, "Error while fetching data: " + error.message, Toast.LENGTH_LONG).show()
             }
 
         })
@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                Toast.makeText(this@MainActivity, "Error while fetching data: " + error.message, Toast.LENGTH_LONG).show()
             }
         })
     }
