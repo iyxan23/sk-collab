@@ -3,14 +3,20 @@ package com.iyxan23.sketch.collab
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.transition.Transition
+import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.view.ViewCompat
+import androidx.transition.Fade
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import org.json.JSONObject
 import java.io.File
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,6 +26,11 @@ class MainActivity : AppCompatActivity() {
     val userProjects = ArrayList<Pair<String, JSONObject>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        // Get rid of the flasing white color while doing shared element transition
+        window.enterTransition = null
+        window.exitTransition = null
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -32,10 +43,10 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "We need storage permission to access your sketchware projects. SketchCollab can misbehave if you denied the permission.", Toast.LENGTH_LONG).show()
             // Reuest the permission(s)
             ActivityCompat.requestPermissions(this,
-                arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE),
-            100)
+                    arrayOf(
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    100)
         }
 
         val internalPath: String = filesDir.absolutePath
@@ -47,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         val userProjectsRef: DatabaseReference = database.getReference("/userprojects/" + auth.uid)
         val projectsRef: DatabaseReference = database.getReference("/projects/" + auth.uid)
 
-        projectsRef.addListenerForSingleValueEvent(object: ValueEventListener {
+        projectsRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (project in snapshot.children) {
                     if (project.child("author").value == auth.uid) {
@@ -69,7 +80,7 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-        userProjectsRef.addListenerForSingleValueEvent(object: ValueEventListener {
+        userProjectsRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (project in snapshot.children) {
                     val projectBase64: String = project.child("snapshot").child("project").value.toString()
@@ -87,6 +98,15 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this@MainActivity, "Error while fetching data: " + error.message, Toast.LENGTH_LONG).show()
             }
         })
+
+        // OnClicks
+        findViewById<View>(R.id.projects_main).setOnClickListener {
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    this@MainActivity, findViewById(R.id.imageView8), ViewCompat.getTransitionName(findViewById(R.id.imageView8))!!)
+
+            val intent = Intent(this@MainActivity, SketchwareProjectsListActivity::class.java)
+            startActivity(intent, options.toBundle())
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

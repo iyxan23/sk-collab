@@ -2,12 +2,18 @@ package com.iyxan23.sketch.collab
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.iyxan23.sketch.collab.adapters.SketchwareProjectRecyclewViewAdapter
 import com.iyxan23.sketch.collab.models.SketchwareProject
 
 class SketchwareProjectsListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        // Get rid of the flasing white color while doing shared element transition
+        window.enterTransition = null
+        window.exitTransition = null
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sketchware_projects_list)
 
@@ -19,6 +25,7 @@ class SketchwareProjectsListActivity : AppCompatActivity() {
         // Pass it onto the recyclerview
         val adapter = SketchwareProjectRecyclewViewAdapter(sketchwareProjects, this)
         sketchwareProjectsListRecyclerView.adapter = adapter
+        sketchwareProjectsListRecyclerView.layoutManager = LinearLayoutManager(this)
 
         adapter.notifyDataSetChanged()
     }

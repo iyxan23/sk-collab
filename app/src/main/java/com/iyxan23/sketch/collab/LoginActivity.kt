@@ -49,23 +49,23 @@ class LoginActivity : AppCompatActivity() {
         if (auth.currentUser != null) {
             // User has logged in!
             // Send him to MainActivity
-            startActivity(mainActivityIntent);
+            startActivity(mainActivityIntent)
 
             // Finish the activity so the user cannot go back
             // to this activity using the back button
-            finishActivity(0);
+            finish()
         }
 
         // onClicks ================================================================================
         loginText.setOnClickListener {
-            isRegister = false;
+            isRegister = false
 
             // updateForm to remove the username text field
             updateForm()
         }
 
         registerText.setOnClickListener {
-            isRegister = true;
+            isRegister = true
 
             // updateForm to display the username text field
             updateForm()
@@ -109,6 +109,10 @@ class LoginActivity : AppCompatActivity() {
 
                         // Done! Redirect user to MainActivity
                         startActivity(mainActivityIntent)
+
+                        // Finish the activity so the user cannot go back
+                        // to this activity using the back button
+                        finish()
 
                     }.addOnFailureListener {
                         // Something went wrong..
