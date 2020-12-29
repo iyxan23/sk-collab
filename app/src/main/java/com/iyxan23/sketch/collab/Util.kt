@@ -145,4 +145,33 @@ object Util {
         }
         return arrayList
     }
+
+    fun getSketchwareProject(id: Int): SketchwareProject? {
+        val dataPath: String = Environment.getExternalStorageDirectory().absolutePath + "/.sketchware/data/$id"
+        val myscProjectDirectory: String = Environment.getExternalStorageDirectory().absolutePath + "/.sketchware/mysc/list/$id/project"
+        val dataDirectoryFile = File(dataPath)
+
+        if (!dataDirectoryFile.exists() or !dataDirectoryFile.isDirectory)
+            return null;
+
+        val project = JSONObject(decrypt(myscProjectDirectory))
+
+        val swProjMeta = SketchwareProjectMeta(
+                project.getString("my_app_name"),
+                project.getString("sc_ver_name"),
+                project.getString("my_sc_pkg_name"),
+                project.getString("my_ws_name"),
+                project.getString("sc_id").toInt()
+        )
+
+        return SketchwareProject(
+                decrypt("$dataPath/project"),
+                decrypt("$dataPath/logic"),
+                decrypt("$dataPath/view"),
+                decrypt("$dataPath/resource"),
+                decrypt("$dataPath/library"),
+                decrypt("$dataPath/file"),
+                swProjMeta
+        )
+    }
 }

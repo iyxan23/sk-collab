@@ -59,10 +59,39 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/editTextTextMultiLine"
+                    android:id="@+id/name_upload"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
+                    android:ems="10"
+                    android:foregroundTint="@color/colorPrimary"
+                    android:gravity="start|top"
+                    android:inputType="text"
+                    android:text="hmm"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:maxLength="50"
+                    app:layout_constraintEnd_toEndOf="@+id/project_name_upload"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/project_name_upload"
+                    app:layout_constraintTop_toBottomOf="@+id/textView14" />
+
+                <TextView
+                    android:id="@+id/textView14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Name"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="@+id/project_name_upload"
+                    app:layout_constraintTop_toBottomOf="@+id/project_name_upload" />
+
+                <EditText
+                    android:id="@+id/description_upload"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:ems="10"
                     android:foregroundTint="@color/colorPrimary"
                     android:gravity="start|top"
@@ -70,7 +99,7 @@
                     android:text="hmm"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="@+id/textView13"
+                    app:layout_constraintEnd_toEndOf="@+id/project_name_upload"
                     app:layout_constraintStart_toStartOf="@+id/textView11"
                     app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
@@ -78,15 +107,15 @@
                     android:id="@+id/textView11"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="24dp"
                     android:text="Description"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"
-                    app:layout_constraintStart_toStartOf="@+id/textView13"
-                    app:layout_constraintTop_toBottomOf="@+id/textView13" />
+                    app:layout_constraintStart_toStartOf="@+id/textView14"
+                    app:layout_constraintTop_toBottomOf="@+id/name_upload" />
 
                 <TextView
-                    android:id="@+id/textView13"
+                    android:id="@+id/project_name_upload"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
@@ -101,27 +130,28 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/switch1"
+                    android:id="@+id/open_source_upload"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:text="Open Source"
+                    android:checked="true"
                     android:textColor="#FFFFFF"
-                    app:layout_constraintEnd_toEndOf="@+id/editTextTextMultiLine"
-                    app:layout_constraintStart_toStartOf="@+id/editTextTextMultiLine"
-                    app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine" />
+                    app:layout_constraintEnd_toEndOf="@+id/description_upload"
+                    app:layout_constraintStart_toStartOf="@+id/description_upload"
+                    app:layout_constraintTop_toBottomOf="@+id/description_upload" />
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/switch2"
+                    android:id="@+id/private_upload"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="32dp"
                     android:text="Private"
                     android:textColor="#FFFFFF"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/editTextTextMultiLine"
-                    app:layout_constraintStart_toStartOf="@+id/editTextTextMultiLine"
-                    app:layout_constraintTop_toBottomOf="@+id/switch1" />
+                    app:layout_constraintEnd_toEndOf="@+id/description_upload"
+                    app:layout_constraintStart_toStartOf="@+id/description_upload"
+                    app:layout_constraintTop_toBottomOf="@+id/open_source_upload" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
@@ -136,7 +166,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/upload_upload"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
