@@ -2,6 +2,7 @@ package com.iyxan23.sketch.collab
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.iyxan23.sketch.collab.adapters.SketchwareProjectRecyclewViewAdapter
@@ -21,6 +22,11 @@ class SketchwareProjectsListActivity : AppCompatActivity() {
 
         // Get all sketchware projects
         val sketchwareProjects: ArrayList<SketchwareProject> = Util.getSketchwareProjects()
+
+        if (sketchwareProjects.size == 0) {
+            // There is no sketchware projects (or failed to get sketchware projects)
+            Toast.makeText(this, "There is no sketchware projects detected, Or failed to get sketchware projects", Toast.LENGTH_LONG).show()
+        }
 
         // Pass it onto the recyclerview
         val adapter = SketchwareProjectRecyclewViewAdapter(sketchwareProjects, this)
