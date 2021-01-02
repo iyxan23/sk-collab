@@ -25,11 +25,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".online.UploadActivity"
+            android:name=".online.BrowseActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar"/>
         <activity
+            android:name=".online.UploadActivity"
+            android:theme="@style/Theme.SketchCollab.NoActionBar" />
+        <activity
             android:name=".SketchwareProjectsListActivity"
-            android:theme="@style/Theme.SketchCollab.NoActionBar"/> <!-- Checks if the server is open -->
+            android:theme="@style/Theme.SketchCollab.NoActionBar" /> <!-- Checks if the server is open -->
         <!-- Basically login -->
         <activity
             android:name=".LoginActivity"
