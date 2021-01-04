@@ -36,6 +36,10 @@ android {
 dependencies {
     implementation platform('com.google.firebase:firebase-bom:26.1.1')
 
+    // Thanks to y9neon for making this library, now, it's less pain!
+    // https://github.com/y9neon/Sketchware-Project-Manager
+    implementation 'com.github.justneon33:Sketchware-Project-Manager:stable-1.2'
+
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-database-ktx'
