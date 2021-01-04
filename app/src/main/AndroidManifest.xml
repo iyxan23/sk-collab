@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.iyxan23.sketch.collab">
-
     <!-- So we can access the database -->
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SketchCollab">
-        <!-- Checks if the server is open -->
         <activity
             android:name=".CheckActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar">
@@ -23,16 +24,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".online.BrowseActivity"
+            android:theme="@style/Theme.SketchCollab.NoActionBar"/>
+        <activity
+            android:name=".online.UploadActivity"
+            android:theme="@style/Theme.SketchCollab.NoActionBar" />
+        <activity
+            android:name=".SketchwareProjectsListActivity"
+            android:theme="@style/Theme.SketchCollab.NoActionBar" /> <!-- Checks if the server is open -->
         <!-- Basically login -->
         <activity
             android:name=".LoginActivity"
-            android:theme="@style/Theme.SketchCollab.NoActionBar"/>
-
-        <!-- The Homepage -->
+            android:theme="@style/Theme.SketchCollab.NoActionBar" /> <!-- The Homepage -->
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.SketchCollab.NoActionBar"/>
+            android:theme="@style/Theme.SketchCollab.NoActionBar" />
     </application>
 
 </manifest>

@@ -18,16 +18,22 @@ import com.google.firebase.database.FirebaseDatabase
 
 class LoginActivity : AppCompatActivity() {
 
-    // Getting the FirebaseAuth instance
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    // I have no idea what companions are, But this might solve the problem, i think
+    companion object Constructor {
+        // Getting the FirebaseAuth instance
+        private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    }
 
     // Masks
+    /* Wierldy, the decompiled java code doesn't initialize these variables, so i needed to do it
+     * manually using hardcoded numbers
     private val EMAIL_EMPTY             : Int = 1 shr 0;
     private val PASSWORD_EMPTY          : Int = 1 shr 1;
     private val USERNAME_EMPTY          : Int = 1 shr 2;
     private val PASSWORD_LESS_THAN_6    : Int = 1 shr 3;
     private val EMAIL_INVALID           : Int = 1 shr 4;
     private val USERNAME_INVALID        : Int = 1 shr 5;
+     */
 
     private var isRegister: Boolean = false;
 
@@ -49,23 +55,23 @@ class LoginActivity : AppCompatActivity() {
         if (auth.currentUser != null) {
             // User has logged in!
             // Send him to MainActivity
-            startActivity(mainActivityIntent);
+            startActivity(mainActivityIntent)
 
             // Finish the activity so the user cannot go back
             // to this activity using the back button
-            finishActivity(0);
+            finish()
         }
 
         // onClicks ================================================================================
         loginText.setOnClickListener {
-            isRegister = false;
+            isRegister = false
 
             // updateForm to remove the username text field
             updateForm()
         }
 
         registerText.setOnClickListener {
-            isRegister = true;
+            isRegister = true
 
             // updateForm to display the username text field
             updateForm()
@@ -110,6 +116,10 @@ class LoginActivity : AppCompatActivity() {
                         // Done! Redirect user to MainActivity
                         startActivity(mainActivityIntent)
 
+                        // Finish the activity so the user cannot go back
+                        // to this activity using the back button
+                        finish()
+
                     }.addOnFailureListener {
                         // Something went wrong..
                         errorText.text = it.message
@@ -132,26 +142,32 @@ class LoginActivity : AppCompatActivity() {
                 }
             } else {
                 // Something doesn't seem right
-                if (status and PASSWORD_LESS_THAN_6 != 0)
+                // PASSWORD_LESS_THAN_6
+                if (status and 16 != 0)
                     // Password is less than 6 characters
                     errorText.text = "Password cannot be less than 6 characters"
 
-                if (status and PASSWORD_EMPTY != 0)
+                // PASSWORD_EMPTY
+                if (status and 4 != 0)
                     // Password is empty
                     errorText.text = "Password cannot be empty"
 
-                if (status and USERNAME_INVALID != 0 && isRegister)
+                // USERNAME_INVALID
+                if (status and 64 != 0 && isRegister)
                     errorText.text = "Username can only contain A-Z 0-9 -_."
 
-                if (status and USERNAME_EMPTY != 0 && isRegister)
+                // USERNAME_EMPTY
+                if (status and 8 != 0 && isRegister)
                     // Username is empty
                     errorText.text = "Username cannot be empty"
 
-                if (status and EMAIL_INVALID != 0)
+                // EMAIL_INVALID
+                if (status and 32 != 0)
                     // Email is Invalid
                     errorText.text = "Email is invalid"
 
-                if (status and EMAIL_EMPTY != 0)
+                // EMAIL_EMPTY
+                if (status and 2 != 0)
                     // Email is empty
                     errorText.text = "Email cannot be empty"
 
@@ -174,13 +190,11 @@ class LoginActivity : AppCompatActivity() {
 
         if (isRegister) {
             // Change the color and sizes of the "tabs"
-            /*
             registerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
             registerText.setTextColor(0xFFFFFF);
 
             loginText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
             loginText.setTextColor(0x747474);
-            */
 
             // Email EditText animation
             TransitionManager.beginDelayedTransition(rootLogin)
@@ -197,13 +211,11 @@ class LoginActivity : AppCompatActivity() {
 
         } else {
             // Change the color and sizes of the "tabs"
-            /*
             loginText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
             loginText.setTextColor(0xFFFFFF);
 
             registerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
             registerText.setTextColor(0x747474);
-            */
 
             // Email EditText animation
             TransitionManager.beginDelayedTransition(rootLogin)
@@ -231,23 +243,29 @@ class LoginActivity : AppCompatActivity() {
 
         var out = 0
 
+        // EMAIL_EMPTY
         if (email == "")
-            out += EMAIL_EMPTY
+            out += 2
 
+        // PASSWORD_EMPTY
         if (password == "")
-            out += PASSWORD_EMPTY
+            out += 4
 
+        // USERNAME_EMPTY
         if (username == "" && !isRegister)
-            out += USERNAME_EMPTY
+            out += 8
 
+        // PASSWORD_LESS_THAN_6
         if (password.length < 6)
-            out += PASSWORD_LESS_THAN_6
+            out += 16
 
+        // EMAIL_INVALID
         if (!email.matches(emailRegex))
-            out += EMAIL_INVALID
+            out += 32
 
+        // USERNAME_INVALID
         if (!username.matches(usernameRegex))
-            out += USERNAME_INVALID
+            out += 64
 
         return out;
     }

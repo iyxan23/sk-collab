@@ -28,7 +28,7 @@ class CheckActivity : AppCompatActivity() {
         val bump_animation: Animation = AnimationUtils
                 .loadAnimation(this, R.anim.logo_bump_animation).apply {
             repeatCount = Animation.INFINITE
-            repeatMode = Animation.REVERSE
+            repeatMode = Animation.RESTART
         }
 
         bump_animation.setAnimationListener(object: Animation.AnimationListener {
@@ -77,6 +77,9 @@ class CheckActivity : AppCompatActivity() {
                     loading_text.text = "Server is open, Redirecting to Login Page"
                     val intent = Intent(this@CheckActivity, LoginActivity::class.java)
                     startActivity(intent);
+
+                    // End the activity so the user cannot go back to this activity
+                    finish()
                 } else {
                     // Server is closed, get the message and display it to the user
 
