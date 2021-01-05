@@ -1,6 +1,17 @@
 package com.iyxan23.sketch.collab.online;
 
-import android.app.Activity;
+import android.os.Bundle;
 
-public class UploadActivity extends Activity {
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.iyxan23.sketch.collab.R;
+
+public class UploadActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_upload);
+    }
 }
