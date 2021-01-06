@@ -140,31 +140,31 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 // Something doesn't seem right
                 // PASSWORD_LESS_THAN_6
-                if ((status & 16) != 0)
+                if ((status & PASSWORD_LESS_THAN_6) != 0)
                     // Password is less than 6 characters
                     errorText.setText("Password cannot be less than 6 characters");
 
                 // PASSWORD_EMPTY
-                if ((status & 4) != 0)
+                if ((status & PASSWORD_EMPTY) != 0)
                     // Password is empty
                     errorText.setText("Password cannot be empty");
 
                 // USERNAME_INVALID
-                if ((status & 64) != 0 && isRegister)
+                if ((status & USERNAME_INVALID) != 0 && isRegister)
                     errorText.setText("Username can only contain A-Z 0-9 -_.");
 
                 // USERNAME_EMPTY
-                if ((status & 8) != 0 && isRegister)
+                if ((status & USERNAME_EMPTY) != 0 && isRegister)
                     // Username is empty
                     errorText.setText("Username cannot be empty");
 
                 // EMAIL_INVALID
-                if ((status & 32) != 0)
+                if ((status & EMAIL_INVALID) != 0)
                     // Email is Invalid
                     errorText.setText("Email is invalid");
 
                 // EMAIL_EMPTY
-                if ((status & 2) != 0)
+                if ((status & EMAIL_EMPTY) != 0)
                     // Email is empty
                     errorText.setText("Email cannot be empty");
 
@@ -242,27 +242,27 @@ public class LoginActivity extends AppCompatActivity {
 
         // EMAIL_EMPTY
         if (email.equals(""))
-            out += 2;
+            out |= EMAIL_EMPTY;
 
         // PASSWORD_EMPTY
         if (password.equals(""))
-            out += 4;
+            out = PASSWORD_EMPTY;
 
         // USERNAME_EMPTY
         if (username.equals("") && !isRegister)
-            out += 8;
+            out |= USERNAME_EMPTY;
 
         // PASSWORD_LESS_THAN_6
         if (password.length() < 6)
-            out += 16;
+            out |= PASSWORD_LESS_THAN_6;
 
         // EMAIL_INVALID
         if (!email.matches(emailRegex))
-            out += 32;
+            out |= EMAIL_INVALID;
 
         // USERNAME_INVALID
         if (!username.matches(usernameRegex))
-            out += 64;
+            out |= USERNAME_INVALID;
 
         return out;
     }
