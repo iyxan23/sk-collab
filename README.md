@@ -1,9 +1,11 @@
 <img src="https://github.com/Iyxan23/sk-collab/blob/main/sk-collab-icon-v2.png" width="150" height="150"/>
 
-Release Version: Unreleased (Still in development stage), Development version: Unknown (Project is unfinished)
-
 # SketchCollab
 SketchCollab is an android application that let's you collaborate in sketchware without any hassle. It is similar to github, but specialized for sketchware.
+
+### Versions
+* ***Release:*** Unreleased, still in development
+* ***Development:*** Unknown, project is unfinished
 
 ### So, what's the deal?
 Sketchware users are usually using the one-way-sending project way of collaborating, or sending the modifided project to the other person, until they finished modifying it / improving it, and the cycle goes on and on. *(Showed in diagram below)*
@@ -19,9 +21,10 @@ SketchCollab break these limits, SketchCollab allows you to edit the project at 
 <br/>
 <br/>
 
-Note: I do not invent this method, this is basically a version control for sketchware projects / apps
+## 📜 Note
+I didn't invent version control. SketchCollab is only a version control system for Sketchware projects.
 
 ## Branches
  - main: Latest tested and stable branch
  - dev: Development branch, unstable, unchecked, and untested
- - old-java: The old java and unfinished version of SketchCollab
+ - old-java: The old Java and unfinished version of SketchCollab
