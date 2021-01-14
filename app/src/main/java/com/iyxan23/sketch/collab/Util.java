@@ -79,36 +79,6 @@ public class Util {
         }
     }
 
-    public static String sha512sum_project(int id) {
-        /*
-        try {
-            FileInputStream file = new FileInputStream(project.getData().getFile());
-            FileInputStream logic = new FileInputStream(project.getData().getLogic());
-            FileInputStream library = new FileInputStream(project.getData().getLibrary());
-            FileInputStream view = new FileInputStream(project.getData().getView());
-            FileInputStream resource = new FileInputStream(project.getData().getResource());
-
-            // Read all of them lmao
-            byte[] file_ = readFile(file);
-            byte[] logic_ = readFile(logic);
-            byte[] library_ = readFile(library);
-            byte[] view_ = readFile(view);
-            byte[] resource_ = readFile(resource);
-
-            byte[] joined = joinByteArrays(file_, joinByteArrays(logic_, joinByteArrays(library_, joinByteArrays(view_, resource_))));
-
-            // Return the shasum
-            return sha512(joined);
-        } catch (IOException e) {
-            // Pretty much impossible
-            e.printStackTrace();
-        }
-        */
-
-        // Something wrong happened
-        return null;
-    }
-
     // Copied from: https://www.journaldev.com/9400/android-external-storage-read-write-save-file
     public static String readFile(String path) throws IOException {
         StringBuilder output = new StringBuilder();
