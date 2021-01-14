@@ -35,22 +35,31 @@ public class Util {
         return new String(data);
     }
 
-    public static String decrypt(String path) {
+    public static String decrypt_from_path(String path) {
         try {
-            Cipher instance = Cipher.getInstance("AES/CBC/PKCS5Padding");;
-            byte[] bytes = "sketchwaresecure".getBytes();
-            instance.init(2, new SecretKeySpec(bytes, "AES"), new IvParameterSpec(bytes));
             RandomAccessFile randomAccessFile = new RandomAccessFile(path, "r");
             byte[] bArr = new byte[((int) randomAccessFile.length())];
             randomAccessFile.readFully(bArr);
 
-            decryptError = false;
-            return new String(instance.doFinal(bArr));
+            return decrypt(bArr);
         } catch (Exception e) {
             Log.e("Util", "Error while decrypting, at path: " + path);
             e.printStackTrace();
         }
-        decryptError = true;
+        return "";
+    }
+
+    public static String decrypt(byte[] data) {
+        try {
+            Cipher instance = Cipher.getInstance("AES/CBC/PKCS5Padding");;
+            byte[] bytes = "sketchwaresecure".getBytes();
+            instance.init(2, new SecretKeySpec(bytes, "AES"), new IvParameterSpec(bytes));
+
+            return new String(instance.doFinal(data));
+        } catch (Exception e) {
+            Log.e("Util", "Error while decrypting");
+            e.printStackTrace();
+        }
         return "";
     }
 
