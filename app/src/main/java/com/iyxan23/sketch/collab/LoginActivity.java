@@ -24,13 +24,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth auth = FirebaseAuth.getInstance();
 
-    private final int EMAIL_EMPTY = 1;  // 1 >> 0
-    private final int PASSWORD_EMPTY = 1 >> 1;
-    private final int USERNAME_EMPTY = 1 >> 2;
-    private final int PASSWORD_LESS_THAN_6 = 1 >> 3;
-    private final int EMAIL_INVALID = 1 >> 4;
-    private final int USERNAME_INVALID = 1 >> 5;
-
     private boolean isRegister = false;
 
     @Override
@@ -87,9 +80,9 @@ public class LoginActivity extends AppCompatActivity {
 
         loginButton.setOnClickListener(v -> {
             // Check if the inputs are filled
-            int status = checkFields();
+            String res = checkFields();
 
-            if (status == 0) {
+            if (res == null) {
                 // Great, we can login / register now
                 if (isRegister) {
 
@@ -139,35 +132,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             } else {
                 // Something doesn't seem right
-                // PASSWORD_LESS_THAN_6
-                if ((status & PASSWORD_LESS_THAN_6) != 0)
-                    // Password is less than 6 characters
-                    errorText.setText("Password cannot be less than 6 characters");
-
-                // PASSWORD_EMPTY
-                if ((status & PASSWORD_EMPTY) != 0)
-                    // Password is empty
-                    errorText.setText("Password cannot be empty");
-
-                // USERNAME_INVALID
-                if ((status & USERNAME_INVALID) != 0 && isRegister)
-                    errorText.setText("Username can only contain A-Z 0-9 -_.");
-
-                // USERNAME_EMPTY
-                if ((status & USERNAME_EMPTY) != 0 && isRegister)
-                    // Username is empty
-                    errorText.setText("Username cannot be empty");
-
-                // EMAIL_INVALID
-                if ((status & EMAIL_INVALID) != 0)
-                    // Email is Invalid
-                    errorText.setText("Email is invalid");
-
-                // EMAIL_EMPTY
-                if ((status & EMAIL_EMPTY) != 0)
-                    // Email is empty
-                    errorText.setText("Email cannot be empty");
-
+                errorText.setText(res);
             }
         });
     }
@@ -230,40 +195,40 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     // Used to check fields, like if email is empty, password empty, etc.
-    private int checkFields() {
+    private String checkFields() {
         String email = ((EditText) findViewById(R.id.email_login_text)).getText().toString().trim();
         String password = ((EditText) findViewById(R.id.password_login_text)).getText().toString();
         String username = ((EditText) findViewById(R.id.username_login_text)).getText().toString().trim();
 
+        String res = null;
+
         String emailRegex = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         String usernameRegex = "[a-zA-Z0-9._-]+";
 
-        int out = 0;
-
         // EMAIL_EMPTY
         if (email.equals(""))
-            out |= EMAIL_EMPTY;
+            res = "Email cannot be empty";
 
         // PASSWORD_EMPTY
         if (password.equals(""))
-            out = PASSWORD_EMPTY;
+            res = "Password cannot be empty";
 
         // USERNAME_EMPTY
         if (username.equals("") && !isRegister)
-            out |= USERNAME_EMPTY;
+            res = "Username cannot be empty";
 
         // PASSWORD_LESS_THAN_6
         if (password.length() < 6)
-            out |= PASSWORD_LESS_THAN_6;
+            res = "Password cannot be less than 6 characters";
 
         // EMAIL_INVALID
         if (!email.matches(emailRegex))
-            out |= EMAIL_INVALID;
+            res = "Email is invalid";
 
         // USERNAME_INVALID
         if (!username.matches(usernameRegex))
-            out |= USERNAME_INVALID;
+            res = "Username can only contain A-Z a-z 0-9 -_.";
 
-        return out;
+        return res;
     }
 }
