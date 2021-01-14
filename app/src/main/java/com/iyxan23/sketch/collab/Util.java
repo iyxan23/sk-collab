@@ -5,6 +5,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.util.Pair;
 
+import androidx.annotation.NonNull;
+
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -80,6 +82,7 @@ public class Util {
     }
 
     // Copied from: https://www.journaldev.com/9400/android-external-storage-read-write-save-file
+    @NonNull
     public static String readFile(String path) throws IOException {
         StringBuilder output = new StringBuilder();
         FileInputStream fis = new FileInputStream(path);
@@ -94,6 +97,7 @@ public class Util {
         return output.toString();
     }
 
+    @NonNull
     public static byte[] readFile(final FileInputStream stream) {
         class Reader extends Thread {
             byte[] array = null;
