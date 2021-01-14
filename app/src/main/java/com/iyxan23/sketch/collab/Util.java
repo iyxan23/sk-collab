@@ -16,20 +16,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
-import io.sketchware.*;
-import io.sketchware.project.Project;
-import io.sketchware.project.SketchwareProject;
-import kotlin.coroutines.Continuation;
-import kotlinx.coroutines.BuildersKt;
-import kotlinx.coroutines.CoroutineStart;
-import kotlinx.coroutines.Dispatchers;
-import kotlinx.coroutines.GlobalScope;
 
 public class Util {
 
@@ -81,24 +71,7 @@ public class Util {
     }
 
     public static String sha512sum_project(int id) {
-        SketchwareProjects manager = new SketchwareProjects(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/");
-        AtomicReference<SketchwareProject> project_atomic = new AtomicReference<>();
-
-        BuildersKt.launch(GlobalScope.INSTANCE,
-                Dispatchers.getMain(), // Context to be ran on
-                CoroutineStart.DEFAULT,
-                (coroutineScope, continuation) -> {
-                    Object return_value = manager.getProject(id, (Continuation<? super Project>) continuation);
-                    project_atomic.set((SketchwareProject) return_value);
-                    return return_value;
-                }
-        ).start();
-
-        // Wait for the coroutine to finish
-        while (project_atomic.get() == null) { }
-
-        SketchwareProject project = project_atomic.get();
-
+        /*
         try {
             FileInputStream file = new FileInputStream(project.getData().getFile());
             FileInputStream logic = new FileInputStream(project.getData().getLogic());
@@ -121,6 +94,7 @@ public class Util {
             // Pretty much impossible
             e.printStackTrace();
         }
+        */
 
         // Something wrong happened
         return null;
