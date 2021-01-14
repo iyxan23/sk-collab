@@ -51,10 +51,10 @@ public class SketchwareProject {
         // Check if the project id is set
         if (project_id == -1) setProjectID();
 
-        File images_folder = new File(Environment.getExternalStorageDirectory() + "/.sketchware/resources/" + project_id + "/images/");
-        File sounds_folder = new File(Environment.getExternalStorageDirectory() + "/.sketchware/resources/" + project_id + "/sounds/");
-        File icons_folder = new File(Environment.getExternalStorageDirectory() + "/.sketchware/resources/" + project_id + "/icons/");
-        File fonts_folder = new File(Environment.getExternalStorageDirectory() + "/.sketchware/resources/" + project_id + "/fonts/");
+        File images_folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/resources/" + project_id + "/images/");
+        File sounds_folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/resources/" + project_id + "/sounds/");
+        File icons_folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/resources/" + project_id + "/icons/");
+        File fonts_folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/resources/" + project_id + "/fonts/");
 
         // Get the images
         for (File file: images_folder.listFiles()) {
