@@ -7,15 +7,20 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
+import com.iyxan23.sketch.collab.models.SketchwareProject;
+
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -79,6 +84,31 @@ public class Util {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // This function should be ran on a different thread
+    public static ArrayList<SketchwareProject> fetch_sketchware_projects() {
+        ArrayList<SketchwareProject> projects = new ArrayList<>();
+        for (File project_folder: new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/").listFiles()) {
+            // Just in case
+            if (project_folder.isFile())
+                continue;
+
+            try {
+                FileInputStream file = new FileInputStream(new File(project_folder.getAbsolutePath() + "/file"));
+                FileInputStream logic = new FileInputStream(new File(project_folder.getAbsolutePath() + "/logic"));
+                FileInputStream library = new FileInputStream(new File(project_folder.getAbsolutePath() + "/library"));
+                FileInputStream view = new FileInputStream(new File(project_folder.getAbsolutePath() + "/view"));
+                FileInputStream resource = new FileInputStream(new File(project_folder.getAbsolutePath() + "/resource"));
+
+                FileInputStream mysc_project = new FileInputStream(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/" + project_folder.getName() + "/project"));
+
+                projects.add(new SketchwareProject(readFile(logic), readFile(view), readFile(resource), readFile(library), readFile(file), readFile(mysc_project)));
+
+            } catch (FileNotFoundException ignored) { }
+        }
+
+        return projects;
     }
 
     // Copied from: https://www.journaldev.com/9400/android-external-storage-read-write-save-file
