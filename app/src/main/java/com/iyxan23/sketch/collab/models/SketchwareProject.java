@@ -1,6 +1,8 @@
 package com.iyxan23.sketch.collab.models;
 
 import android.os.Environment;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.iyxan23.sketch.collab.Util;
 
@@ -11,7 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-public class SketchwareProject {
+public class SketchwareProject implements Parcelable {
 
     // These variables should be in their raw encrypted format
     public byte[] logic;
@@ -106,5 +108,48 @@ public class SketchwareProject {
     private void setProjectID() throws JSONException {
         JSONObject mysc_project_ = new JSONObject(Util.decrypt(mysc_project));
         project_id = Integer.parseInt(mysc_project_.getString("sc_id"));
+    }
+
+    protected SketchwareProject(Parcel in) {
+        logic = in.createByteArray();
+        view = in.createByteArray();
+        resource = in.createByteArray();
+        library = in.createByteArray();
+        file = in.createByteArray();
+        mysc_project = in.createByteArray();
+        project_id = in.readInt();
+
+        try {
+            setProjectID();
+            metadata = new SketchwareProjectMetadata(new JSONObject(Util.decrypt(mysc_project)));
+        } catch (JSONException ignored) { }
+    }
+
+    public static final Creator<SketchwareProject> CREATOR = new Creator<SketchwareProject>() {
+        @Override
+        public SketchwareProject createFromParcel(Parcel in) {
+            return new SketchwareProject(in);
+        }
+
+        @Override
+        public SketchwareProject[] newArray(int size) {
+            return new SketchwareProject[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByteArray(logic);
+        dest.writeByteArray(view);
+        dest.writeByteArray(resource);
+        dest.writeByteArray(library);
+        dest.writeByteArray(file);
+        dest.writeByteArray(mysc_project);
+        dest.writeInt(project_id);
     }
 }
