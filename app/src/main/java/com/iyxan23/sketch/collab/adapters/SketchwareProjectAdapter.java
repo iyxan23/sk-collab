@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityOptionsCompat;
@@ -17,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.online.UploadActivity;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -62,8 +65,13 @@ public class SketchwareProjectAdapter extends RecyclerView.Adapter<SketchwarePro
 
         holder.upload_button.setOnClickListener(v -> {
             // Go to UploadActivity
-            Intent i = new Intent(activity, UploadActivity.class);
-            activity.startActivity(i);
+            try {
+                Intent i = new Intent(activity, UploadActivity.class);
+                i.putExtra("project_id", project.getProjectID());
+                activity.startActivity(i);
+            } catch (JSONException e) {
+                Toast.makeText(activity, "An error occured: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
         });
     }
 
