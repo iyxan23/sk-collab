@@ -4,6 +4,8 @@ import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 import com.iyxan23.sketch.collab.Util;
 
 import org.json.JSONException;
@@ -12,6 +14,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class SketchwareProject implements Parcelable {
 
@@ -40,6 +44,48 @@ public class SketchwareProject implements Parcelable {
             metadata = new SketchwareProjectMetadata(new JSONObject(Util.decrypt(mysc_project)));
 
         } catch (JSONException ignored) { }
+    }
+
+    public void applyChanges() {
+        try {
+            String project_folder = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/" + project_id;
+            FileOutputStream file = new FileOutputStream(new File(project_folder + "/file"));
+            FileOutputStream logic = new FileOutputStream(new File(project_folder + "/logic"));
+            FileOutputStream library = new FileOutputStream(new File(project_folder + "/library"));
+            FileOutputStream view = new FileOutputStream(new File(project_folder + "/view"));
+            FileOutputStream resource = new FileOutputStream(new File(project_folder + "/resource"));
+
+            FileOutputStream mysc_project = new FileOutputStream(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/" + project_id + "/project"));
+
+            file.write(this.file);
+            file.close();
+
+            logic.write(this.logic);
+            logic.close();
+
+            library.write(this.library);
+            library.close();
+
+            view.write(this.view);
+            view.close();
+
+            resource.write(this.resource);
+            resource.close();
+
+            mysc_project.write(this.mysc_project);
+            mysc_project.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Nullable
+    public JSONObject getMyscProject() {
+        try {
+            return new JSONObject(Util.decrypt(mysc_project));
+        } catch (JSONException e) {
+            return null;
+        }
     }
 
     public String sha512sum() throws JSONException {
