@@ -73,6 +73,37 @@ public class Util {
         return "";
     }
 
+    public static void encrypt_to_path(@NonNull String path, @NonNull byte[] data) {
+        try {
+            Cipher instance = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            byte[] bytes = "sketchwaresecure".getBytes();
+            instance.init(1, new SecretKeySpec(bytes, "AES"), new IvParameterSpec(bytes));
+            byte[] doFinal = instance.doFinal(data);
+            final RandomAccessFile randomAccessFile = new RandomAccessFile(path, "rw");
+            randomAccessFile.setLength(0L);
+            randomAccessFile.write(doFinal);
+            // return new String(doFinal);
+        } catch (Exception e) {
+            Log.e("Util", "Error while encrypting at path: " + path + ", " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @Nullable
+    public static byte[] encrypt(@NonNull byte[] data) {
+        try {
+            Cipher instance = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            byte[] bytes = "sketchwaresecure".getBytes();
+            instance.init(1, new SecretKeySpec(bytes, "AES"), new IvParameterSpec(bytes));
+            return instance.doFinal(data);
+            // return new String(doFinal);
+        } catch (Exception e) {
+            Log.e("Util", "Error while encrypting: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static String sha512(byte[] input) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
