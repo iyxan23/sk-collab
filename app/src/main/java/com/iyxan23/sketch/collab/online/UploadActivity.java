@@ -2,18 +2,14 @@ package com.iyxan23.sketch.collab.online;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -22,10 +18,7 @@ import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.Util;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
-import java.util.Map;
 
 public class UploadActivity extends AppCompatActivity {
 
