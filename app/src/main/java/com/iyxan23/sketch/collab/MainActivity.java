@@ -82,12 +82,12 @@ class MainActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
 
-                            // Something broke
-                            return;
+                            // Looks like someone uploaded a broken JSON, skip
+                            continue;
                         }
 
                         // Because project id can vary on different devices
-                        json.optInt("sc_id");
+                        if (json.has("sc_id")) json.optInt("sc_id");
 
                         Pair<String, JSONObject> pair = new Pair<>(project.getKey(), json);
                         publicProjectsOwned.add(pair);
@@ -114,12 +114,12 @@ class MainActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
 
-                        // Something broke
-                        return;
+                        // Looks like someone uploaded a broken JSON, skip
+                        continue;
                     }
 
                     // Because project id can vary on different devices
-                    json.optInt("sc_id");
+                    if (json.has("sc_id")) json.optInt("sc_id");
 
                     Pair<String, JSONObject> pair = new Pair<>(project.getKey(), json);
                     userProjects.add(pair);
