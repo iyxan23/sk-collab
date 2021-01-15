@@ -114,6 +114,29 @@ public class Util {
         return projects;
     }
 
+    @Nullable
+    public static SketchwareProject get_sketchware_project(int id) {
+        File project_folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/");
+
+        if (!project_folder.exists() || !project_folder.isDirectory())
+            return null;
+
+        try {
+            FileInputStream file = new FileInputStream(new File(project_folder.getAbsolutePath() + "/file"));
+            FileInputStream logic = new FileInputStream(new File(project_folder.getAbsolutePath() + "/logic"));
+            FileInputStream library = new FileInputStream(new File(project_folder.getAbsolutePath() + "/library"));
+            FileInputStream view = new FileInputStream(new File(project_folder.getAbsolutePath() + "/view"));
+            FileInputStream resource = new FileInputStream(new File(project_folder.getAbsolutePath() + "/resource"));
+
+            FileInputStream mysc_project = new FileInputStream(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/" + project_folder.getName() + "/project"));
+
+            return new SketchwareProject(readFile(logic), readFile(view), readFile(resource), readFile(library), readFile(file), readFile(mysc_project));
+
+        } catch (FileNotFoundException ignored) { }
+
+        return null;
+    }
+
     // Copied from: https://www.journaldev.com/9400/android-external-storage-read-write-save-file
     @NonNull
     public static String readFile(String path) throws IOException {
