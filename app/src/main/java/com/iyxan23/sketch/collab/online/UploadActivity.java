@@ -18,6 +18,10 @@ import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.Util;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.HashMap;
 
 public class UploadActivity extends AppCompatActivity {
@@ -69,7 +73,28 @@ public class UploadActivity extends AppCompatActivity {
                 Toast.makeText(UploadActivity.this, "An error occured: pushKey is null", Toast.LENGTH_LONG).show();
                 return;
             }
-            
+
+            // Add a custom key to the sketchware project named "sk-colab-key": "(pushkey)" and "sk-collab-owner": "(uid)"
+            try {
+                swProj.mysc_project = Util.encrypt(
+                        new JSONObject(
+                                Util.decrypt(swProj.mysc_project)
+                        )
+                                .put("sk-collab-key", pushKey)
+                                .put("sk-collab-owner", auth.getUid())
+                                .toString()
+                                .getBytes()
+                );
+                swProj.applyChanges();
+            } catch (JSONException | IOException e) {
+                // This shouldn't happen
+                e.printStackTrace();
+                Toast.makeText(UploadActivity.this, "An error occured while applying the key: " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                // Stop
+                return;
+            }
+
             HashMap<String, Object> data = new HashMap<String, Object>() {{
                 put("name", name.getText());
                 put("description", description.getText());
