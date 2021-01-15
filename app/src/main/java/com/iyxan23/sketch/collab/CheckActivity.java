@@ -37,6 +37,7 @@ public class CheckActivity extends AppCompatActivity {
 
         // Check if the server is open
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")  // TODO: FIX THIS
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 loading_text.setText("Information recieved");

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 
@@ -29,8 +30,6 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class Util {
-
-    static boolean decryptError = false;
 
     public static String base64encode(String txt) {
         byte[] data = txt.getBytes();
@@ -58,7 +57,7 @@ public class Util {
 
     public static String decrypt(byte[] data) {
         try {
-            Cipher instance = Cipher.getInstance("AES/CBC/PKCS5Padding");;
+            Cipher instance = Cipher.getInstance("AES/CBC/PKCS5Padding");
             byte[] bytes = "sketchwaresecure".getBytes();
             instance.init(2, new SecretKeySpec(bytes, "AES"), new IvParameterSpec(bytes));
 
@@ -127,7 +126,6 @@ public class Util {
         return output.toString();
     }
 
-    @NonNull
     public static byte[] readFile(final FileInputStream stream) {
         class Reader extends Thread {
             byte[] array = null;
@@ -135,7 +133,7 @@ public class Util {
 
         Reader reader = new Reader() {
             public void run() {
-                LinkedList<Pair<byte[], Integer>> chunks = new LinkedList<Pair<byte[], Integer>>();
+                LinkedList<Pair<byte[], Integer>> chunks = new LinkedList<>();
 
                 // read the file and build chunks
                 int size = 0;
@@ -150,7 +148,7 @@ public class Util {
                             globalSize += size;
 
                             // add chunk to list
-                            chunks.add(new Pair<byte[], Integer>(buffer, size));
+                            chunks.add(new Pair<>(buffer, size));
                         }
                     } catch (Exception e) {
                         // very bad
@@ -186,7 +184,10 @@ public class Util {
         return reader.array;
     }
 
-    public static byte[] joinByteArrays(final byte[] array1, byte[] array2) {
+    public static byte[] joinByteArrays(final byte[] array1, @Nullable byte[] array2) {
+        // Welp then why do you give me null lmao
+        if (array2 == null) return array1;
+
         byte[] joinedArray = Arrays.copyOf(array1, array1.length + array2.length);
         System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
         return joinedArray;

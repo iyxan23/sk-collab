@@ -1,5 +1,6 @@
 package com.iyxan23.sketch.collab;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -15,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.transition.TransitionManager;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -22,10 +24,11 @@ import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private FirebaseAuth auth = FirebaseAuth.getInstance();
+    private final FirebaseAuth auth = FirebaseAuth.getInstance();
 
     private boolean isRegister = false;
 
+    @SuppressLint("SetTextI18n")  // TODO: FIX THIS
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,10 +98,17 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                         DatabaseReference usersRef = database.getReference("/userdata/");
 
+                        // Get the user
+                        FirebaseUser user = s.getUser();
+                        if (user == null) {
+                            errorText.setText("User is null");
+                            return;
+                        }
+
                         // Build the user's data
-                        HashMap<String, Object> userdata = new HashMap<String, Object>();
+                        HashMap<String, Object> userdata = new HashMap<>();
                         userdata.put("name", usernameEditText.getText().toString());
-                        userdata.put("uid", s.getUser().getUid());
+                        userdata.put("uid", user.getUid());
 
                         // Add the user in the database
                         usersRef.setValue(userdata);
@@ -139,6 +149,7 @@ public class LoginActivity extends AppCompatActivity {
 
     // Used to update the form, when the user clicked on "Login" or "Register", Display or Remove a
     // view
+    @SuppressLint("SetTextI18n")  // TODO: FIX THIS
     private void updateForm() {
         // Switching login and register texts
         TextView loginText = findViewById(R.id.login_text);

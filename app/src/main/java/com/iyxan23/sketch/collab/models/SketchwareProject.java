@@ -61,8 +61,8 @@ public class SketchwareProject implements Parcelable {
 
         File images_folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/resources/" + project_id + "/images/");
         File sounds_folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/resources/" + project_id + "/sounds/");
-        File icons_folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/resources/" + project_id + "/icons/");
-        File fonts_folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/resources/" + project_id + "/fonts/");
+        File icons_folder  = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/resources/" + project_id + "/icons/" );
+        File fonts_folder  = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/resources/" + project_id + "/fonts/" );
 
         // Get the images
         for (File file: images_folder.listFiles()) {

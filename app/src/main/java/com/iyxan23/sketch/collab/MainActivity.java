@@ -15,11 +15,11 @@ import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.view.ViewCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
+import com.iyxan23.sketch.collab.models.SketchwareProject;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -30,6 +30,8 @@ class MainActivity extends AppCompatActivity {
     // Pair<project_key, "project" file>
     ArrayList<Pair<String, JSONObject>> publicProjectsOwned = new ArrayList<>();
     ArrayList<Pair<String, JSONObject>> userProjects = new ArrayList<>();
+
+    ArrayList<SketchwareProject> localProjects = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +58,9 @@ class MainActivity extends AppCompatActivity {
                     100);
         }
 
-        String internalPath = getFilesDir().getAbsolutePath();
-        File lastChanges = new File(internalPath + "/last_changes");
+        // TODO: IMPLEMENT THIS
+        // String internalPath = getFilesDir().getAbsolutePath();
+        // File lastChanges = new File(internalPath + "/last_changes");
 
         // Get user projects, and projects that the user collaborates
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -70,9 +73,9 @@ class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 for (DataSnapshot project : snapshot.getChildren()) {
-                    if (project.child("author").getValue(String.class).equals(auth.getUid())) {
+                    if (Objects.equals(project.child("author").getValue(String.class), auth.getUid())) {
                         String projectBase64 = project.child("snapshot").child("project").getValue(String.class);
-                        JSONObject json = null;
+                        JSONObject json;
 
                         try {
                             json = new JSONObject(Util.base64decode(projectBase64));
@@ -86,7 +89,7 @@ class MainActivity extends AppCompatActivity {
                         // Because project id can vary on different devices
                         json.optInt("sc_id");
 
-                        Pair pair = new Pair(project.getKey(), json);
+                        Pair<String, JSONObject> pair = new Pair<>(project.getKey(), json);
                         publicProjectsOwned.add(pair);
                     }
                 }
@@ -105,7 +108,7 @@ class MainActivity extends AppCompatActivity {
                 for (DataSnapshot project : snapshot.getChildren()) {
                     String projectBase64 = project.child("snapshot").child("project").getValue(String.class);
 
-                    JSONObject json = null;
+                    JSONObject json;
                     try {
                         json = new JSONObject(Util.base64decode(projectBase64));
                     } catch (JSONException e) {
@@ -118,7 +121,7 @@ class MainActivity extends AppCompatActivity {
                     // Because project id can vary on different devices
                     json.optInt("sc_id");
 
-                    Pair pair = new Pair(project.getKey(), json);
+                    Pair<String, JSONObject> pair = new Pair<>(project.getKey(), json);
                     userProjects.add(pair);
                 }
             }
@@ -149,7 +152,9 @@ class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (resultCode == PackageManager.PERMISSION_GRANTED) {
-                // TODO: Fetch sketchware projects
+
+                // Fetch sketchware projects
+                new Thread(() -> localProjects = Util.fetch_sketchware_projects()).start();
             }
         }
     }
