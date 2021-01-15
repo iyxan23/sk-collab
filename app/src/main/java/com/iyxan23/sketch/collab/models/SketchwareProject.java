@@ -21,6 +21,8 @@ public class SketchwareProject {
     public byte[] file;
     public byte[] mysc_project;
 
+    public SketchwareProjectMetadata metadata;
+
     private int project_id = -1;
 
     public SketchwareProject(byte[] logic, byte[] view, byte[] resource, byte[] library, byte[] file, byte[] mysc_project) {
@@ -31,7 +33,11 @@ public class SketchwareProject {
         this.file = file;
         this.mysc_project = mysc_project;
 
-        try { setProjectID(); } catch (JSONException ignored) { }
+        try {
+            setProjectID();
+            metadata = new SketchwareProjectMetadata(new JSONObject(Util.decrypt(mysc_project)));
+
+        } catch (JSONException ignored) { }
     }
 
     public String sha512sum() throws JSONException {
