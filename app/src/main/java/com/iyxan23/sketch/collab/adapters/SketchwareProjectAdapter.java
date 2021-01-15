@@ -24,8 +24,12 @@ import java.util.ArrayList;
 public class SketchwareProjectAdapter extends RecyclerView.Adapter<SketchwareProjectAdapter.ViewHolder> {
     private static final String TAG = "OnlineProjsAdapter";
 
-    private ArrayList<SketchwareProject> datas;
-    private Activity activity;
+    private ArrayList<SketchwareProject> datas = new ArrayList<>();
+    final private Activity activity;
+
+    public SketchwareProjectAdapter(Activity activity) {
+        this.activity = activity;
+    }
 
     public SketchwareProjectAdapter(ArrayList<SketchwareProject> datas, Activity activity) {
         this.datas = datas;
