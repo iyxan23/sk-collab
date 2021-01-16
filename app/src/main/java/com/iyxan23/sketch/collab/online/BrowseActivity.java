@@ -13,14 +13,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.annotations.NotNull;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.adapters.BrowseItemAdapter;
 import com.iyxan23.sketch.collab.models.BrowseItem;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class BrowseActivity extends AppCompatActivity {
 
