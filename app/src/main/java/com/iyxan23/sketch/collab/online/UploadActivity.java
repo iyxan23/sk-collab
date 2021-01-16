@@ -65,8 +65,9 @@ public class UploadActivity extends AppCompatActivity {
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
         uploadButton.setOnClickListener(v -> {
-            DatabaseReference projectReference = database.getReference("/" + (isPrivate.isChecked() ? "userdata/" + auth.getUid() + "/projects" : "projects"));
+            DatabaseReference projectReference = database.getReference("/" + (isPrivate.isChecked() ? "userprojects/" + auth.getUid() + "/projects" : "projects"));
             String pushKey = projectReference.push().getKey();
+            DatabaseReference commitsReference = database.getReference("/" + (isPrivate.isChecked() ? "userprojects/" + auth.getUid() + "/commits" : "commits"));
 
             // Nullcheck
             if (pushKey == null) {
@@ -103,7 +104,7 @@ public class UploadActivity extends AppCompatActivity {
                 put("open", isOpenSource.isChecked());
                 put("snapshot",
                     new HashMap<String, Object>() {{
-                        put("commit_id", "initial");   // Non-existent commit in the database, used to indicate the initial commit
+                        put("commit_id", "initial");
                         put("file", Util.base64encode(swProj.file));
                         put("library", Util.base64encode(swProj.library));
                         put("logic", Util.base64encode(swProj.logic));
@@ -112,6 +113,11 @@ public class UploadActivity extends AppCompatActivity {
                         put("view", Util.base64encode(swProj.view));
                     }}
                 );
+            }};
+
+            HashMap<String, Object> commit_data = new HashMap<String, Object>() {{
+                put("author", auth.getUid());
+                put("timestamp", System.currentTimeMillis());
             }};
 
 
@@ -124,12 +130,22 @@ public class UploadActivity extends AppCompatActivity {
             projectReference
                     .child(pushKey)
                     .setValue(data)
-                    .addOnSuccessListener(unused -> {
-                        progressDialog.dismiss();
+                    .addOnSuccessListener(unused ->
+                            // Update the commit informations
+                            commitsReference
+                                .child(pushKey)
+                                .child("initial")
+                                .setValue(commit_data)
+                                .addOnSuccessListener(unused1 -> {
+                                    progressDialog.dismiss();
 
-                        Toast.makeText(UploadActivity.this, "Project Uploaded", Toast.LENGTH_LONG).show();
-                        finish();
-                    }).addOnFailureListener(e -> {
+                                    Toast.makeText(UploadActivity.this, "Project Uploaded", Toast.LENGTH_LONG).show();
+                                    finish();
+                                }).addOnFailureListener(e -> {
+                                    progressDialog.dismiss();
+                                    Toast.makeText(UploadActivity.this, "An error occured: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                })
+                    ).addOnFailureListener(e -> {
                         progressDialog.dismiss();
                         Toast.makeText(UploadActivity.this, "An error occured: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     });
