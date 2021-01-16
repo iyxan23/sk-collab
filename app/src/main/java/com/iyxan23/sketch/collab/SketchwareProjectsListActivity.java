@@ -5,6 +5,7 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.iyxan23.sketch.collab.adapters.SketchwareProjectAdapter;
@@ -21,6 +22,7 @@ public class SketchwareProjectsListActivity extends AppCompatActivity {
 
         // Get the recyclerview
         RecyclerView projecs_list = findViewById(R.id.sketchware_project_list);
+        projecs_list.setLayoutManager(new LinearLayoutManager(this));
 
         // Get and set the adapter
         SketchwareProjectAdapter adapter = new SketchwareProjectAdapter(this);
