@@ -4,14 +4,22 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class BrowseItem implements Parcelable {
-    public int project_id;
+    public String project_id;
     public String username;
     public String project_name;
     public String uid;
     public int latest_commit_timestamp;
 
+    public BrowseItem(String project_id, String username, String project_name, String uid, int latest_commit_timestamp) {
+        this.project_id = project_id;
+        this.username = username;
+        this.project_name = project_name;
+        this.uid = uid;
+        this.latest_commit_timestamp = latest_commit_timestamp;
+    }
+
     protected BrowseItem(Parcel in) {
-        project_id = in.readInt();
+        project_id = in.readString();
         username = in.readString();
         project_name = in.readString();
         uid = in.readString();
@@ -37,7 +45,7 @@ public class BrowseItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(project_id);
+        dest.writeString(project_id);
         dest.writeString(username);
         dest.writeString(project_name);
         dest.writeString(uid);
