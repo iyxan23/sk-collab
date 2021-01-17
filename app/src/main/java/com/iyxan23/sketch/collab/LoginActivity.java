@@ -17,10 +17,11 @@ import androidx.transition.TransitionManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -94,9 +95,9 @@ public class LoginActivity extends AppCompatActivity {
                             emailEditText.getText().toString().trim(),
                             passwordEditText.getText().toString()
                     ).addOnSuccessListener(s -> {
-                        // Get the firebase database
-                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference usersRef = database.getReference("/userdata/");
+                        // Get the firebase firestore
+                        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+                        CollectionReference usersRef = firestore.collection("userdata");
 
                         // Get the user
                         FirebaseUser user = s.getUser();
@@ -111,15 +112,19 @@ public class LoginActivity extends AppCompatActivity {
                         userdata.put("uid", user.getUid());
 
                         // Add the user in the database
-                        usersRef.setValue(userdata);
+                        usersRef.add(userdata).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                // Done! Redirect user to MainActivity
+                                startActivity(mainActivityIntent);
 
-                        // Done! Redirect user to MainActivity
-                        startActivity(mainActivityIntent);
-
-                        // Finish the activity so the user cannot go back
-                        // to this activity using the back button
-                        finish();
-
+                                // Finish the activity so the user cannot go back
+                                // to this activity using the back button
+                                finish();
+                            } else {
+                                // Something went wrong..
+                                errorText.setText("Error: " + Objects.requireNonNull( task.getException() ).getMessage());
+                            }
+                        });
                     }).addOnFailureListener(f -> {
                         // Something went wrong..
                         errorText.setText(f.getMessage());
@@ -136,7 +141,6 @@ public class LoginActivity extends AppCompatActivity {
 
                     }).addOnFailureListener(f -> {
                         // Something went wrong!
-                        // Show a snackbar
                         errorText.setText(f.getMessage());
                     });
                 }
