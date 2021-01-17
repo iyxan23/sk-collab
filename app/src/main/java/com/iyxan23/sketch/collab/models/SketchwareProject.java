@@ -57,21 +57,27 @@ public class SketchwareProject implements Parcelable {
         FileOutputStream mysc_project = new FileOutputStream(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/" + project_id + "/project"));
 
         file.write(this.file);
+        file.flush();
         file.close();
 
         logic.write(this.logic);
+        file.flush();
         logic.close();
 
         library.write(this.library);
+        library.flush();
         library.close();
 
         view.write(this.view);
+        view.flush();
         view.close();
 
         resource.write(this.resource);
+        resource.flush();
         resource.close();
 
         mysc_project.write(this.mysc_project);
+        mysc_project.flush();
         mysc_project.close();
     }
 
