@@ -94,6 +94,20 @@ public class SketchwareProject implements Parcelable {
         // This is kinda a "dangerous" way of doing it, if the project is super big, it can cause
         // OutOfMemory Exception, but i'll leave it here for now
 
+        // Delete some keys on mysc/project
+        // HELP: I'm kinda scared of this, will java pass it's reference or it's value?
+        byte[] mysc_project_mod = mysc_project;
+        JSONObject obj = new JSONObject(Util.decrypt(mysc_project_mod));
+
+        obj.optInt("sc_id");
+
+        if (isSketchCollabProject()) {
+            obj.optString("sk-collab-key");
+            obj.optString("sk-collab-author");
+        }
+
+        mysc_project_mod = Util.encrypt(obj.toString().getBytes());
+
         // Ik this looks a very dumb, but i currently don't have any other way to do it sooo
         byte[] joined =
                 Util.joinByteArrays(file,
@@ -101,7 +115,7 @@ public class SketchwareProject implements Parcelable {
                                 Util.joinByteArrays(library,
                                         Util.joinByteArrays(view,
                                                 Util.joinByteArrays(resource,
-                                                        mysc_project)))));
+                                                        mysc_project_mod)))));
 
         // Join the resources too
         // Check if the project id is set
