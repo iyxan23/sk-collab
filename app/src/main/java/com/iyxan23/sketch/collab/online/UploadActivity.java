@@ -81,9 +81,10 @@ public class UploadActivity extends AppCompatActivity {
                         new JSONObject(
                                 Util.decrypt(swProj.mysc_project)
                         )
-                                .put("sk-collab-key", pushKey)
-                                .put("sk-collab-owner", auth.getUid())
-                                .put("sk-collab-project-visibility", isPrivate.isChecked() ? "private" : "public")
+                                .put("sk-collab-key", pushKey)  // The pushkey (location of the project)
+                                .put("sk-collab-owner", auth.getUid())  // The owner of the project (used to access private projects)
+                                .put("sk-collab-latest-commit", "initial")   // The latest commit id of this project
+                                .put("sk-collab-project-visibility", isPrivate.isChecked() ? "private" : "public")   // The project visibility. Don't worry, it's used to determine where is the project located in the database
                                 .toString()
                                 .getBytes()
                 );

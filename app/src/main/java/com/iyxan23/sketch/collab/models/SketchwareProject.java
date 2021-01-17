@@ -188,6 +188,10 @@ public class SketchwareProject implements Parcelable {
         return new JSONObject(Util.decrypt(mysc_project)).getString("sk-collab-project-visibility").equals("public");
     }
 
+    public String getSketchCollabLatestCommitID() throws JSONException {
+        return new JSONObject(Util.decrypt(mysc_project)).getString("sk-collab-latest-commit");
+    }
+
     protected SketchwareProject(Parcel in) {
         logic = in.createByteArray();
         view = in.createByteArray();
