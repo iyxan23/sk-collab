@@ -6,6 +6,8 @@ import com.iyxan23.sketch.collab.Util;
 
 import org.json.JSONException;
 
+import java.util.LinkedList;
+
 import name.fraser.neil.plaintext.diff_match_patch;
 
 public class SketchwareProjectChanges {
@@ -44,16 +46,39 @@ public class SketchwareProjectChanges {
 
     public String getPatch(int type) {
         diff_match_patch dmp = new diff_match_patch();
-        String patch = null;
+        byte[] before;
+        byte[] after;
 
         if (type == LOGIC) {
-            patch = dmp.patch_toText(
-                    dmp.patch_make(
-                            Util.decrypt(before.logic),
-                            Util.decrypt(after.logic)
-                    )
-            );
+            before = this.before.logic;
+            after = this.after.logic;
+
+        } else if (type == VIEW) {
+            before = this.before.view;
+            after = this.after.view;
+
+        } else if (type == FILE) {
+            before = this.before.file;
+            after = this.after.file;
+
+        } else if (type == LIBRARY) {
+            before = this.before.library;
+            after = this.after.library;
+
+        } else if (type == RESOURCES) {
+            before = this.before.resource;
+            after = this.after.resource;
+
+        } else {
+            // ..bruh
+            return null;
         }
-        return patch;
+
+        return dmp.patch_toText(
+                dmp.patch_make(
+                        Util.decrypt(before),
+                        Util.decrypt(after)
+                )
+        );
     }
 }
