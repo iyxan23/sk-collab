@@ -83,6 +83,7 @@ public class UploadActivity extends AppCompatActivity {
                         )
                                 .put("sk-collab-key", pushKey)
                                 .put("sk-collab-owner", auth.getUid())
+                                .put("sk-collab-project-visibility", isPrivate.isChecked() ? "private" : "public")
                                 .toString()
                                 .getBytes()
                 );
