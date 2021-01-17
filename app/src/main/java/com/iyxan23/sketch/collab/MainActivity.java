@@ -15,8 +15,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.view.ViewCompat;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
 
@@ -29,7 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
-
+import java.util.concurrent.ExecutionException;
 
 class MainActivity extends AppCompatActivity {
 
@@ -40,6 +50,11 @@ class MainActivity extends AppCompatActivity {
 
     ArrayList<SketchwareProject> localProjects = new ArrayList<>();
     ArrayList<SketchwareProject> sketchcollabProjects = new ArrayList<>();
+
+    ArrayList<SketchwareProjectChanges> changes = new ArrayList<>();
+
+    FirebaseFirestore database = FirebaseFirestore.getInstance();
+    FirebaseAuth auth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +79,22 @@ class MainActivity extends AppCompatActivity {
                             Manifest.permission.READ_EXTERNAL_STORAGE,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     100);
+        } else {
+            // Permission is already granted, initialize
+            initialize();
         }
 
+        /*
+         * I don't think these are nessecary
+         *
         // Get user projects, and projects that the user collaborates
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         FirebaseAuth auth  = FirebaseAuth.getInstance();
-        DatabaseReference userProjectsRef = database.getReference("/userprojects/" + auth.getUid());
-        DatabaseReference projectsRef = database.getReference("/projects/" + auth.getUid());
 
+        DatabaseReference userProjectsRef = database.getReference("/userprojects/" + auth.getUid());
+        CollectionReference userProjectsRef_ = firestore.collection("userdata").document(auth.getUid()).collection("projects");
+        DatabaseReference projectsRef = database.getReference("/projects/" + auth.getUid());
+        CollectionReference projectsRef_ = firestore.collection("/projects/");
 
         projectsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -136,6 +159,7 @@ class MainActivity extends AppCompatActivity {
                                 "Error while fetching data: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+         */
 
         // OnClicks
         findViewById(R.id.projects_main).setOnClickListener(v -> {
@@ -156,44 +180,103 @@ class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (resultCode == PackageManager.PERMISSION_GRANTED) {
-
-                // Fetch sketchware projects
-                new Thread(() -> {
-                    localProjects = Util.fetch_sketchware_projects();
-
-                    // Get sketchcollab projects
-                    for (SketchwareProject project: localProjects) {
-                        try {
-                            // Is this project a sketchcollab project?
-                            if (project.isSketchCollabProject()) {
-                                // Alright add it to the arraylist
-                                sketchcollabProjects.add(project);
-                            }
-                        } catch (JSONException e) {
-                            // Hmm weird, user's project is corrupted
-                            e.printStackTrace();
-                        }
-                    }
-
-                    // Check if there isn't any sketchcollab projects
-                    if (sketchcollabProjects.size() == 0)
-                        // Ight ima head out
-                        return;
-
-                    for (SketchwareProject project: sketchcollabProjects) {
-                        try {
-                            // Check every project if the project has changed yet
-                            // Get the latest project commit
-                            String project_commit = project.getSketchCollabLatestCommitID();
-
-                            // Fetch the latest project commit in the database
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
+                initialize();
             }
         }
+    }
+
+    private void initialize() {
+        new Thread(() -> {
+            // Fetch sketchware projects
+            localProjects = Util.fetch_sketchware_projects();
+
+            // Get sketchcollab projects
+            for (SketchwareProject project: localProjects) {
+                try {
+                    // Is this project a sketchcollab project?
+                    if (project.isSketchCollabProject()) {
+                        // Alright add it to the arraylist
+                        sketchcollabProjects.add(project);
+                    }
+                } catch (JSONException e) {
+                    // Hmm weird, user's project is corrupted
+                    e.printStackTrace();
+                }
+            }
+
+            // Check if there isn't any sketchcollab projects
+            if (sketchcollabProjects.size() == 0)
+                // Ight ima head out
+                return;
+
+            for (SketchwareProject project: sketchcollabProjects) {
+                try {
+                    // Check every project if the project has changed yet
+                    // Get the latest project commit, project visibility, and the author
+                    String project_commit = project.getSketchCollabLatestCommitID();
+                    String project_key = project.getSketchCollabKey();
+                    boolean is_project_public = project.isSketchCollabProjectPublic();
+                    String author = project.getSketchCollabAuthorUid();
+
+                    if (!author.equals(auth.getUid())) {
+                        // Hmm, the user "stole" another user's project
+                        // Let's skip this one :e_sweat_smile:
+                        // =========================================================================
+                        // Anyway, don't worry the user cannot edit the data in the database, it's
+                        // protected by the firebase firestore rules.
+
+                        continue;
+                    }
+
+                    // Fetch the latest project commit in the database
+                    Task<QuerySnapshot> task = database.collection(is_project_public ? "projects" : "userdata/" + author + "/projects").document(project_key).collection("commits")
+                            .orderBy("timestamp", Query.Direction.DESCENDING) // Order by the timestamp
+                            .limit(1) // I just wanted the latest commit, not every commit
+                            .get(Source.SERVER) // Don't get the cache :/
+                            .addOnCompleteListener(t -> { });
+
+                    // Wait for the task to finish, i don't want to query a lot of tasks in a short amount of time
+                    QuerySnapshot snapshot = Tasks.await(task);
+
+                    // Check if task is successful or not
+                    if (task.isSuccessful()) {
+                        assert snapshot != null; // snapshot shouldn't be null
+
+                        DocumentSnapshot commit_info = snapshot.getDocuments().get(0);
+
+                        if (!project_commit.equals(commit_info.getId())) {
+                            // Hmm, looks like this man's project has an older commit, tell him to update his project
+                        } else {
+                            // This mans project has the same commit
+                            // Check if this project also has the same shasum
+                            try {
+                                String local_shasum = project.sha512sum();
+                                String server_shasum = commit_info.getString("sha512sum");
+
+                                // Check if they're the same
+                                if (!local_shasum.equals(server_shasum)) {
+                                    // Alright looks like he's got some local updates
+                                    // Fetch the project
+
+                                    // Add this to the changed sketchcollab sketchware projects arraylist
+
+                                } else {
+                                    // Boom, it's the same project with no updates
+                                    // ight ima head out
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    } else {
+                        Toast.makeText(MainActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                    }
+
+                } catch (JSONException | InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }
