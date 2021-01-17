@@ -158,6 +158,22 @@ public class SketchwareProject implements Parcelable {
         project_id = Integer.parseInt(mysc_project_.getString("sc_id"));
     }
 
+    public boolean isSketchCollabProject() throws JSONException {
+        return new JSONObject(Util.decrypt(mysc_project)).has("sk-collab-key");
+    }
+
+    public String getSketchCollabKey() throws JSONException {
+        return new JSONObject(Util.decrypt(mysc_project)).getString("sk-collab-key");
+    }
+
+    public String getSketchCollabAuthorUid() throws JSONException {
+        return new JSONObject(Util.decrypt(mysc_project)).getString("sk-collab-author");
+    }
+
+    public boolean isSketchCollabProjectPublic() throws JSONException {
+        return new JSONObject(Util.decrypt(mysc_project)).getString("sk-collab-project-visibility").equals("public");
+    }
+
     protected SketchwareProject(Parcel in) {
         logic = in.createByteArray();
         view = in.createByteArray();
