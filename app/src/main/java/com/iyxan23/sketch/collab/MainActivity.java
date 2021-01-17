@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Pair;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import androidx.core.view.ViewCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
+import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -24,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -36,6 +39,7 @@ class MainActivity extends AppCompatActivity {
     ArrayList<Pair<String, JSONObject>> userProjects = new ArrayList<>();
 
     ArrayList<SketchwareProject> localProjects = new ArrayList<>();
+    ArrayList<SketchwareProject> sketchcollabProjects = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,47 +161,34 @@ class MainActivity extends AppCompatActivity {
                 new Thread(() -> {
                     localProjects = Util.fetch_sketchware_projects();
 
-                    SharedPreferences sp = getSharedPreferences("data", MODE_PRIVATE);
-                    JSONObject sp_json = null;
-
-                    if (!sp.contains("last_changes") && sp.getString("last_changes", "").equals("")) {
-                        sp_json = new JSONObject();
-
-                        // Hash every sketchware projects and save them into this field
-                        for (SketchwareProject project: localProjects) {
-                            try {
-                                if (!project.isSketchCollabProject())
-                                    continue;
-
-                                String shasum = project.sha512sum();
-
-                                sp_json.put(project.getSketchCollabKey(), shasum);
-                            } catch (JSONException e) {
-                                // Hmm, weird
-                                e.printStackTrace();
-                            }
-                        }
-
-                        sp.edit().putString("last_changes", sp_json.toString()).apply();
-                    } else {
+                    // Get sketchcollab projects
+                    for (SketchwareProject project: localProjects) {
                         try {
-                            sp_json = new JSONObject(sp.getString("last_changes", ""));
-
-                            for (SketchwareProject project: localProjects) {
-                                if (!project.isSketchCollabProject())
-                                    continue;
-
-                                // Check if the hash doesn't match
-                                String shasum_before = sp_json.getString(project.getSketchCollabKey());
-                                String shasum_now = project.sha512sum();
-
-                                if (!shasum_now.equals(shasum_before)) {
-                                    // Add to the changes list
-
-                                }
+                            // Is this project a sketchcollab project?
+                            if (project.isSketchCollabProject()) {
+                                // Alright add it to the arraylist
+                                sketchcollabProjects.add(project);
                             }
                         } catch (JSONException e) {
-                            // Very weird execption
+                            // Hmm weird, user's project is corrupted
+                            e.printStackTrace();
+                        }
+                    }
+
+                    // Check if there isn't any sketchcollab projects
+                    if (sketchcollabProjects.size() == 0)
+                        // Ight ima head out
+                        return;
+
+                    for (SketchwareProject project: sketchcollabProjects) {
+                        try {
+                            // Check every project if the project has changed yet
+                            // Get the latest project commit
+                            String project_commit = project.getSketchCollabLatestCommitID();
+
+                            // Fetch the latest project commit in the database
+
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
