@@ -2,6 +2,7 @@ package com.iyxan23.sketch.collab;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Pair;
@@ -18,8 +19,11 @@ import com.google.firebase.database.*;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -57,10 +61,6 @@ class MainActivity extends AppCompatActivity {
                             Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     100);
         }
-
-        // TODO: IMPLEMENT THIS
-        // String internalPath = getFilesDir().getAbsolutePath();
-        // File lastChanges = new File(internalPath + "/last_changes");
 
         // Get user projects, and projects that the user collaborates
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -154,7 +154,54 @@ class MainActivity extends AppCompatActivity {
             if (resultCode == PackageManager.PERMISSION_GRANTED) {
 
                 // Fetch sketchware projects
-                new Thread(() -> localProjects = Util.fetch_sketchware_projects()).start();
+                new Thread(() -> {
+                    localProjects = Util.fetch_sketchware_projects();
+
+                    SharedPreferences sp = getSharedPreferences("data", MODE_PRIVATE);
+                    JSONObject sp_json = null;
+
+                    if (!sp.contains("last_changes") && sp.getString("last_changes", "").equals("")) {
+                        sp_json = new JSONObject();
+
+                        // Hash every sketchware projects and save them into this field
+                        for (SketchwareProject project: localProjects) {
+                            try {
+                                if (!project.isSketchCollabProject())
+                                    continue;
+
+                                String shasum = project.sha512sum();
+
+                                sp_json.put(project.getSketchCollabKey(), shasum);
+                            } catch (JSONException e) {
+                                // Hmm, weird
+                                e.printStackTrace();
+                            }
+                        }
+
+                        sp.edit().putString("last_changes", sp_json.toString()).apply();
+                    } else {
+                        try {
+                            sp_json = new JSONObject(sp.getString("last_changes", ""));
+
+                            for (SketchwareProject project: localProjects) {
+                                if (!project.isSketchCollabProject())
+                                    continue;
+
+                                // Check if the hash doesn't match
+                                String shasum_before = sp_json.getString(project.getSketchCollabKey());
+                                String shasum_now = project.sha512sum();
+
+                                if (!shasum_now.equals(shasum_before)) {
+                                    // Add to the changes list
+
+                                }
+                            }
+                        } catch (JSONException e) {
+                            // Very weird execption
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
             }
         }
     }
