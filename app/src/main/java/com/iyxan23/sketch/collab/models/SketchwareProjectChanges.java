@@ -1,5 +1,8 @@
 package com.iyxan23.sketch.collab.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.Nullable;
 
 import com.iyxan23.sketch.collab.Util;
@@ -10,7 +13,7 @@ import java.util.LinkedList;
 
 import name.fraser.neil.plaintext.diff_match_patch;
 
-public class SketchwareProjectChanges {
+public class SketchwareProjectChanges implements Parcelable {
     public SketchwareProject before;
     public SketchwareProject after;
 
@@ -26,6 +29,23 @@ public class SketchwareProjectChanges {
         this.before = before;
         this.after = after;
     }
+
+    protected SketchwareProjectChanges(Parcel in) {
+        before = in.readParcelable(SketchwareProject.class.getClassLoader());
+        after = in.readParcelable(SketchwareProject.class.getClassLoader());
+    }
+
+    public static final Creator<SketchwareProjectChanges> CREATOR = new Creator<SketchwareProjectChanges>() {
+        @Override
+        public SketchwareProjectChanges createFromParcel(Parcel in) {
+            return new SketchwareProjectChanges(in);
+        }
+
+        @Override
+        public SketchwareProjectChanges[] newArray(int size) {
+            return new SketchwareProjectChanges[size];
+        }
+    };
 
     public boolean isEqual() throws JSONException {
         return before.sha512sum().equals(after.sha512sum());
@@ -80,5 +100,16 @@ public class SketchwareProjectChanges {
                         Util.decrypt(after)
                 )
         );
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(before, flags);
+        dest.writeParcelable(after, flags);
     }
 }
