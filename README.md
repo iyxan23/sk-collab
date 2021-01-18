@@ -1,5 +1,16 @@
 <img src="https://github.com/Iyxan23/sk-collab/blob/main/sk-collab-icon-v2.png" width="150" height="150"/>
 
+[![GitHub license](https://img.shields.io/github/license/Iyxan23/sk-collab.svg)](https://github.com/Iyxan23/sk-collab/blob/master/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/Iyxan23/sk-collab.svg)](https://GitHub.com/Iyxan23/sk-collab/issues/)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Iyxan23/sk-collab/graphs/commit-activity)
+[![GitHub last commit](https://img.shields.io/github/last-commit/Iyxan23/sk-collab.svg?style=flat)]()
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/w/Iyxan23/sk-collab?style=flat)]()
+[![GitHub pull-requests](https://img.shields.io/github/issues-pr/Iyxan23/sk-collab.svg)](https://GitHub.com/Iyxan23/sk-collab/pull/)
+[![GitHub pull-requests closed](https://img.shields.io/github/issues-pr-closed/Iyxan23/sk-collab.svg)](https://GitHub.com/Iyxan23/sk-collab/pull/)
+[![PR's Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](http://makeapullrequest.com)
+[![Open Source? Yes!](https://badgen.net/badge/Open%20Source%20%3F/Yes%21/blue?icon=github)](https://github.com/Iyxan23/sk-collab)
+[![GitHub forks](https://img.shields.io/github/forks/Iyxan23/sk-collab.svg?style=social&label=Fork&maxAge=2592000)](https://GitHub.com/Iyxan23/sk-collab/network/)
+
 # SketchCollab
 SketchCollab is an android application that let's you collaborate in sketchware without any hassle. It is similar to github, but specialized for sketchware.
 
@@ -21,10 +32,13 @@ SketchCollab break these limits, SketchCollab allows you to edit the project at 
 <br/>
 <br/>
 
-## 📜 Note
+## Note
 I didn't invent version control. SketchCollab is only a version control system for Sketchware projects.
 
 ## Branches
- - main: Latest tested and stable branch
- - dev: Development branch, unstable, unchecked, and untested
- - old-java: The old Java and unfinished version of SketchCollab
+ - [stable](https://github.com/Iyxan23/sk-collab/tree/stable): Stable branch, where every release / beta / alpha version will be pushed into
+ - [main](https://github.com/Iyxan23/sk-collab/tree/main): Development branch, checked, but unstable
+ - [dev](https://github.com/Iyxan23/sk-collab/tree/dev): Development branch, unstable, unchecked, and untested
+ - [new-old-kotlin](https://github.com/Iyxan23/sk-collab/tree/new-old-kotlin): The old Kotlin codebase and unfinished version of SketchCollab
+ - [old-java](https://github.com/Iyxan23/sk-collab/tree/old-java): The old Java and unfinished version of SketchCollab
+ - [other branches] - Usually used to add breaking features and soon will be merged into dev when it's complete.
