@@ -12,31 +12,31 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.iyxan23.sketch.collab.models.SketchwareProject;
 import com.iyxan23.sketch.collab.R;
+import com.iyxan23.sketch.collab.models.SketchwareProject;
 import com.iyxan23.sketch.collab.online.UploadActivity;
 
 import org.json.JSONException;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 
 public class SketchwareProjectAdapter extends RecyclerView.Adapter<SketchwareProjectAdapter.ViewHolder> {
-    private static final String TAG = "SketchwareProjectAdapter";
+    private static final String TAG = "SketchwareProjectAdaptr";
 
     private ArrayList<SketchwareProject> datas = new ArrayList<>();
-    final private Activity activity;
+    final private WeakReference<Activity> activity;
 
     public SketchwareProjectAdapter(Activity activity) {
-        this.activity = activity;
+        this.activity = new WeakReference<>(activity);
     }
 
     public SketchwareProjectAdapter(ArrayList<SketchwareProject> datas, Activity activity) {
         this.datas = datas;
-        this.activity = activity;
+        this.activity = new WeakReference<>(activity);
     }
 
     public void updateView(ArrayList<SketchwareProject> datas) {
@@ -66,11 +66,11 @@ public class SketchwareProjectAdapter extends RecyclerView.Adapter<SketchwarePro
         holder.upload_button.setOnClickListener(v -> {
             // Go to UploadActivity
             try {
-                Intent i = new Intent(activity, UploadActivity.class);
+                Intent i = new Intent(activity.get(), UploadActivity.class);
                 i.putExtra("project_id", project.getProjectID());
-                activity.startActivity(i);
+                activity.get().startActivity(i);
             } catch (JSONException e) {
-                Toast.makeText(activity, "An error occured: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(activity.get(), "An error occured: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

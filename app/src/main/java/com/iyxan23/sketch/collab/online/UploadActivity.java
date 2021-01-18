@@ -12,8 +12,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.Blob;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.Util;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
@@ -62,41 +66,22 @@ public class UploadActivity extends AppCompatActivity {
         EditText name = findViewById(R.id.name_upload);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
         uploadButton.setOnClickListener(v -> {
-            DatabaseReference projectReference = database.getReference("/" + (isPrivate.isChecked() ? "userprojects/" + auth.getUid() + "/projects" : "projects"));
-            String pushKey = projectReference.push().getKey();
-            DatabaseReference commitsReference = database.getReference("/" + (isPrivate.isChecked() ? "userprojects/" + auth.getUid() + "/commits" : "commits"));
+            // DatabaseReference projectReference = database.getReference("/" + (isPrivate.isChecked() ? "userprojects/" + auth.getUid() + "/projects" : "projects"));
+            CollectionReference projectRef = firestore.collection("/" + (isPrivate.isChecked() ? "userdata/" + auth.getUid() + "/projects" : "projects"));
+            // String pushKey = projectReference.push().getKey();
+            // DatabaseReference commitsReference = database.getReference("/" + (isPrivate.isChecked() ? "userprojects/" + auth.getUid() + "/commits" : "commits"));
 
             // Nullcheck
+            /*
             if (pushKey == null) {
                 Toast.makeText(UploadActivity.this, "An error occured: pushKey is null", Toast.LENGTH_LONG).show();
                 return;
             }
-
-            // Add a custom key to the sketchware project named "sk-colab-key": "(pushkey)" and "sk-collab-owner": "(uid)"
-            try {
-                swProj.mysc_project = Util.encrypt(
-                        new JSONObject(
-                                Util.decrypt(swProj.mysc_project)
-                        )
-                                .put("sk-collab-key", pushKey)  // The pushkey (location of the project)
-                                .put("sk-collab-owner", auth.getUid())  // The owner of the project (used to access private projects)
-                                .put("sk-collab-latest-commit", "initial")   // The latest commit id of this project
-                                .put("sk-collab-project-visibility", isPrivate.isChecked() ? "private" : "public")   // The project visibility. Don't worry, it's used to determine where is the project located in the database
-                                .toString()
-                                .getBytes()
-                );
-                swProj.applyChanges();
-            } catch (JSONException | IOException e) {
-                // This shouldn't happen
-                e.printStackTrace();
-                Toast.makeText(UploadActivity.this, "An error occured while applying the key: " + e.getMessage(), Toast.LENGTH_LONG).show();
-
-                // Stop
-                return;
-            }
+             */
 
             HashMap<String, Object> data = new HashMap<String, Object>() {{
                 put("name", name.getText());
@@ -104,31 +89,158 @@ public class UploadActivity extends AppCompatActivity {
                 put("author", auth.getUid());
                 put("version", 1);
                 put("open", isOpenSource.isChecked());
-                put("snapshot",
-                    new HashMap<String, Object>() {{
-                        put("commit_id", "initial");
-                        put("file", Util.base64encode(swProj.file));
-                        put("library", Util.base64encode(swProj.library));
-                        put("logic", Util.base64encode(swProj.logic));
-                        put("project", Util.base64encode(swProj.mysc_project));
-                        put("resource", Util.base64encode(swProj.resource));
-                        put("view", Util.base64encode(swProj.view));
-                    }}
-                );
             }};
+
+            try {
+                data.put("sha512sum", swProj.sha512sum());
+            } catch (JSONException e) {
+                Toast.makeText(UploadActivity.this, "An error occured while doing shasum: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                return;
+            }
 
             HashMap<String, Object> commit_data = new HashMap<String, Object>() {{
                 put("author", auth.getUid());
-                put("timestamp", System.currentTimeMillis());
+                put("timestamp", FieldValue.serverTimestamp());
+                put("name", "Initial Commit");
             }};
 
 
             ProgressDialog progressDialog = new ProgressDialog(UploadActivity.this);
             progressDialog.setTitle("Uploading project");
-            progressDialog.setMessage("Uploading " + name.getText() + ", please wait");
-            progressDialog.show();
+            progressDialog.setMessage("Uploading project metadata");
+            progressDialog.setCancelable(false);
             progressDialog.setIndeterminate(true);
+            progressDialog.show();
 
+            projectRef
+                    .add(data)
+                    .addOnCompleteListener(task -> {
+                        if (!task.isSuccessful()) {
+                            // Failed
+                            Toast.makeText(UploadActivity.this, "An error occured while uploading: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            progressDialog.dismiss();
+                            return;
+                        }
+
+                        // Get the result
+                        DocumentReference res = task.getResult();
+
+                        // Add a custom key to the sketchware project named "sk-colab-key": "(pushkey)" and "sk-collab-owner": "(uid)"
+                        try {
+                            swProj.mysc_project = Util.encrypt(
+                                    new JSONObject(
+                                            Util.decrypt(swProj.mysc_project)
+                                    )
+                                            .put("sk-collab-key", res.getId())  // The document id (location of the project)
+                                            .put("sk-collab-owner", auth.getUid())  // The owner of the project (used to access private projects)
+                                            .put("sk-collab-latest-commit", "initial")   // The latest commit id of this project
+                                            .put("sk-collab-project-visibility", isPrivate.isChecked() ? "private" : "public")   // The project visibility. Don't worry, it's used to determine where is the project located in the database
+                                            .toString()
+                                            .getBytes()
+                            );
+                            swProj.applyChanges();
+                        } catch (JSONException | IOException e) {
+                            // This shouldn't happen
+                            e.printStackTrace();
+                            Toast.makeText(UploadActivity.this, "An error occured while applying the key: " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                            // Stop
+                            return;
+                        }
+
+                        // Upload the snapshot / project files
+                        CollectionReference snapshotRef =
+                                projectRef
+                                        .document(res.getId())
+                                        .collection("snapshot");
+
+                        CollectionReference commitRef =
+                                projectRef
+                                        .document(res.getId())
+                                        .collection("commits");
+
+                        // note: yes i know, this looks very dumb
+                        snapshotRef
+
+                                // Upload project files ============================================
+                                // Upload data/logic
+                                .document("logic")
+                                .set(new HashMap<String, Object>() {{
+                                    put("data", Blob.fromBytes(swProj.logic));
+                                    put("shasum", Util.sha512(swProj.logic));
+                                }}
+                                )
+                                // Upload data/view
+                                .continueWithTask(unused ->
+                                        snapshotRef
+                                            .document("view")
+                                            .set(new HashMap<String, Object>() {{
+                                                put("data", Blob.fromBytes(swProj.view));
+                                                put("shasum", Util.sha512(swProj.view));
+                                            }})
+                                )
+                                // Upload data/file
+                                .continueWithTask(unused ->
+                                        snapshotRef
+                                            .document("file")
+                                            .set(new HashMap<String, Object>() {{
+                                                put("data", Blob.fromBytes(swProj.file));
+                                                put("shasum", Util.sha512(swProj.file));
+                                            }})
+                                )
+                                // Upload data/resource
+                                .continueWithTask(unused ->
+                                        snapshotRef
+                                                .document("resource")
+                                                .set(new HashMap<String, Object>() {{
+                                                    put("data", Blob.fromBytes(swProj.resource));
+                                                    put("shasum", Util.sha512(swProj.resource));
+                                                }})
+                                )
+                                // Upload data/library
+                                .continueWithTask(unused ->
+                                        snapshotRef
+                                                .document("library")
+                                                .set(new HashMap<String, Object>() {{
+                                                    put("data", Blob.fromBytes(swProj.library));
+                                                    put("shasum", Util.sha512(swProj.library));
+                                                }})
+                                )
+                                // Upload mysc/project
+                                .continueWithTask(unused ->
+                                        snapshotRef
+                                                .document("mysc_project")
+                                                .set(new HashMap<String, Object>() {{
+                                                    put("data", Blob.fromBytes(swProj.mysc_project));
+                                                    put("shasum", Util.sha512(swProj.mysc_project));
+                                                }})
+                                )
+                                // Upload project files ============================================
+
+                                // Upload the commit data ==========================================
+                                .continueWithTask(unused ->
+                                    commitRef
+                                            .document("initial")  // The first ever commit on a project is set with the ID "initial"
+                                            .set(commit_data)
+                                )
+                                // Upload the commit data ==========================================
+
+                                // Done
+                                .addOnCompleteListener(task1 -> {
+                                    progressDialog.dismiss();
+
+                                    if (task1.isSuccessful()) {
+                                        // Alright, nice, destroy the activity and move on
+                                        Toast.makeText(UploadActivity.this, "Project Uploaded, refresh the homepage to see your project.", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    } else {
+                                        // Sad, it failed
+                                        Toast.makeText(UploadActivity.this, "An error occured while uploading: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                    });
+
+            /*
             projectReference
                     .child(pushKey)
                     .setValue(data)
@@ -151,6 +263,8 @@ public class UploadActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                         Toast.makeText(UploadActivity.this, "An error occured: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     });
+
+             */
         });
     }
 }

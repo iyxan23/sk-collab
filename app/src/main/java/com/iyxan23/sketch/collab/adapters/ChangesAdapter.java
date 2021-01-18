@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,29 +15,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.models.BrowseItem;
+import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
+
+import org.w3c.dom.Text;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 
-public class BrowseItemAdapter extends RecyclerView.Adapter<BrowseItemAdapter.ViewHolder> {
+public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHolder> {
     private static final String TAG = "BrowseItemAdapter";
 
-    private ArrayList<BrowseItem> datas = new ArrayList<>();
-    // final private Activity activity;
+    private ArrayList<SketchwareProjectChanges> datas = new ArrayList<>();
     WeakReference<Activity> activity;
 
-    public BrowseItemAdapter(Activity activity) {
+    public ChangesAdapter(Activity activity) {
         this.activity = new WeakReference<>(activity);
     }
 
-    public BrowseItemAdapter(ArrayList<BrowseItem> datas, Activity activity) {
+    public ChangesAdapter(ArrayList<SketchwareProjectChanges> datas, Activity activity) {
         this.datas = datas;
         this.activity = new WeakReference<>(activity);
     }
 
-    public void updateView(ArrayList<BrowseItem> datas) {
+    public void updateView(ArrayList<SketchwareProjectChanges> datas) {
         this.datas = datas;
         notifyDataSetChanged();
     }
@@ -46,7 +50,7 @@ public class BrowseItemAdapter extends RecyclerView.Adapter<BrowseItemAdapter.Vi
         return new ViewHolder(
                 LayoutInflater
                         .from(parent.getContext())
-                        .inflate(R.layout.rv_item_browse, parent, false)
+                        .inflate(R.layout.rv_last_changes, parent, false)
         );
     }
 
@@ -54,15 +58,9 @@ public class BrowseItemAdapter extends RecyclerView.Adapter<BrowseItemAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder: called.");
-        BrowseItem item = datas.get(position);
-
-        holder.title.setText(item.username + "/" + item.project_name);
-
-        // https://stackoverflow.com/questions/25710457/how-to-subtract-two-calendar-object-in-android
-        // TODO: IMPLEMENT A BETTER VERSION OF THIS THING
-        Calendar now = Calendar.getInstance();
-        long difference = now.getTimeInMillis() - item.latest_commit_timestamp;
-        holder.last_updated.setText("Last Updated " + (int) (difference / (1000 * 60 * 60 * 24)) + " days ago");
+        SketchwareProjectChanges item = datas.get(position);
+        int files_changed = item.getFilesChanged();
+        // TODO: IMEPLEMENT THIS
     }
 
     @Override
@@ -72,13 +70,23 @@ public class BrowseItemAdapter extends RecyclerView.Adapter<BrowseItemAdapter.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title;
-        TextView last_updated;
+        TextView project_name;
+        TextView project_details;
+        TextView details;
+        ProgressBar addition;
+        ProgressBar deletion;
+        Button push_button;
+        TextView summary;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.item_browse_title);
-            last_updated = itemView.findViewById(R.id.item_browse_last_updated);
+            project_name = itemView.findViewById(R.id.project_name);
+            project_details = itemView.findViewById(R.id.project_details);
+            details = itemView.findViewById(R.id.details);
+            summary = itemView.findViewById(R.id.change_summary);
+            addition = itemView.findViewById(R.id.addition);
+            deletion = itemView.findViewById(R.id.deletion);
+            push_button = itemView.findViewById(R.id.push_button);
         }
     }
 }
