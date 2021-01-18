@@ -34,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,16 +44,16 @@ import java.util.concurrent.ExecutionException;
 
 class MainActivity extends AppCompatActivity {
 
-    // project keys
-    // Pair<project_key, "project" file>
-    ArrayList<Pair<String, JSONObject>> publicProjectsOwned = new ArrayList<>();
-    ArrayList<Pair<String, JSONObject>> userProjects = new ArrayList<>();
-
+    // List of local projects
     ArrayList<SketchwareProject> localProjects = new ArrayList<>();
+
+    // List of local sketchcollab projects
     ArrayList<SketchwareProject> sketchcollabProjects = new ArrayList<>();
 
+    // List of changes
     ArrayList<SketchwareProjectChanges> changes = new ArrayList<>();
 
+    // Firebase stuff
     FirebaseFirestore database = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
 
@@ -185,24 +186,55 @@ class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void seperateSketchCollabProjects() {
+        for (SketchwareProject project: localProjects) {
+            try {
+                // Is this project a sketchcollab project?
+                if (project.isSketchCollabProject()) {
+                    // Alright add it to the arraylist
+                    sketchcollabProjects.add(project);
+                }
+            } catch (JSONException e) {
+                // Hmm weird, user's project is corrupted
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private SketchwareProject querySnapshotToSketchwareProject(QuerySnapshot snapshot) {
+        SketchwareProject project = new SketchwareProject();
+        // Loop through the document and get every data/ files
+        for (DocumentSnapshot doc_snapshot : snapshot.getDocuments()) {
+            if (doc_snapshot.getId().equals("logic")) {
+                project.logic = doc_snapshot.getBlob("data").toBytes();
+
+            } else if (doc_snapshot.getId().equals("view")) {
+                project.view = doc_snapshot.getBlob("data").toBytes();
+
+            } else if (doc_snapshot.getId().equals("file")) {
+                project.file = doc_snapshot.getBlob("data").toBytes();
+
+            } else if (doc_snapshot.getId().equals("mysc_project")) {
+                project.mysc_project = doc_snapshot.getBlob("data").toBytes();
+
+            } else if (doc_snapshot.getId().equals("library")) {
+                project.library = doc_snapshot.getBlob("data").toBytes();
+
+            } else if (doc_snapshot.getId().equals("resource")) {
+                project.resource = doc_snapshot.getBlob("data").toBytes();
+            }
+        }
+
+        return project;
+    }
+
     private void initialize() {
         new Thread(() -> {
             // Fetch sketchware projects
             localProjects = Util.fetch_sketchware_projects();
 
             // Get sketchcollab projects
-            for (SketchwareProject project: localProjects) {
-                try {
-                    // Is this project a sketchcollab project?
-                    if (project.isSketchCollabProject()) {
-                        // Alright add it to the arraylist
-                        sketchcollabProjects.add(project);
-                    }
-                } catch (JSONException e) {
-                    // Hmm weird, user's project is corrupted
-                    e.printStackTrace();
-                }
-            }
+            seperateSketchCollabProjects();
 
             // Check if there isn't any sketchcollab projects
             if (sketchcollabProjects.size() == 0)
@@ -229,84 +261,62 @@ class MainActivity extends AppCompatActivity {
                     }
 
                     // Fetch the latest project commit in the database
-                    Task<QuerySnapshot> task = database.collection(is_project_public ? "projects" : "userdata/" + author + "/projects").document(project_key).collection("commits")
-                            .orderBy("timestamp", Query.Direction.DESCENDING) // Order by the timestamp
-                            .limit(1) // I just wanted the latest commit, not every commit
-                            .get(Source.SERVER) // Don't get the cache :/
-                            .addOnCompleteListener(t -> { });
+                    Task<QuerySnapshot> task =
+                            database.collection(is_project_public ? "projects" : "userdata/" + author + "/projects").document(project_key).collection("commits")
+                                    .orderBy("timestamp", Query.Direction.DESCENDING) // Order by the timestamp
+                                    .limit(1) // I just wanted the latest commit, not every commit
+                                    .get(Source.SERVER); // Don't get the cache :/
 
                     // Wait for the task to finish, i don't want to query a lot of tasks in a short amount of time
                     QuerySnapshot snapshot = Tasks.await(task);
 
                     // Check if task is successful or not
-                    if (task.isSuccessful()) {
-                        assert snapshot != null; // snapshot shouldn't be null
+                    if (!task.isSuccessful()) {
+                        assert task.getException() != null; // Exception shouldn't be null if the task is not successful
 
-                        DocumentSnapshot commit_info = snapshot.getDocuments().get(0);
-
-                        if (!project_commit.equals(commit_info.getId())) {
-                            // Hmm, looks like this man's project has an older commit, tell him to update his project
-                        } else {
-                            // This mans project has the same commit
-                            // Check if this project also has the same shasum
-                            try {
-                                String local_shasum = project.sha512sum();
-                                String server_shasum = commit_info.getString("sha512sum");
-
-                                // Check if they're the same
-                                if (!local_shasum.equals(server_shasum)) {
-                                    // Alright looks like he's got some local updates with the same head commit
-
-                                    // Fetch the project
-                                    SketchwareProject head_project = new SketchwareProject();
-
-                                    Task<QuerySnapshot> project_data = database.collection(is_project_public ? "projects" : "userdata/" + author + "/projects").document(project_key).collection("snapshot")
-                                            .get(Source.SERVER) // Don't get the cache :/
-                                            .addOnCompleteListener(t -> { });
-
-                                    // Wait for the task to finish, i don't want to query a lot of tasks in a short amount of time,
-                                    // it can cause some performance issues
-                                    QuerySnapshot project_data_snapshot = Tasks.await(project_data);
-
-                                    // Loop through the document and get every data/ files
-                                    for (DocumentSnapshot doc_snapshot: project_data_snapshot.getDocuments()) {
-                                        if (doc_snapshot.getId().equals("logic")) {
-                                            head_project.logic = doc_snapshot.getBlob("data").toBytes();
-
-                                        } else if (doc_snapshot.getId().equals("view")) {
-                                            head_project.view = doc_snapshot.getBlob("data").toBytes();
-
-                                        } else if (doc_snapshot.getId().equals("file")) {
-                                            head_project.file = doc_snapshot.getBlob("data").toBytes();
-
-                                        } else if (doc_snapshot.getId().equals("mysc_project")) {
-                                            head_project.mysc_project = doc_snapshot.getBlob("data").toBytes();
-
-                                        } else if (doc_snapshot.getId().equals("library")) {
-                                            head_project.library = doc_snapshot.getBlob("data").toBytes();
-
-                                        } else if (doc_snapshot.getId().equals("resource")) {
-                                            head_project.resource = doc_snapshot.getBlob("data").toBytes();
-                                        }
-                                    }
-
-                                    // Add this to the changed sketchcollab sketchware projects arraylist
-                                    changes.add(new SketchwareProjectChanges(project, head_project));
-
-                                } /* else {
-                                    // Boom, it's the same project with no updates
-                                    // ight ima head out
-                                } */
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    } else {
                         Toast.makeText(MainActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        return;
                     }
 
-                } catch (JSONException | InterruptedException | ExecutionException e) {
+                    assert snapshot != null; // snapshot shouldn't be null
+
+                    DocumentSnapshot commit_info = snapshot.getDocuments().get(0);
+
+                    if (!project_commit.equals(commit_info.getId())) {
+                        // Hmm, looks like this man's project has an older commit, tell him to update his project
+                    } else {
+                        // This mans project has the same commit
+                        // Check if this project also has the same shasum
+                        String local_shasum = project.sha512sum();
+                        String server_shasum = commit_info.getString("sha512sum");
+
+                        // Check if they're the same
+                        if (!local_shasum.equals(server_shasum)) {
+                            // Alright looks like he's got some local updates with the same head commit
+
+                            // Fetch the project
+                            Task<QuerySnapshot> project_data =
+                                    database.collection(is_project_public ? "projects" : "userdata/" + author + "/projects").document(project_key).collection("snapshot")
+                                            .get(Source.SERVER); // Don't get the cache :/
+
+                            // Wait for the task to finish, i don't want to query a lot of tasks in a short amount of time,
+                            // it can cause some performance issues
+                            QuerySnapshot project_data_snapshot = Tasks.await(project_data);
+                            SketchwareProject head_project = querySnapshotToSketchwareProject(project_data_snapshot);
+
+                            // Add this to the changed sketchcollab sketchware projects arraylist
+                            changes.add(new SketchwareProjectChanges(project, head_project));
+
+                        } /* else {
+                            // Boom, it's the same project with no updates
+                            // ight ima head out
+                        } */
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "JSON Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             }
