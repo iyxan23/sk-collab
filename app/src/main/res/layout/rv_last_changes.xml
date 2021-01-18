@@ -47,48 +47,36 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/project_name" />
 
-        <TextView
-            android:id="@+id/textView10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/roboto_regular"
-            android:text="Logic"
-            android:textColor="#FFFFFF"
-            app:layout_constraintStart_toStartOf="@+id/project_name"
-            app:layout_constraintTop_toBottomOf="@+id/project_name" />
-
         <ProgressBar
-            android:id="@+id/addition_logic"
+            android:id="@+id/addition"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:progress="40"
             android:progressBackgroundTint="#383838"
             android:progressTint="@color/colorPrimary"
-            app:layout_constraintEnd_toStartOf="@+id/change_summary_logic"
-            app:layout_constraintStart_toEndOf="@+id/textView10"
-            app:layout_constraintTop_toTopOf="@+id/textView10" />
+            app:layout_constraintEnd_toStartOf="@+id/change_summary"
+            app:layout_constraintStart_toStartOf="@+id/project_name"
+            app:layout_constraintTop_toBottomOf="@+id/project_details" />
 
         <ProgressBar
-            android:id="@+id/deletion_logic"
+            android:id="@+id/deletion"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:progress="20"
             android:progressBackgroundTint="#383838"
             android:progressTint="@color/colorAccent"
-            app:layout_constraintEnd_toStartOf="@+id/change_summary_logic"
-            app:layout_constraintStart_toEndOf="@+id/textView10"
-            app:layout_constraintTop_toTopOf="@+id/addition_logic" />
+            app:layout_constraintEnd_toStartOf="@+id/change_summary"
+            app:layout_constraintStart_toStartOf="@+id/project_name"
+            app:layout_constraintTop_toTopOf="@+id/addition" />
 
         <TextView
-            android:id="@+id/change_summary_logic"
+            android:id="@+id/change_summary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -100,58 +88,6 @@
             app:layout_constraintTop_toBottomOf="@+id/project_details" />
 
         <TextView
-            android:id="@+id/textView12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/roboto_regular"
-            android:text="View"
-            android:textColor="#FFFFFF"
-            app:layout_constraintStart_toStartOf="@+id/textView10"
-            app:layout_constraintTop_toBottomOf="@+id/textView10" />
-
-        <ProgressBar
-            android:id="@+id/addition_view"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"
-            android:progress="40"
-            android:progressBackgroundTint="#383838"
-            android:progressTint="@color/colorPrimary"
-            app:layout_constraintEnd_toStartOf="@+id/change_summary_logic"
-            app:layout_constraintStart_toEndOf="@+id/textView10"
-            app:layout_constraintTop_toTopOf="@+id/textView12" />
-
-        <ProgressBar
-            android:id="@+id/deletion_view"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
-            android:progress="20"
-            android:progressBackgroundTint="#383838"
-            android:progressTint="@color/colorAccent"
-            app:layout_constraintEnd_toStartOf="@+id/change_summary_logic"
-            app:layout_constraintStart_toEndOf="@+id/textView10"
-            app:layout_constraintTop_toTopOf="@+id/addition_view" />
-
-        <TextView
-            android:id="@+id/change_summary_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/sourcecodepro_semibold"
-            android:text="+40 -10"
-            android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="@+id/project_details"
-            app:layout_constraintTop_toBottomOf="@+id/change_summary_logic" />
-
-        <TextView
             android:id="@+id/details"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -160,12 +96,12 @@
             android:text="Local branch is at commit e3adf6a"
             android:textColor="#FFFFFF"
             android:textSize="12sp"
-            app:layout_constraintEnd_toStartOf="@+id/upload_button"
-            app:layout_constraintStart_toStartOf="@+id/textView12"
-            app:layout_constraintTop_toBottomOf="@+id/textView12" />
+            app:layout_constraintEnd_toStartOf="@+id/push_button"
+            app:layout_constraintStart_toStartOf="@+id/addition"
+            app:layout_constraintTop_toBottomOf="@+id/addition" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/upload_button"
+            android:id="@+id/push_button"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -173,8 +109,8 @@
             android:layout_marginBottom="16dp"
             android:text="Push"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/change_summary_view"
-            app:layout_constraintTop_toBottomOf="@+id/textView12" />
+            app:layout_constraintEnd_toEndOf="@+id/change_summary"
+            app:layout_constraintTop_toBottomOf="@+id/change_summary" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
