@@ -255,15 +255,48 @@ class MainActivity extends AppCompatActivity {
 
                                 // Check if they're the same
                                 if (!local_shasum.equals(server_shasum)) {
-                                    // Alright looks like he's got some local updates
+                                    // Alright looks like he's got some local updates with the same head commit
+
                                     // Fetch the project
+                                    SketchwareProject head_project = new SketchwareProject();
+
+                                    Task<QuerySnapshot> project_data = database.collection(is_project_public ? "projects" : "userdata/" + author + "/projects").document(project_key).collection("snapshot")
+                                            .get(Source.SERVER) // Don't get the cache :/
+                                            .addOnCompleteListener(t -> { });
+
+                                    // Wait for the task to finish, i don't want to query a lot of tasks in a short amount of time,
+                                    // it can cause some performance issues
+                                    QuerySnapshot project_data_snapshot = Tasks.await(project_data);
+
+                                    // Loop through the document and get every data/ files
+                                    for (DocumentSnapshot doc_snapshot: project_data_snapshot.getDocuments()) {
+                                        if (doc_snapshot.getId().equals("logic")) {
+                                            head_project.logic = doc_snapshot.getBlob("data").toBytes();
+
+                                        } else if (doc_snapshot.getId().equals("view")) {
+                                            head_project.view = doc_snapshot.getBlob("data").toBytes();
+
+                                        } else if (doc_snapshot.getId().equals("file")) {
+                                            head_project.file = doc_snapshot.getBlob("data").toBytes();
+
+                                        } else if (doc_snapshot.getId().equals("mysc_project")) {
+                                            head_project.mysc_project = doc_snapshot.getBlob("data").toBytes();
+
+                                        } else if (doc_snapshot.getId().equals("library")) {
+                                            head_project.library = doc_snapshot.getBlob("data").toBytes();
+
+                                        } else if (doc_snapshot.getId().equals("resource")) {
+                                            head_project.resource = doc_snapshot.getBlob("data").toBytes();
+                                        }
+                                    }
 
                                     // Add this to the changed sketchcollab sketchware projects arraylist
+                                    changes.add(new SketchwareProjectChanges(project, head_project));
 
-                                } else {
+                                } /* else {
                                     // Boom, it's the same project with no updates
                                     // ight ima head out
-                                }
+                                } */
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
