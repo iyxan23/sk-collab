@@ -31,6 +31,8 @@ public class SketchwareProject implements Parcelable {
 
     private int project_id = -1;
 
+    public SketchwareProject() {}
+
     public SketchwareProject(byte[] logic, byte[] view, byte[] resource, byte[] library, byte[] file, byte[] mysc_project) {
         this.logic = logic;
         this.view = view;
