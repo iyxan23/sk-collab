@@ -46,7 +46,6 @@ public class BrowseActivity extends AppCompatActivity {
             }
         }
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         CollectionReference projects = firestore.collection("projects");
 
