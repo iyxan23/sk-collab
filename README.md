@@ -1,4 +1,4 @@
-<img src="https://github.com/Iyxan23/sk-collab/blob/main/sk-collab-icon-v2.png" width="150" height="150"/>
+<img src="https://github.com/Iyxan23/sk-collab/blob/main/artworks/sk-collab-icon-v2.png" width="150" height="150"/>
 
 [![GitHub license](https://img.shields.io/github/license/Iyxan23/sk-collab.svg)](https://github.com/Iyxan23/sk-collab/blob/master/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/Iyxan23/sk-collab.svg)](https://GitHub.com/Iyxan23/sk-collab/issues/)
