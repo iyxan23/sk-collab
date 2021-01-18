@@ -3,13 +3,9 @@ package com.iyxan23.sketch.collab.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.Nullable;
-
 import com.iyxan23.sketch.collab.Util;
 
 import org.json.JSONException;
-
-import java.util.LinkedList;
 
 import name.fraser.neil.plaintext.diff_match_patch;
 

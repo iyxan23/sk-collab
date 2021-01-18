@@ -12,11 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.iyxan23.sketch.collab.models.SketchwareProject;
 import com.iyxan23.sketch.collab.R;
+import com.iyxan23.sketch.collab.models.SketchwareProject;
 import com.iyxan23.sketch.collab.online.UploadActivity;
 
 import org.json.JSONException;

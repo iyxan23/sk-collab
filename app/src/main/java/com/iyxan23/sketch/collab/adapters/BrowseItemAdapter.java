@@ -2,24 +2,17 @@ package com.iyxan23.sketch.collab.adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.iyxan23.sketch.collab.models.BrowseItem;
-import com.iyxan23.sketch.collab.models.SketchwareProject;
 import com.iyxan23.sketch.collab.R;
-import com.iyxan23.sketch.collab.online.UploadActivity;
-
-import org.json.JSONException;
+import com.iyxan23.sketch.collab.models.BrowseItem;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
