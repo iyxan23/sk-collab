@@ -21,6 +21,7 @@ import com.iyxan23.sketch.collab.online.UploadActivity;
 
 import org.json.JSONException;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -29,15 +30,16 @@ public class BrowseItemAdapter extends RecyclerView.Adapter<BrowseItemAdapter.Vi
     private static final String TAG = "BrowseItemAdapter";
 
     private ArrayList<BrowseItem> datas = new ArrayList<>();
-    final private Activity activity;
+    // final private Activity activity;
+    WeakReference<Activity> activity;
 
     public BrowseItemAdapter(Activity activity) {
-        this.activity = activity;
+        this.activity = new WeakReference<>(activity);
     }
 
     public BrowseItemAdapter(ArrayList<BrowseItem> datas, Activity activity) {
         this.datas = datas;
-        this.activity = activity;
+        this.activity = new WeakReference<>(activity);
     }
 
     public void updateView(ArrayList<BrowseItem> datas) {
