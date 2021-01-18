@@ -25,6 +25,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -248,6 +251,41 @@ public class Util {
         outputStream.write(data);
         outputStream.flush();
         outputStream.close();
+    }
+
+    /**
+     * A simple function to get the addition and the deletion of a DiffMatchPatch's patch (as text)
+     *
+     * @param patch_text The patch text
+     * @return int[addition, deletion]
+     */
+    public static int[] getAdditionAndDeletion(String patch_text) {
+        Pattern p = Pattern.compile("[^@ ]([-+])(.+)");
+        Matcher m;
+
+        m = p.matcher(patch_text);
+        int add = 0;
+        int sub = 0;
+
+        while (m.find()) {
+            /* System.out.println("Found the text " + m.group(0).substring(2) + " | "+m.group(1) + " starting at index " +
+                    m.start() + " and ending at index " + m.end()); */
+
+            if (Objects.equals(m.group(1), "+")) {
+                add += m
+                        .group(0)
+                        .substring(2)
+                        .length();
+
+            } else if (Objects.equals(m.group(1), "-")) {
+                sub += m
+                        .group(0)
+                        .substring(2)
+                        .length();
+            }
+        }
+
+        return new int[] {add, sub};
     }
 
     public static byte[] joinByteArrays(final byte[] array1, @Nullable byte[] array2) {
