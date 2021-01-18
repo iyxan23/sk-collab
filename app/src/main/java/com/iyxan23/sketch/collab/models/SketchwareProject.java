@@ -123,6 +123,7 @@ public class SketchwareProject implements Parcelable {
         // Check if the project id is set
         if (project_id == -1) setProjectID();
 
+        /*
         File images_folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/resources/" + project_id + "/images/");
         File sounds_folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/resources/" + project_id + "/sounds/");
         File icons_folder  = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/resources/" + project_id + "/icons/" );
@@ -155,6 +156,7 @@ public class SketchwareProject implements Parcelable {
                 joined = Util.joinByteArrays(joined, Util.readFile(new FileInputStream(file)));
             } catch (FileNotFoundException ignored) { }
         }
+         */
 
         // Return the shasum
         return Util.sha512(joined);
