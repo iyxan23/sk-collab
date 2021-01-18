@@ -15,6 +15,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
@@ -24,6 +25,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -33,6 +37,10 @@ public class Util {
 
     public static String base64encode(String txt) {
         byte[] data = txt.getBytes();
+        return Base64.encodeToString(data, Base64.DEFAULT);
+    }
+
+    public static String base64encode(byte[] data) {
         return Base64.encodeToString(data, Base64.DEFAULT);
     }
 
@@ -67,6 +75,37 @@ public class Util {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public static void encrypt_to_path(@NonNull String path, @NonNull byte[] data) {
+        try {
+            Cipher instance = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            byte[] bytes = "sketchwaresecure".getBytes();
+            instance.init(1, new SecretKeySpec(bytes, "AES"), new IvParameterSpec(bytes));
+            byte[] doFinal = instance.doFinal(data);
+            final RandomAccessFile randomAccessFile = new RandomAccessFile(path, "rw");
+            randomAccessFile.setLength(0L);
+            randomAccessFile.write(doFinal);
+            // return new String(doFinal);
+        } catch (Exception e) {
+            Log.e("Util", "Error while encrypting at path: " + path + ", " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @Nullable
+    public static byte[] encrypt(@NonNull byte[] data) {
+        try {
+            Cipher instance = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            byte[] bytes = "sketchwaresecure".getBytes();
+            instance.init(1, new SecretKeySpec(bytes, "AES"), new IvParameterSpec(bytes));
+            return instance.doFinal(data);
+            // return new String(doFinal);
+        } catch (Exception e) {
+            Log.e("Util", "Error while encrypting: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static String sha512(byte[] input) {
@@ -108,6 +147,29 @@ public class Util {
         }
 
         return projects;
+    }
+
+    @Nullable
+    public static SketchwareProject get_sketchware_project(int id) {
+        File project_folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/");
+
+        if (!project_folder.exists() || !project_folder.isDirectory())
+            return null;
+
+        try {
+            FileInputStream file = new FileInputStream(new File(project_folder.getAbsolutePath() + "/file"));
+            FileInputStream logic = new FileInputStream(new File(project_folder.getAbsolutePath() + "/logic"));
+            FileInputStream library = new FileInputStream(new File(project_folder.getAbsolutePath() + "/library"));
+            FileInputStream view = new FileInputStream(new File(project_folder.getAbsolutePath() + "/view"));
+            FileInputStream resource = new FileInputStream(new File(project_folder.getAbsolutePath() + "/resource"));
+
+            FileInputStream mysc_project = new FileInputStream(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/" + project_folder.getName() + "/project"));
+
+            return new SketchwareProject(readFile(logic), readFile(view), readFile(resource), readFile(library), readFile(file), readFile(mysc_project));
+
+        } catch (FileNotFoundException ignored) { }
+
+        return null;
     }
 
     // Copied from: https://www.journaldev.com/9400/android-external-storage-read-write-save-file
@@ -182,6 +244,48 @@ public class Util {
         }
 
         return reader.array;
+    }
+
+    public static void writeFile(File file, byte[] data) throws IOException {
+        FileOutputStream outputStream = new FileOutputStream(file);
+        outputStream.write(data);
+        outputStream.flush();
+        outputStream.close();
+    }
+
+    /**
+     * A simple function to get the addition and the deletion of a DiffMatchPatch's patch (as text)
+     *
+     * @param patch_text The patch text
+     * @return int[addition, deletion]
+     */
+    public static int[] getAdditionAndDeletion(String patch_text) {
+        Pattern p = Pattern.compile("[^@ ]([-+])(.+)");
+        Matcher m;
+
+        m = p.matcher(patch_text);
+        int add = 0;
+        int sub = 0;
+
+        while (m.find()) {
+            /* System.out.println("Found the text " + m.group(0).substring(2) + " | "+m.group(1) + " starting at index " +
+                    m.start() + " and ending at index " + m.end()); */
+
+            if (Objects.equals(m.group(1), "+")) {
+                add += m
+                        .group(0)
+                        .substring(2)
+                        .length();
+
+            } else if (Objects.equals(m.group(1), "-")) {
+                sub += m
+                        .group(0)
+                        .substring(2)
+                        .length();
+            }
+        }
+
+        return new int[] {add, sub};
     }
 
     public static byte[] joinByteArrays(final byte[] array1, @Nullable byte[] array2) {
