@@ -40,7 +40,7 @@ public class CheckActivity extends AppCompatActivity {
                 DocumentSnapshot snapshot = task.getResult();
 
                 // Save it into a variable
-                boolean isOpen = snapshot.get("open", boolean.class);
+                boolean isOpen = snapshot.getBoolean("is_open");
 
                 // Check if it is 1 (open) or 0 (closed)
                 if (isOpen) {
