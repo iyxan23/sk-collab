@@ -65,7 +65,7 @@ public class SketchwareProjectsListActivity extends AppCompatActivity {
             findViewById(R.id.progressBar_swplist).setVisibility(View.GONE);
 
             // Update the data
-            adapter.updateView(projects);
+            runOnUiThread(() -> adapter.updateView(projects));
         }).start();
     }
 }
