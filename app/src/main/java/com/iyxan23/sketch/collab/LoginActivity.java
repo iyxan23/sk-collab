@@ -35,9 +35,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Used to send user to MainActivity
-        Intent mainActivityIntent = new Intent(this, MainActivity.class);
-
         // The Login Button
         Button loginButton = findViewById(R.id.login_button);
 
@@ -49,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
         if (auth.getCurrentUser() != null) {
             // User has logged in!
             // Send him to MainActivity
-            startActivity(mainActivityIntent);
+            startActivity(new Intent(this, MainActivity.class));
 
             // Finish the activity so the user cannot go back
             // to this activity using the back button
@@ -115,7 +112,7 @@ public class LoginActivity extends AppCompatActivity {
                         usersRef.add(userdata).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 // Done! Redirect user to MainActivity
-                                startActivity(mainActivityIntent);
+                                startActivity(new Intent(this, MainActivity.class));
 
                                 // Finish the activity so the user cannot go back
                                 // to this activity using the back button
@@ -136,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
                             passwordEditText.getText().toString()
                     ).addOnSuccessListener(s -> {
                         // Success! redirect user to the MainActivity
-                        startActivity(mainActivityIntent);
+                        startActivity(new Intent(this, MainActivity.class));
                         finishActivity(0);
 
                     }).addOnFailureListener(f -> {
