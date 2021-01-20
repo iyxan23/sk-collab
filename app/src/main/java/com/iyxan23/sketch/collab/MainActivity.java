@@ -224,6 +224,9 @@ public class MainActivity extends AppCompatActivity {
             // Fetch sketchware projects
             localProjects = Util.fetch_sketchware_projects();
 
+            // Check if it's empty
+            if (localProjects.isEmpty()) return;
+
             // Get sketchcollab projects
             seperateSketchCollabProjects();
 
