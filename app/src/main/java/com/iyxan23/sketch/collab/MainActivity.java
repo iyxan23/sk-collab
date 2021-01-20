@@ -4,13 +4,14 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.view.ViewCompat;
+import androidx.core.util.Pair;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -150,12 +151,15 @@ public class MainActivity extends AppCompatActivity {
          */
 
         // OnClicks
+        // When you click the "Sketchware Projects" item
         findViewById(R.id.projects_main).setOnClickListener(v -> {
 
+            // Move to SketchwareProjectsListActivity (with some shared elements transition)
             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                     MainActivity.this,
-                    findViewById(R.id.imageView8),
-                    Objects.requireNonNull( ViewCompat.getTransitionName(findViewById(R.id.imageView8)) )
+
+                    new Pair<>(findViewById(R.id.imageView8), "code_icon"),
+                    new Pair<>(findViewById(R.id.textView8), "sketchware_projects_text")
             );
 
             Intent intent = new Intent(MainActivity.this,SketchwareProjectsListActivity.class);
