@@ -23,6 +23,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Objects;
 
+// TODO: CREATE A PROGRESSBAR WHILE LOGGING IN / REGISTERING
+
 public class LoginActivity extends AppCompatActivity {
 
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -35,9 +37,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Used to send user to MainActivity
-        Intent mainActivityIntent = new Intent(this, MainActivity.class);
-
         // The Login Button
         Button loginButton = findViewById(R.id.login_button);
 
@@ -49,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         if (auth.getCurrentUser() != null) {
             // User has logged in!
             // Send him to MainActivity
-            startActivity(mainActivityIntent);
+            startActivity(new Intent(this, MainActivity.class));
 
             // Finish the activity so the user cannot go back
             // to this activity using the back button
@@ -115,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
                         usersRef.add(userdata).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 // Done! Redirect user to MainActivity
-                                startActivity(mainActivityIntent);
+                                startActivity(new Intent(this, MainActivity.class));
 
                                 // Finish the activity so the user cannot go back
                                 // to this activity using the back button
@@ -136,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
                             passwordEditText.getText().toString()
                     ).addOnSuccessListener(s -> {
                         // Success! redirect user to the MainActivity
-                        startActivity(mainActivityIntent);
+                        startActivity(new Intent(this, MainActivity.class));
                         finishActivity(0);
 
                     }).addOnFailureListener(f -> {
@@ -228,8 +227,12 @@ public class LoginActivity extends AppCompatActivity {
         if (password.equals(""))
             res = "Password cannot be empty";
 
+        // USERNAME_INVALID
+        if (!username.matches(usernameRegex) && isRegister)
+            res = "Username can only contain A-Z a-z 0-9 -_.";
+
         // USERNAME_EMPTY
-        if (username.equals("") && !isRegister)
+        if (username.equals("") && isRegister)
             res = "Username cannot be empty";
 
         // PASSWORD_LESS_THAN_6
@@ -239,10 +242,6 @@ public class LoginActivity extends AppCompatActivity {
         // EMAIL_INVALID
         if (!email.matches(emailRegex))
             res = "Email is invalid";
-
-        // USERNAME_INVALID
-        if (!username.matches(usernameRegex))
-            res = "Username can only contain A-Z a-z 0-9 -_.";
 
         return res;
     }

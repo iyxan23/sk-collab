@@ -127,7 +127,11 @@ public class Util {
     // This function should be ran on a different thread
     public static ArrayList<SketchwareProject> fetch_sketchware_projects() {
         ArrayList<SketchwareProject> projects = new ArrayList<>();
-        for (File project_folder: new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/").listFiles()) {
+        ArrayList<String> files = listDir(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/");
+
+        for (String project_folder_path: files) {
+            File project_folder = new File(project_folder_path);
+
             // Just in case
             if (project_folder.isFile())
                 continue;
@@ -295,5 +299,20 @@ public class Util {
         byte[] joinedArray = Arrays.copyOf(array1, array1.length + array2.length);
         System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
         return joinedArray;
+    }
+
+    public static ArrayList<String> listDir(String str) {
+        ArrayList<String> arrayList = new ArrayList<>();
+        File file = new File(str);
+        if (file.exists() && !file.isFile()) {
+            File[] listFiles = file.listFiles();
+            if (listFiles != null && listFiles.length > 0) {
+                arrayList.clear();
+                for (File absolutePath : listFiles) {
+                    arrayList.add(absolutePath.getAbsolutePath());
+                }
+            }
+        }
+        return arrayList;
     }
 }

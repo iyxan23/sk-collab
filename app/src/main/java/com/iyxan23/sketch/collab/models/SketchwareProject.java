@@ -4,10 +4,12 @@ import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.iyxan23.sketch.collab.Util;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -210,6 +212,17 @@ public class SketchwareProject implements Parcelable {
             metadata = new SketchwareProjectMetadata(new JSONObject(Util.decrypt(mysc_project)));
         } catch (JSONException ignored) { }
     }
+
+    @NotNull
+    public String toString() {
+        try {
+            return "SketchwareProject with ID " + getProjectID() + "\nisSketchCollabProject " + isSketchCollabProject() + "\nsha512sum: " + sha512sum();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "SketchwareProject";
+        }
+    }
+
 
     public static final Creator<SketchwareProject> CREATOR = new Creator<SketchwareProject>() {
         @Override

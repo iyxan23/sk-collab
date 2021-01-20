@@ -47,7 +47,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -59,6 +58,33 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar_proj_list" />
+
+    <TextView
+        android:id="@+id/no_sketchware_project_text_proj_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/sourcecodepro_regular"
+        android:text="There isn't any sketchware projects"
+        android:textColor="#FFFFFF"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/question_mark_proj_list"
+        app:layout_constraintStart_toStartOf="@+id/question_mark_proj_list"
+        app:layout_constraintTop_toBottomOf="@+id/question_mark_proj_list" />
+
+    <TextView
+        android:id="@+id/question_mark_proj_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/sourcecodepro_semibold"
+        android:text="\?"
+        android:textColor="#FFFFFF"
+        android:textSize="48sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

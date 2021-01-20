@@ -23,7 +23,6 @@ import org.json.JSONException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-
 public class SketchwareProjectAdapter extends RecyclerView.Adapter<SketchwareProjectAdapter.ViewHolder> {
     private static final String TAG = "SketchwareProjectAdaptr";
 
@@ -47,11 +46,7 @@ public class SketchwareProjectAdapter extends RecyclerView.Adapter<SketchwarePro
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(
-                LayoutInflater
-                        .from(parent.getContext())
-                        .inflate(R.layout.rv_sketchware_project, parent, false)
-        );
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_sketchware_project, parent, false));
     }
 
     @SuppressLint("SetTextI18n")

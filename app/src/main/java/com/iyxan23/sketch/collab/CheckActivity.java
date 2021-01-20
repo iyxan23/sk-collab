@@ -39,6 +39,8 @@ public class CheckActivity extends AppCompatActivity {
                 // Get the snapshot
                 DocumentSnapshot snapshot = task.getResult();
 
+                assert snapshot != null;
+                
                 // Save it into a variable
                 boolean isOpen = snapshot.getBoolean("is_open");
 
