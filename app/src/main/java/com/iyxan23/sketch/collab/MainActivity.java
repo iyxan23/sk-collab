@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
-class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     // List of local projects
     ArrayList<SketchwareProject> localProjects = new ArrayList<>();
