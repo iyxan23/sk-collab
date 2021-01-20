@@ -1,4 +1,4 @@
-package com.iyxan23.sketch.collab;
+package com.iyxan23.sketch.collab.adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 import com.iyxan23.sketch.collab.online.UploadActivity;
 
@@ -45,9 +46,7 @@ public class SketchwareProjectAdapter extends RecyclerView.Adapter<SketchwarePro
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_sketchware_project, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_sketchware_project, parent, false));
     }
 
     @SuppressLint("SetTextI18n")
