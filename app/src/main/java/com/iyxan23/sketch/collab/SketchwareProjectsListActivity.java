@@ -27,12 +27,12 @@ public class SketchwareProjectsListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sketchware_projects_list);
 
         // Get the recyclerview
-        RecyclerView projecs_list = findViewById(R.id.sketchware_project_list);
-        projecs_list.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView projects_list = findViewById(R.id.sketchware_project_list);
+        projects_list.setLayoutManager(new LinearLayoutManager(this));
 
         // Get and set the adapter
         SketchwareProjectAdapter adapter = new SketchwareProjectAdapter(this);
-        projecs_list.setAdapter(adapter);
+        projects_list.setAdapter(adapter);
 
         // Restore the UI state if the sketchware projects are already fetched
         if (savedInstanceState != null) {
