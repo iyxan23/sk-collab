@@ -23,6 +23,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Objects;
 
+// TODO: CREATE A PROGRESSBAR WHILE LOGGING IN / REGISTERING
+
 public class LoginActivity extends AppCompatActivity {
 
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
