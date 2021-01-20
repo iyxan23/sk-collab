@@ -227,8 +227,12 @@ public class LoginActivity extends AppCompatActivity {
         if (password.equals(""))
             res = "Password cannot be empty";
 
+        // USERNAME_INVALID
+        if (!username.matches(usernameRegex) && isRegister)
+            res = "Username can only contain A-Z a-z 0-9 -_.";
+
         // USERNAME_EMPTY
-        if (username.equals("") && !isRegister)
+        if (username.equals("") && isRegister)
             res = "Username cannot be empty";
 
         // PASSWORD_LESS_THAN_6
@@ -238,10 +242,6 @@ public class LoginActivity extends AppCompatActivity {
         // EMAIL_INVALID
         if (!email.matches(emailRegex))
             res = "Email is invalid";
-
-        // USERNAME_INVALID
-        if (!username.matches(usernameRegex))
-            res = "Username can only contain A-Z a-z 0-9 -_.";
 
         return res;
     }
