@@ -182,10 +182,12 @@ public class LoginActivity extends AppCompatActivity {
 
         if (isRegister) {
             // Change the color and sizes of the "tabs"
-            registerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
+            loginText.setScaleX(1f);
+            loginText.setScaleY(1f);
             registerText.setTextColor(0xFFFFFF);
 
-            loginText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
+            loginText.setScaleX(0.8f);
+            loginText.setScaleY(0.8f);
             loginText.setTextColor(0x747474);
 
             // Email EditText animation
@@ -203,10 +205,12 @@ public class LoginActivity extends AppCompatActivity {
 
         } else {
             // Change the color and sizes of the "tabs"
-            loginText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
+            loginText.setScaleX(1f);
+            loginText.setScaleY(1f);
             loginText.setTextColor(0xFFFFFF);
 
-            registerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
+            registerText.setScaleX(0.8f);
+            registerText.setScaleY(0.8f);
             registerText.setTextColor(0x747474);
 
             // Email EditText animation
