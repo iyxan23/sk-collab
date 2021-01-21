@@ -23,13 +23,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Objects;
 
-// TODO: CREATE A PROGRESSBAR WHILE LOGGING IN / REGISTERING
-
 public class LoginActivity extends AppCompatActivity {
 
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
 
     private boolean isRegister = false;
+    private boolean isDoingWork = false;  // Used to indicate that it is doing work or not (fetching data / creating an account / logging in)
 
     @SuppressLint("SetTextI18n")  // TODO: FIX THIS
     @Override
@@ -82,12 +81,19 @@ public class LoginActivity extends AppCompatActivity {
         emailEditText.requestFocus();
 
         loginButton.setOnClickListener(v -> {
+            // Show the progressbar
+            findViewById(R.id.login_progressbar).setVisibility(View.VISIBLE);
+
             // Check if the inputs are filled
             String res = checkFields();
 
             if (res == null) {
                 // Great, we can login / register now
                 if (isRegister) {
+                    isDoingWork = true;
+                    emailEditText.setEnabled(false);
+                    passwordEditText.setEnabled(false);
+                    usernameEditText.setEnabled(false);
 
                     // Register user's account
                     auth.createUserWithEmailAndPassword(
@@ -112,6 +118,9 @@ public class LoginActivity extends AppCompatActivity {
 
                         // Add the user in the database
                         usersRef.add(userdata).addOnCompleteListener(task -> {
+                            // Hide the progressbar
+                            findViewById(R.id.login_progressbar).setVisibility(View.GONE);
+
                             if (task.isSuccessful()) {
                                 // Done! Redirect user to MainActivity
                                 startActivity(new Intent(this, MainActivity.class));
@@ -120,15 +129,36 @@ public class LoginActivity extends AppCompatActivity {
                                 // to this activity using the back button
                                 finish();
                             } else {
+                                // Hide the progressbar
+                                findViewById(R.id.login_progressbar).setVisibility(View.GONE);
+
+                                isDoingWork = false;
+                                emailEditText.setEnabled(true);
+                                passwordEditText.setEnabled(true);
+                                usernameEditText.setEnabled(true);
+
                                 // Something went wrong..
                                 errorText.setText("Error: " + Objects.requireNonNull( task.getException() ).getMessage());
                             }
                         });
                     }).addOnFailureListener(f -> {
+                        // Hide the progressbar
+                        findViewById(R.id.login_progressbar).setVisibility(View.GONE);
+
+                        isDoingWork = false;
+                        emailEditText.setEnabled(true);
+                        passwordEditText.setEnabled(true);
+                        usernameEditText.setEnabled(true);
+
                         // Something went wrong..
                         errorText.setText(f.getMessage());
                     });
                 } else {
+                    isDoingWork = true;
+                    emailEditText.setEnabled(false);
+                    passwordEditText.setEnabled(false);
+                    usernameEditText.setEnabled(false);
+
                     // Login
                     auth.signInWithEmailAndPassword(
                             emailEditText.getText().toString(),
@@ -136,14 +166,25 @@ public class LoginActivity extends AppCompatActivity {
                     ).addOnSuccessListener(s -> {
                         // Success! redirect user to the MainActivity
                         startActivity(new Intent(this, MainActivity.class));
-                        finishActivity(0);
+                        finish();
 
                     }).addOnFailureListener(f -> {
+                        // Hide the progressbar
+                        findViewById(R.id.login_progressbar).setVisibility(View.GONE);
+
+                        isDoingWork = false;
+                        emailEditText.setEnabled(true);
+                        passwordEditText.setEnabled(true);
+                        usernameEditText.setEnabled(true);
+
                         // Something went wrong!
                         errorText.setText(f.getMessage());
                     });
                 }
             } else {
+                // Hide the progressbar
+                findViewById(R.id.login_progressbar).setVisibility(View.GONE);
+
                 // Something doesn't seem right
                 errorText.setText(res);
             }
@@ -154,6 +195,9 @@ public class LoginActivity extends AppCompatActivity {
     // view
     @SuppressLint("SetTextI18n")  // TODO: FIX THIS
     private void updateForm() {
+        
+        if (isDoingWork) return;
+
         // Switching login and register texts
         TextView loginText = findViewById(R.id.login_text);
         TextView registerText = findViewById(R.id.register_text);
@@ -166,10 +210,12 @@ public class LoginActivity extends AppCompatActivity {
 
         if (isRegister) {
             // Change the color and sizes of the "tabs"
-            registerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
+            loginText.setScaleX(1f);
+            loginText.setScaleY(1f);
             registerText.setTextColor(0xFFFFFF);
 
-            loginText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
+            loginText.setScaleX(0.8f);
+            loginText.setScaleY(0.8f);
             loginText.setTextColor(0x747474);
 
             // Email EditText animation
@@ -187,10 +233,12 @@ public class LoginActivity extends AppCompatActivity {
 
         } else {
             // Change the color and sizes of the "tabs"
-            loginText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
+            loginText.setScaleX(1f);
+            loginText.setScaleY(1f);
             loginText.setTextColor(0xFFFFFF);
 
-            registerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
+            registerText.setScaleX(0.8f);
+            registerText.setScaleY(0.8f);
             registerText.setTextColor(0x747474);
 
             // Email EditText animation

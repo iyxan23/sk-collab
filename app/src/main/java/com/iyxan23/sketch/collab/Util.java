@@ -155,7 +155,7 @@ public class Util {
 
     @Nullable
     public static SketchwareProject get_sketchware_project(int id) {
-        File project_folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/");
+        File project_folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/" + id);
 
         if (!project_folder.exists() || !project_folder.isDirectory())
             return null;
