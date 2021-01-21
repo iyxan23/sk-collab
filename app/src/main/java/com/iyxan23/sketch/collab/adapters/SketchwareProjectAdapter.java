@@ -55,8 +55,9 @@ public class SketchwareProjectAdapter extends RecyclerView.Adapter<SketchwarePro
         Log.d(TAG, "onBindViewHolder: called.");
         SketchwareProject project = datas.get(position);
 
-        holder.title.setText(project.metadata.project_name + " - " + project.metadata.app_name);
-        holder.subtitle.setText(project.metadata.project_package + "(" + project.metadata.id + ")");
+        holder.title.setText(project.metadata.project_name);
+        holder.subtitle.setText(project.metadata.app_name);
+        holder.details.setText(project.metadata.project_package + "(" + project.metadata.id + ")");
 
         holder.upload_button.setOnClickListener(v -> {
             // Go to UploadActivity
@@ -87,7 +88,7 @@ public class SketchwareProjectAdapter extends RecyclerView.Adapter<SketchwarePro
             title = itemView.findViewById(R.id.project_name);
             subtitle = itemView.findViewById(R.id.project_details);
             details = itemView.findViewById(R.id.details);
-            upload_button = itemView.findViewById(R.id.upload_button);
+            upload_button = itemView.findViewById(R.id.upload_button_rv);
         }
     }
 }
