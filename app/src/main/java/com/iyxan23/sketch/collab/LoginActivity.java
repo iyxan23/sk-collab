@@ -23,8 +23,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Objects;
 
-// TODO: CREATE A PROGRESSBAR WHILE LOGGING IN / REGISTERING
-
 public class LoginActivity extends AppCompatActivity {
 
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -82,6 +80,9 @@ public class LoginActivity extends AppCompatActivity {
         emailEditText.requestFocus();
 
         loginButton.setOnClickListener(v -> {
+            // Show the progressbar
+            findViewById(R.id.login_progressbar).setVisibility(View.VISIBLE);
+
             // Check if the inputs are filled
             String res = checkFields();
 
@@ -112,6 +113,9 @@ public class LoginActivity extends AppCompatActivity {
 
                         // Add the user in the database
                         usersRef.add(userdata).addOnCompleteListener(task -> {
+                            // Hide the progressbar
+                            findViewById(R.id.login_progressbar).setVisibility(View.GONE);
+
                             if (task.isSuccessful()) {
                                 // Done! Redirect user to MainActivity
                                 startActivity(new Intent(this, MainActivity.class));
@@ -120,11 +124,17 @@ public class LoginActivity extends AppCompatActivity {
                                 // to this activity using the back button
                                 finish();
                             } else {
+                                // Hide the progressbar
+                                findViewById(R.id.login_progressbar).setVisibility(View.GONE);
+
                                 // Something went wrong..
                                 errorText.setText("Error: " + Objects.requireNonNull( task.getException() ).getMessage());
                             }
                         });
                     }).addOnFailureListener(f -> {
+                        // Hide the progressbar
+                        findViewById(R.id.login_progressbar).setVisibility(View.GONE);
+
                         // Something went wrong..
                         errorText.setText(f.getMessage());
                     });
@@ -136,14 +146,20 @@ public class LoginActivity extends AppCompatActivity {
                     ).addOnSuccessListener(s -> {
                         // Success! redirect user to the MainActivity
                         startActivity(new Intent(this, MainActivity.class));
-                        finishActivity(0);
+                        finish();
 
                     }).addOnFailureListener(f -> {
+                        // Hide the progressbar
+                        findViewById(R.id.login_progressbar).setVisibility(View.GONE);
+
                         // Something went wrong!
                         errorText.setText(f.getMessage());
                     });
                 }
             } else {
+                // Hide the progressbar
+                findViewById(R.id.login_progressbar).setVisibility(View.GONE);
+
                 // Something doesn't seem right
                 errorText.setText(res);
             }
