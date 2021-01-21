@@ -91,6 +91,9 @@ public class LoginActivity extends AppCompatActivity {
                 // Great, we can login / register now
                 if (isRegister) {
                     isDoingWork = true;
+                    emailEditText.setEnabled(false);
+                    passwordEditText.setEnabled(false);
+                    usernameEditText.setEnabled(false);
 
                     // Register user's account
                     auth.createUserWithEmailAndPassword(
@@ -130,6 +133,10 @@ public class LoginActivity extends AppCompatActivity {
                                 findViewById(R.id.login_progressbar).setVisibility(View.GONE);
 
                                 isDoingWork = false;
+                                emailEditText.setEnabled(true);
+                                passwordEditText.setEnabled(true);
+                                usernameEditText.setEnabled(true);
+
                                 // Something went wrong..
                                 errorText.setText("Error: " + Objects.requireNonNull( task.getException() ).getMessage());
                             }
@@ -139,11 +146,19 @@ public class LoginActivity extends AppCompatActivity {
                         findViewById(R.id.login_progressbar).setVisibility(View.GONE);
 
                         isDoingWork = false;
+                        emailEditText.setEnabled(true);
+                        passwordEditText.setEnabled(true);
+                        usernameEditText.setEnabled(true);
+
                         // Something went wrong..
                         errorText.setText(f.getMessage());
                     });
                 } else {
                     isDoingWork = true;
+                    emailEditText.setEnabled(false);
+                    passwordEditText.setEnabled(false);
+                    usernameEditText.setEnabled(false);
+
                     // Login
                     auth.signInWithEmailAndPassword(
                             emailEditText.getText().toString(),
@@ -158,6 +173,10 @@ public class LoginActivity extends AppCompatActivity {
                         findViewById(R.id.login_progressbar).setVisibility(View.GONE);
 
                         isDoingWork = false;
+                        emailEditText.setEnabled(true);
+                        passwordEditText.setEnabled(true);
+                        usernameEditText.setEnabled(true);
+
                         // Something went wrong!
                         errorText.setText(f.getMessage());
                     });
