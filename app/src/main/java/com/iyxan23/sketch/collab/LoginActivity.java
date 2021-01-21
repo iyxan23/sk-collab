@@ -28,6 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
 
     private boolean isRegister = false;
+    private boolean isDoingWork = false;  // Used to indicate that it is doing work or not (fetching data / creating an account / logging in)
 
     @SuppressLint("SetTextI18n")  // TODO: FIX THIS
     @Override
@@ -89,6 +90,7 @@ public class LoginActivity extends AppCompatActivity {
             if (res == null) {
                 // Great, we can login / register now
                 if (isRegister) {
+                    isDoingWork = true;
 
                     // Register user's account
                     auth.createUserWithEmailAndPassword(
@@ -127,6 +129,7 @@ public class LoginActivity extends AppCompatActivity {
                                 // Hide the progressbar
                                 findViewById(R.id.login_progressbar).setVisibility(View.GONE);
 
+                                isDoingWork = false;
                                 // Something went wrong..
                                 errorText.setText("Error: " + Objects.requireNonNull( task.getException() ).getMessage());
                             }
@@ -135,10 +138,12 @@ public class LoginActivity extends AppCompatActivity {
                         // Hide the progressbar
                         findViewById(R.id.login_progressbar).setVisibility(View.GONE);
 
+                        isDoingWork = false;
                         // Something went wrong..
                         errorText.setText(f.getMessage());
                     });
                 } else {
+                    isDoingWork = true;
                     // Login
                     auth.signInWithEmailAndPassword(
                             emailEditText.getText().toString(),
@@ -152,6 +157,7 @@ public class LoginActivity extends AppCompatActivity {
                         // Hide the progressbar
                         findViewById(R.id.login_progressbar).setVisibility(View.GONE);
 
+                        isDoingWork = false;
                         // Something went wrong!
                         errorText.setText(f.getMessage());
                     });
@@ -170,6 +176,9 @@ public class LoginActivity extends AppCompatActivity {
     // view
     @SuppressLint("SetTextI18n")  // TODO: FIX THIS
     private void updateForm() {
+        
+        if (isDoingWork) return;
+
         // Switching login and register texts
         TextView loginText = findViewById(R.id.login_text);
         TextView registerText = findViewById(R.id.register_text);
