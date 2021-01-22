@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -27,7 +26,6 @@ import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {

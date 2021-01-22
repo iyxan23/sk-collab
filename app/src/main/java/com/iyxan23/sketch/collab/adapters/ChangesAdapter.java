@@ -14,14 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.iyxan23.sketch.collab.R;
-import com.iyxan23.sketch.collab.models.BrowseItem;
 import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
-
-import org.w3c.dom.Text;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 
 public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHolder> {

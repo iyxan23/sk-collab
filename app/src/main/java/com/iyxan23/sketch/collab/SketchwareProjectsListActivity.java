@@ -12,7 +12,6 @@ import com.iyxan23.sketch.collab.adapters.SketchwareProjectAdapter;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class SketchwareProjectsListActivity extends AppCompatActivity {
 
