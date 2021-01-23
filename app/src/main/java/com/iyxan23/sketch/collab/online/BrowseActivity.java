@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -53,7 +54,7 @@ public class BrowseActivity extends AppCompatActivity {
                                         project.getString("author"),
                                         // TODO: THIS
                                         // project.getTimestamp("last_updated_timestamp") == null ? project.child("last_updated_timestamp").getValue(int.class) : 0
-                                        0  // Temporarily Hardcoded
+                                        new Timestamp(0,0)  // Temporarily Hardcoded
                                 )
                         );
                     }
