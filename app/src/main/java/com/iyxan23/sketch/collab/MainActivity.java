@@ -20,6 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
+import com.iyxan23.sketch.collab.adapters.ChangesAdapter;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
 
@@ -39,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
     // List of changes
     ArrayList<SketchwareProjectChanges> changes = new ArrayList<>();
 
+    // The changes adapter
+    ChangesAdapter adapter;
+
     // Firebase stuff
     FirebaseFirestore database = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -53,23 +57,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Check if Read and Write external storage permission is granted
-        // why scoped storage? :(
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED ||
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+        // Instantiate the adapter
+        adapter = new ChangesAdapter(this);
 
-            // Tell the user first of why you need to grant the permission
-            Toast.makeText(this, "We need storage permission to access your sketchware projects. SketchCollab can misbehave if you denied the permission.", Toast.LENGTH_LONG).show();
-            // Reuest the permission(s)
-            ActivityCompat.requestPermissions(this,
-                    new String[]{
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    100);
-        } else {
-            // Permission is already granted, initialize
-            initialize();
-        }
+        // RecyclerView stuff
+        RecyclerView changes_rv = findViewById(R.id.changes_main);
+        changes_rv.setLayoutManager(new LinearLayoutManager(this));
+        changes_rv.setAdapter(adapter);
 
         // OnClicks
         // When you click the "Sketchware Projects" item
@@ -86,6 +80,29 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this,SketchwareProjectsListActivity.class);
             startActivity(intent, options.toBundle());
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Check if Read and Write external storage permission is granted
+        // why scoped storage? :(
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED ||
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+
+            // Tell the user first of why you need to grant the permission
+            Toast.makeText(this, "We need storage permission to access your sketchware projects. SketchCollab can misbehave if you denied the permission.", Toast.LENGTH_LONG).show();
+            // Request the permission(s)
+            ActivityCompat.requestPermissions(this,
+                    new String[]{
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    100);
+        } else {
+            // Permission is already granted, initialize
+            initialize();
+        }
     }
 
     @Override
@@ -222,6 +239,8 @@ public class MainActivity extends AppCompatActivity {
                             // Add this to the changed sketchcollab sketchware projects arraylist
                             changes.add(new SketchwareProjectChanges(project, head_project));
 
+                            // Update the adapter
+                            adapter.updateView(changes);
                         } /* else {
                             // Boom, it's the same project with no updates
                             // ight ima head out
