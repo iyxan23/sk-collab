@@ -13,8 +13,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.iyxan23.sketch.collab.R;
+import com.iyxan23.sketch.collab.Util;
 import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.HashMap;
 
 public class PushCommitActivity extends AppCompatActivity {
@@ -70,6 +75,18 @@ public class PushCommitActivity extends AppCompatActivity {
             commits .add(data)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
+                            // Update the project's local commit id
+                            JSONObject mysc_project = commit_change.after.getMyscProject();
+                            try {
+                                mysc_project.put("sk-collab-latest-commit", task.getResult().getId());
+                                commit_change.after.mysc_project = Util.encrypt(mysc_project.toString().getBytes());
+                                commit_change.after.applyChanges();
+                            } catch (IOException | JSONException e) {
+                                e.printStackTrace();
+                                Toast.makeText(PushCommitActivity.this, "Error while doing commit: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                return;
+                            }
+
                             // Alright!
                             progressDialog.dismiss();
                             Toast.makeText(PushCommitActivity.this, "Commit successful!", Toast.LENGTH_LONG).show();
