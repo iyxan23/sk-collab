@@ -184,7 +184,7 @@ public class SketchwareProject implements Parcelable {
     }
 
     public String getSketchCollabAuthorUid() throws JSONException {
-        return new JSONObject(Util.decrypt(mysc_project)).getString("sk-collab-author");
+        return new JSONObject(Util.decrypt(mysc_project)).getString("sk-collab-owner");
     }
 
     public boolean isSketchCollabProjectPublic() throws JSONException {
