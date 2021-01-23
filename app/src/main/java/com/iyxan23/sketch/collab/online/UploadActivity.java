@@ -130,6 +130,8 @@ public class UploadActivity extends AppCompatActivity {
                             return;
                         }
 
+                        progressDialog.setMessage("Uploading project data");
+
                         // Get the result
                         DocumentReference res = task.getResult();
 
@@ -167,6 +169,8 @@ public class UploadActivity extends AppCompatActivity {
                                         .document(res.getId())
                                         .collection("commits");
 
+                        progressDialog.setMessage("Uploading logic");
+
                         // note: yes i know, this looks very dumb
                         snapshotRef
 
@@ -179,57 +183,69 @@ public class UploadActivity extends AppCompatActivity {
                                 }}
                                 )
                                 // Upload data/view
-                                .continueWithTask(unused ->
-                                        snapshotRef
-                                            .document("view")
-                                            .set(new HashMap<String, Object>() {{
-                                                put("data", Blob.fromBytes(swProj.view));
-                                                put("shasum", Util.sha512(swProj.view));
-                                            }})
+                                .continueWithTask(unused -> {
+                                        progressDialog.setMessage("Uploading view");
+                                        return snapshotRef
+                                                .document("view")
+                                                .set(new HashMap<String, Object>() {{
+                                                    put("data", Blob.fromBytes(swProj.view));
+                                                    put("shasum", Util.sha512(swProj.view));
+                                                }});
+                                    }
                                 )
                                 // Upload data/file
-                                .continueWithTask(unused ->
-                                        snapshotRef
-                                            .document("file")
-                                            .set(new HashMap<String, Object>() {{
-                                                put("data", Blob.fromBytes(swProj.file));
-                                                put("shasum", Util.sha512(swProj.file));
-                                            }})
+                                .continueWithTask(unused -> {
+                                        progressDialog.setMessage("Uploading file");
+                                        return snapshotRef
+                                                .document("file")
+                                                .set(new HashMap<String, Object>() {{
+                                                    put("data", Blob.fromBytes(swProj.file));
+                                                    put("shasum", Util.sha512(swProj.file));
+                                                }});
+                                    }
                                 )
                                 // Upload data/resource
-                                .continueWithTask(unused ->
-                                        snapshotRef
+                                .continueWithTask(unused -> {
+                                        progressDialog.setMessage("Uploading resource");
+                                        return snapshotRef
                                                 .document("resource")
                                                 .set(new HashMap<String, Object>() {{
                                                     put("data", Blob.fromBytes(swProj.resource));
                                                     put("shasum", Util.sha512(swProj.resource));
-                                                }})
+                                                }});
+                                    }
                                 )
                                 // Upload data/library
-                                .continueWithTask(unused ->
-                                        snapshotRef
+                                .continueWithTask(unused -> {
+                                        progressDialog.setMessage("Uploading project metadata");
+                                        return snapshotRef
                                                 .document("library")
                                                 .set(new HashMap<String, Object>() {{
                                                     put("data", Blob.fromBytes(swProj.library));
                                                     put("shasum", Util.sha512(swProj.library));
-                                                }})
+                                                }});
+                                    }
                                 )
                                 // Upload mysc/project
-                                .continueWithTask(unused ->
-                                        snapshotRef
+                                .continueWithTask(unused -> {
+                                        progressDialog.setMessage("Uploading project");
+                                        return snapshotRef
                                                 .document("mysc_project")
                                                 .set(new HashMap<String, Object>() {{
                                                     put("data", Blob.fromBytes(swProj.mysc_project));
                                                     put("shasum", Util.sha512(swProj.mysc_project));
-                                                }})
+                                                }});
+                                    }
                                 )
                                 // Upload project files ============================================
 
                                 // Upload the commit data ==========================================
-                                .continueWithTask(unused ->
-                                    commitRef
-                                            .document("initial")  // The first ever commit on a project is set with the ID "initial"
-                                            .set(commit_data)
+                                .continueWithTask(unused -> {
+                                        progressDialog.setMessage("Uploading the initial commit");
+                                        return commitRef
+                                                .document("initial")  // The first ever commit on a project is set with the ID "initial"
+                                                .set(commit_data);
+                                    }
                                 )
                                 // Upload the commit data ==========================================
 
