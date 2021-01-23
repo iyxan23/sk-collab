@@ -28,7 +28,7 @@ public class PushCommitActivity extends AppCompatActivity {
 
     TextView patch_text;
 
-    HashMap<String, String> patch;
+    HashMap<String, String> patch = new HashMap<>();
     boolean isReady = false;
 
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
