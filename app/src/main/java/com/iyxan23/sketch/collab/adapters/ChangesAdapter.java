@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -112,6 +113,16 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
         holder.push_button.setOnClickListener(v -> {
             // Go to PushCommitActivity
             Intent i = new Intent(activity.get(), PushCommitActivity.class);
+            i.putExtra("changes", item);
+
+            try {
+                i.putExtra("project_key", item.before.getSketchCollabKey());
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(activity.get(), "Error while getting project key: + " + e.getMessage(), Toast.LENGTH_LONG).show();
+                return;
+            }
+
             activity.get().startActivity(i);
         });
     }
