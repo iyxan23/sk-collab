@@ -106,6 +106,12 @@ public class UploadActivity extends AppCompatActivity {
                 put("name", "Initial Commit");
             }};
 
+            try {
+                commit_data.put("sha512sum", swProj.sha512sum());
+            } catch (JSONException e) {
+                Toast.makeText(UploadActivity.this, "An error occured while doing shasum: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                return;
+            }
 
             ProgressDialog progressDialog = new ProgressDialog(UploadActivity.this);
             progressDialog.setTitle("Uploading project");
