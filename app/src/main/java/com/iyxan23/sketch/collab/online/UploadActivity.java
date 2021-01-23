@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.Blob;
@@ -101,7 +102,7 @@ public class UploadActivity extends AppCompatActivity {
 
             HashMap<String, Object> commit_data = new HashMap<String, Object>() {{
                 put("author", auth.getUid());
-                put("timestamp", System.currentTimeMillis());
+                put("timestamp", Timestamp.now());
                 put("name", "Initial Commit");
             }};
 

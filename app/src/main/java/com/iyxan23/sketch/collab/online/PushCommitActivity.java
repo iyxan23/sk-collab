@@ -1,6 +1,5 @@
 package com.iyxan23.sketch.collab.online;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
@@ -8,19 +7,13 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.iyxan23.sketch.collab.R;
-import com.iyxan23.sketch.collab.Util;
 import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -63,7 +56,7 @@ public class PushCommitActivity extends AppCompatActivity {
 
             HashMap<String, Object> data = new HashMap<String, Object>() {{
                 put("name", title.getText().toString());
-                put("timestamp", System.currentTimeMillis());
+                put("timestamp", Timestamp.now());
                 put("author", user_uid);
             }};
 
