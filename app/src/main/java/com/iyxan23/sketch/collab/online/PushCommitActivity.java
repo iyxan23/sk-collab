@@ -38,7 +38,7 @@ public class PushCommitActivity extends AppCompatActivity {
         // TODO: MERGE FUNCTIONALITY AND CHECKING
 
         commit_change = getIntent().getParcelableExtra("changes");
-        String project_key = getIntent().getStringExtra("id");
+        String project_key = getIntent().getStringExtra("project_key");
 
         commits = firestore.collection("projects/" + project_key + "/commits");
 
