@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?android:attr/colorControlHighlight">
+    <solid
+        android:color="#000000" />
+    <corners
+        android:radius="8dp" />
+    <stroke
+        android:color="#7B7B7B"
+        android:width="2px"/>
+</shape>

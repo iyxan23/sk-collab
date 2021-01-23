@@ -2,6 +2,7 @@ package com.iyxan23.sketch.collab.adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,19 +10,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.iyxan23.sketch.collab.R;
-import com.iyxan23.sketch.collab.models.BrowseItem;
+import com.iyxan23.sketch.collab.Util;
 import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
+import com.iyxan23.sketch.collab.online.PushCommitActivity;
 
-import org.w3c.dom.Text;
+import org.json.JSONException;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 
 public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHolder> {
@@ -59,8 +61,76 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder: called.");
         SketchwareProjectChanges item = datas.get(position);
+
+        // TODO: EXTEND THIS
+        holder.project_name.setText(item.before.metadata.project_name);
+        holder.project_details.setText(item.before.metadata.project_package + " (" + item.before.metadata.id + ")");
+
+        try {
+            holder.details.setText("Local branch is at commit " + item.before.getSketchCollabLatestCommitID());
+        } catch (JSONException e) {
+            holder.details.setText("Error while retreiving commit ID, this project is possibly corrupted");
+        }
+
         int files_changed = item.getFilesChanged();
-        // TODO: IMEPLEMENT THIS
+        int addition = 0;
+        int deletion = 0;
+
+        // Yeah i gotta make this dry, i'll do it later
+        // TODO: MAKE THIS DRY
+        if ((files_changed & SketchwareProjectChanges.LOGIC) == SketchwareProjectChanges.LOGIC) {
+            int[] res = Util.getAdditionAndDeletion(item.getPatch(SketchwareProjectChanges.LOGIC));
+            addition += res[0];
+            deletion += res[1];
+        }
+        
+        if ((files_changed & SketchwareProjectChanges.VIEW) == SketchwareProjectChanges.VIEW) {
+            int[] res = Util.getAdditionAndDeletion(item.getPatch(SketchwareProjectChanges.VIEW));
+            addition += res[0];
+            deletion += res[1];
+        }
+        
+        if ((files_changed & SketchwareProjectChanges.FILE) == SketchwareProjectChanges.FILE) {
+            int[] res = Util.getAdditionAndDeletion(item.getPatch(SketchwareProjectChanges.FILE));
+            addition += res[0];
+            deletion += res[1];
+        }
+        
+        if ((files_changed & SketchwareProjectChanges.LIBRARY) == SketchwareProjectChanges.LIBRARY) {
+            int[] res = Util.getAdditionAndDeletion(item.getPatch(SketchwareProjectChanges.LIBRARY));
+            addition += res[0];
+            deletion += res[1];
+        }
+        
+        if ((files_changed & SketchwareProjectChanges.RESOURCES) == SketchwareProjectChanges.RESOURCES) {
+            int[] res = Util.getAdditionAndDeletion(item.getPatch(SketchwareProjectChanges.RESOURCES));
+            addition += res[0];
+            deletion += res[1];
+        }
+
+        holder.summary.setText("+" + addition + " -" + deletion);
+
+        holder.addition.setMax(addition + deletion);
+        holder.deletion.setMax(addition + deletion);
+
+        holder.addition.setProgress(addition);
+        holder.deletion.setProgress(deletion);
+
+        holder.push_button.setOnClickListener(v -> {
+            // Go to PushCommitActivity
+            Intent i = new Intent(activity.get(), PushCommitActivity.class);
+            i.putExtra("changes", item);
+
+            try {
+                i.putExtra("project_key", item.before.getSketchCollabKey());
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(activity.get(), "Error while getting project key: + " + e.getMessage(), Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            activity.get().startActivity(i);
+        });
     }
 
     @Override
@@ -73,9 +143,12 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
         TextView project_name;
         TextView project_details;
         TextView details;
+
         ProgressBar addition;
         ProgressBar deletion;
+
         Button push_button;
+
         TextView summary;
 
         public ViewHolder(@NonNull View itemView) {

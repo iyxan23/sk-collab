@@ -11,12 +11,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.Timestamp;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.models.BrowseItem;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 
 public class BrowseItemAdapter extends RecyclerView.Adapter<BrowseItemAdapter.ViewHolder> {
@@ -60,9 +60,8 @@ public class BrowseItemAdapter extends RecyclerView.Adapter<BrowseItemAdapter.Vi
 
         // https://stackoverflow.com/questions/25710457/how-to-subtract-two-calendar-object-in-android
         // TODO: IMPLEMENT A BETTER VERSION OF THIS THING
-        Calendar now = Calendar.getInstance();
-        long difference = now.getTimeInMillis() - item.latest_commit_timestamp;
-        holder.last_updated.setText("Last Updated " + (int) (difference / (1000 * 60 * 60 * 24)) + " days ago");
+        long difference = Timestamp.now().getSeconds() - item.latest_commit_timestamp.getSeconds();
+        holder.last_updated.setText("Last Updated " + (int) (difference / (60 * 60 * 24)) + " days ago");
     }
 
     @Override

@@ -62,6 +62,10 @@ public class SketchwareProjectChanges implements Parcelable {
 
     public String getPatch(int type) {
         diff_match_patch dmp = new diff_match_patch();
+
+        // Unlimited timeout
+        dmp.Diff_Timeout = 0f;
+
         byte[] before;
         byte[] after;
 
@@ -92,8 +96,8 @@ public class SketchwareProjectChanges implements Parcelable {
 
         return dmp.patch_toText(
                 dmp.patch_make(
-                        Util.decrypt(before),
-                        Util.decrypt(after)
+                        Util.decrypt(after),
+                        Util.decrypt(before)
                 )
         );
     }

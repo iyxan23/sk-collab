@@ -26,7 +26,7 @@
         </activity>
         <activity
             android:name=".online.BrowseActivity"
-            android:theme="@style/Theme.SketchCollab.NoActionBar"/>
+            android:theme="@style/Theme.SketchCollab.NoActionBar" />
         <activity
             android:name=".online.UploadActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
@@ -39,6 +39,12 @@
             android:theme="@style/Theme.SketchCollab.NoActionBar" /> <!-- The Homepage -->
         <activity
             android:name=".MainActivity"
+            android:theme="@style/Theme.SketchCollab.NoActionBar" />
+        <activity
+            android:name=".online.PushCommitActivity"
+            android:theme="@style/Theme.SketchCollab.NoActionBar" />
+        <activity
+            android:name=".DebugActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
     </application>
 

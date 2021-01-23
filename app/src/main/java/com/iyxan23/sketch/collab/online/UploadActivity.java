@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.Blob;
@@ -27,6 +28,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class UploadActivity extends AppCompatActivity {
 
@@ -35,7 +37,7 @@ public class UploadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
 
-        int projectId = getIntent().getIntExtra("projectid", -1);
+        int projectId = getIntent().getIntExtra("project_id", -1);
 
         if (projectId == -1) {
             // No extras given
@@ -84,8 +86,8 @@ public class UploadActivity extends AppCompatActivity {
              */
 
             HashMap<String, Object> data = new HashMap<String, Object>() {{
-                put("name", name.getText());
-                put("description", description.getText());
+                put("name", name.getText().toString());
+                put("description", description.getText().toString());
                 put("author", auth.getUid());
                 put("version", 1);
                 put("open", isOpenSource.isChecked());
@@ -100,10 +102,16 @@ public class UploadActivity extends AppCompatActivity {
 
             HashMap<String, Object> commit_data = new HashMap<String, Object>() {{
                 put("author", auth.getUid());
-                put("timestamp", FieldValue.serverTimestamp());
+                put("timestamp", Timestamp.now());
                 put("name", "Initial Commit");
             }};
 
+            try {
+                commit_data.put("sha512sum", swProj.sha512sum());
+            } catch (JSONException e) {
+                Toast.makeText(UploadActivity.this, "An error occured while doing shasum: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                return;
+            }
 
             ProgressDialog progressDialog = new ProgressDialog(UploadActivity.this);
             progressDialog.setTitle("Uploading project");
@@ -121,6 +129,8 @@ public class UploadActivity extends AppCompatActivity {
                             progressDialog.dismiss();
                             return;
                         }
+
+                        progressDialog.setMessage("Uploading project data");
 
                         // Get the result
                         DocumentReference res = task.getResult();
@@ -159,6 +169,8 @@ public class UploadActivity extends AppCompatActivity {
                                         .document(res.getId())
                                         .collection("commits");
 
+                        progressDialog.setMessage("Uploading logic");
+
                         // note: yes i know, this looks very dumb
                         snapshotRef
 
@@ -171,57 +183,69 @@ public class UploadActivity extends AppCompatActivity {
                                 }}
                                 )
                                 // Upload data/view
-                                .continueWithTask(unused ->
-                                        snapshotRef
-                                            .document("view")
-                                            .set(new HashMap<String, Object>() {{
-                                                put("data", Blob.fromBytes(swProj.view));
-                                                put("shasum", Util.sha512(swProj.view));
-                                            }})
+                                .continueWithTask(unused -> {
+                                        progressDialog.setMessage("Uploading view");
+                                        return snapshotRef
+                                                .document("view")
+                                                .set(new HashMap<String, Object>() {{
+                                                    put("data", Blob.fromBytes(swProj.view));
+                                                    put("shasum", Util.sha512(swProj.view));
+                                                }});
+                                    }
                                 )
                                 // Upload data/file
-                                .continueWithTask(unused ->
-                                        snapshotRef
-                                            .document("file")
-                                            .set(new HashMap<String, Object>() {{
-                                                put("data", Blob.fromBytes(swProj.file));
-                                                put("shasum", Util.sha512(swProj.file));
-                                            }})
+                                .continueWithTask(unused -> {
+                                        progressDialog.setMessage("Uploading file");
+                                        return snapshotRef
+                                                .document("file")
+                                                .set(new HashMap<String, Object>() {{
+                                                    put("data", Blob.fromBytes(swProj.file));
+                                                    put("shasum", Util.sha512(swProj.file));
+                                                }});
+                                    }
                                 )
                                 // Upload data/resource
-                                .continueWithTask(unused ->
-                                        snapshotRef
+                                .continueWithTask(unused -> {
+                                        progressDialog.setMessage("Uploading resource");
+                                        return snapshotRef
                                                 .document("resource")
                                                 .set(new HashMap<String, Object>() {{
                                                     put("data", Blob.fromBytes(swProj.resource));
                                                     put("shasum", Util.sha512(swProj.resource));
-                                                }})
+                                                }});
+                                    }
                                 )
                                 // Upload data/library
-                                .continueWithTask(unused ->
-                                        snapshotRef
+                                .continueWithTask(unused -> {
+                                        progressDialog.setMessage("Uploading project metadata");
+                                        return snapshotRef
                                                 .document("library")
                                                 .set(new HashMap<String, Object>() {{
                                                     put("data", Blob.fromBytes(swProj.library));
                                                     put("shasum", Util.sha512(swProj.library));
-                                                }})
+                                                }});
+                                    }
                                 )
                                 // Upload mysc/project
-                                .continueWithTask(unused ->
-                                        snapshotRef
+                                .continueWithTask(unused -> {
+                                        progressDialog.setMessage("Uploading project");
+                                        return snapshotRef
                                                 .document("mysc_project")
                                                 .set(new HashMap<String, Object>() {{
                                                     put("data", Blob.fromBytes(swProj.mysc_project));
                                                     put("shasum", Util.sha512(swProj.mysc_project));
-                                                }})
+                                                }});
+                                    }
                                 )
                                 // Upload project files ============================================
 
                                 // Upload the commit data ==========================================
-                                .continueWithTask(unused ->
-                                    commitRef
-                                            .document("initial")  // The first ever commit on a project is set with the ID "initial"
-                                            .set(commit_data)
+                                .continueWithTask(unused -> {
+                                        progressDialog.setMessage("Uploading the initial commit");
+                                        return commitRef
+                                                .document("initial")  // The first ever commit on a project is set with the ID "initial"
+                                                .set(commit_data);
+                                    }
                                 )
                                 // Upload the commit data ==========================================
 

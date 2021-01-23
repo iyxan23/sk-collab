@@ -3,14 +3,16 @@ package com.iyxan23.sketch.collab.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.Timestamp;
+
 public class BrowseItem implements Parcelable {
     public String project_id;
     public String username;
     public String project_name;
     public String uid;
-    public int latest_commit_timestamp;
+    public Timestamp latest_commit_timestamp;
 
-    public BrowseItem(String project_id, String username, String project_name, String uid, int latest_commit_timestamp) {
+    public BrowseItem(String project_id, String username, String project_name, String uid, Timestamp latest_commit_timestamp) {
         this.project_id = project_id;
         this.username = username;
         this.project_name = project_name;
@@ -23,7 +25,7 @@ public class BrowseItem implements Parcelable {
         username = in.readString();
         project_name = in.readString();
         uid = in.readString();
-        latest_commit_timestamp = in.readInt();
+        latest_commit_timestamp = in.readParcelable(Timestamp.class.getClassLoader());
     }
 
     public static final Creator<BrowseItem> CREATOR = new Creator<BrowseItem>() {
@@ -49,6 +51,6 @@ public class BrowseItem implements Parcelable {
         dest.writeString(username);
         dest.writeString(project_name);
         dest.writeString(uid);
-        dest.writeInt(latest_commit_timestamp);
+        dest.writeParcelable(latest_commit_timestamp, flags);
     }
 }

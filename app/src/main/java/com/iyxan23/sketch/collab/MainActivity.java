@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -21,13 +23,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
+import com.iyxan23.sketch.collab.adapters.ChangesAdapter;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
 
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
     // List of changes
     ArrayList<SketchwareProjectChanges> changes = new ArrayList<>();
+
+    // The changes adapter
+    ChangesAdapter adapter;
 
     // Firebase stuff
     FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -55,100 +60,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Check if Read and Write external storage permission is granted
-        // why scoped storage? :(
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED ||
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+        // Instantiate the adapter
+        adapter = new ChangesAdapter(this);
 
-            // Tell the user first of why you need to grant the permission
-            Toast.makeText(this, "We need storage permission to access your sketchware projects. SketchCollab can misbehave if you denied the permission.", Toast.LENGTH_LONG).show();
-            // Reuest the permission(s)
-            ActivityCompat.requestPermissions(this,
-                    new String[]{
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    100);
-        } else {
-            // Permission is already granted, initialize
-            initialize();
-        }
-
-        /*
-         * I don't think these are nessecary
-         *
-        // Get user projects, and projects that the user collaborates
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-        FirebaseAuth auth  = FirebaseAuth.getInstance();
-
-        DatabaseReference userProjectsRef = database.getReference("/userprojects/" + auth.getUid());
-        CollectionReference userProjectsRef_ = firestore.collection("userdata").document(auth.getUid()).collection("projects");
-        DatabaseReference projectsRef = database.getReference("/projects/" + auth.getUid());
-        CollectionReference projectsRef_ = firestore.collection("/projects/");
-
-        projectsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                for (DataSnapshot project : snapshot.getChildren()) {
-                    if (Objects.equals(project.child("author").getValue(String.class), auth.getUid())) {
-                        String projectBase64 = project.child("snapshot").child("project").getValue(String.class);
-                        JSONObject json;
-
-                        try {
-                            json = new JSONObject(Util.base64decode(projectBase64));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-
-                            // Looks like someone uploaded a broken JSON, skip
-                            continue;
-                        }
-
-                        // Because project id can vary on different devices
-                        if (json.has("sc_id")) json.optInt("sc_id");
-
-                        Pair<String, JSONObject> pair = new Pair<>(project.getKey(), json);
-                        publicProjectsOwned.add(pair);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                Toast.makeText(MainActivity.this,
-                            "Error while fetching data: " + error.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-
-        userProjectsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                for (DataSnapshot project : snapshot.getChildren()) {
-                    String projectBase64 = project.child("snapshot").child("project").getValue(String.class);
-
-                    JSONObject json;
-                    try {
-                        json = new JSONObject(Util.base64decode(projectBase64));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-
-                        // Looks like someone uploaded a broken JSON, skip
-                        continue;
-                    }
-
-                    // Because project id can vary on different devices
-                    if (json.has("sc_id")) json.optInt("sc_id");
-
-                    Pair<String, JSONObject> pair = new Pair<>(project.getKey(), json);
-                    userProjects.add(pair);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                Toast.makeText(MainActivity.this,
-                                "Error while fetching data: " + error.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-         */
+        // RecyclerView stuff
+        RecyclerView changes_rv = findViewById(R.id.changes_main);
+        changes_rv.setLayoutManager(new LinearLayoutManager(this));
+        changes_rv.setAdapter(adapter);
 
         // OnClicks
         // When you click the "Sketchware Projects" item
@@ -165,6 +83,36 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this,SketchwareProjectsListActivity.class);
             startActivity(intent, options.toBundle());
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Clear before initializing
+        changes.clear();
+        sketchcollabProjects.clear();
+        localProjects.clear();
+        adapter.updateView(changes);
+        findViewById(R.id.no_changes_text_main).setVisibility(View.VISIBLE);
+
+        // Check if Read and Write external storage permission is granted
+        // why scoped storage? :(
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED ||
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+
+            // Tell the user first of why you need to grant the permission
+            Toast.makeText(this, "We need storage permission to access your sketchware projects. SketchCollab can misbehave if you denied the permission.", Toast.LENGTH_LONG).show();
+            // Request the permission(s)
+            ActivityCompat.requestPermissions(this,
+                    new String[]{
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    100);
+        } else {
+            // Permission is already granted, initialize
+            initialize();
+        }
     }
 
     @Override
@@ -301,6 +249,14 @@ public class MainActivity extends AppCompatActivity {
                             // Add this to the changed sketchcollab sketchware projects arraylist
                             changes.add(new SketchwareProjectChanges(project, head_project));
 
+                            // Update the adapter
+                            runOnUiThread(() -> {
+                                // Remove the "no changes yet" text
+                                findViewById(R.id.no_changes_text_main).setVisibility(View.GONE);
+
+                                // update the adapter
+                                adapter.updateView(changes);
+                            });
                         } /* else {
                             // Boom, it's the same project with no updates
                             // ight ima head out
@@ -309,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(this, "JSON Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "JSON Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
