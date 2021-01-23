@@ -15,8 +15,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SketchCollab">
-        <activity android:name=".online.PushCommitActivity"></activity>
-        <activity android:name=".DebugActivity" />
         <activity
             android:name=".CheckActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar">
@@ -41,6 +39,12 @@
             android:theme="@style/Theme.SketchCollab.NoActionBar" /> <!-- The Homepage -->
         <activity
             android:name=".MainActivity"
+            android:theme="@style/Theme.SketchCollab.NoActionBar" />
+        <activity
+            android:name=".online.PushCommitActivity"
+            android:theme="@style/Theme.SketchCollab.NoActionBar" />
+        <activity
+            android:name=".DebugActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
     </application>
 
