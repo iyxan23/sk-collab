@@ -89,6 +89,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        // Clear before initializing
+        changes.clear();
+        sketchcollabProjects.clear();
+        localProjects.clear();
+        adapter.updateView(changes);
+        findViewById(R.id.no_changes_text_main).setVisibility(View.VISIBLE);
+
         // Check if Read and Write external storage permission is granted
         // why scoped storage? :(
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED ||
@@ -103,9 +110,6 @@ public class MainActivity extends AppCompatActivity {
                             Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     100);
         } else {
-            // Clear before initializing
-            changes.clear();
-
             // Permission is already granted, initialize
             initialize();
         }
