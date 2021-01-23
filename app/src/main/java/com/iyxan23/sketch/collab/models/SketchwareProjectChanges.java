@@ -62,6 +62,10 @@ public class SketchwareProjectChanges implements Parcelable {
 
     public String getPatch(int type) {
         diff_match_patch dmp = new diff_match_patch();
+
+        // Unlimited timeout
+        dmp.Diff_Timeout = 0f;
+
         byte[] before;
         byte[] after;
 
