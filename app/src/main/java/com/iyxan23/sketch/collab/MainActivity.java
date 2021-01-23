@@ -247,6 +247,9 @@ public class MainActivity extends AppCompatActivity {
 
                             // Update the adapter
                             runOnUiThread(() -> {
+                                // Remove the "no changes yet" text
+                                findViewById(R.id.no_changes_text_main).setVisibility(View.GONE);
+
                                 // update the adapter
                                 adapter.updateView(changes);
                             });
