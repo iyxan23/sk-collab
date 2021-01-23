@@ -102,6 +102,9 @@ public class MainActivity extends AppCompatActivity {
                             Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     100);
         } else {
+            // Clear before initializing
+            changes.clear();
+
             // Permission is already granted, initialize
             initialize();
         }
