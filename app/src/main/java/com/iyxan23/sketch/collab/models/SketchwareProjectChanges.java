@@ -96,8 +96,8 @@ public class SketchwareProjectChanges implements Parcelable {
 
         return dmp.patch_toText(
                 dmp.patch_make(
-                        Util.decrypt(before),
-                        Util.decrypt(after)
+                        Util.decrypt(after),
+                        Util.decrypt(before)
                 )
         );
     }
