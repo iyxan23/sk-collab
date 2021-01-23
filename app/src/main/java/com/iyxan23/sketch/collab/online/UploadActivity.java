@@ -101,7 +101,7 @@ public class UploadActivity extends AppCompatActivity {
 
             HashMap<String, Object> commit_data = new HashMap<String, Object>() {{
                 put("author", auth.getUid());
-                put("timestamp", FieldValue.serverTimestamp());
+                put("timestamp", System.currentTimeMillis());
                 put("name", "Initial Commit");
             }};
 
