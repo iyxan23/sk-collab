@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -245,7 +246,10 @@ public class MainActivity extends AppCompatActivity {
                             changes.add(new SketchwareProjectChanges(project, head_project));
 
                             // Update the adapter
-                            adapter.updateView(changes);
+                            runOnUiThread(() -> {
+                                // update the adapter
+                                adapter.updateView(changes);
+                            });
                         } /* else {
                             // Boom, it's the same project with no updates
                             // ight ima head out
