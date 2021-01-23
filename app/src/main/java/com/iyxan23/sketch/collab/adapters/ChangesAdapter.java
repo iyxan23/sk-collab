@@ -2,6 +2,7 @@ package com.iyxan23.sketch.collab.adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.Util;
 import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
+import com.iyxan23.sketch.collab.online.PushCommitActivity;
 
 import org.json.JSONException;
 
@@ -108,7 +110,9 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
         holder.summary.setText("+" + addition + " -" + deletion);
 
         holder.push_button.setOnClickListener(v -> {
-            // Go to CommitActivity
+            // Go to PushCommitActivity
+            Intent i = new Intent(activity.get(), PushCommitActivity.class);
+            activity.get().startActivity(i);
         });
     }
 
