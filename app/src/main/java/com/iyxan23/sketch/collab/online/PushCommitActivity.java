@@ -62,8 +62,17 @@ public class PushCommitActivity extends AppCompatActivity {
             HashMap<String, Object> data = new HashMap<String, Object>() {{
                 put("name", title.getText().toString());
                 put("timestamp", Timestamp.now());
+                put("patch", patch);
                 put("author", user_uid);
             }};
+
+            try {
+                data.put("sha512sum", commit_change.after.sha512sum());
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(PushCommitActivity.this, "Error while doing shasum: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                return;
+            }
 
             ProgressDialog progressDialog = new ProgressDialog(PushCommitActivity.this);
             progressDialog.setTitle("Uploading commit");
