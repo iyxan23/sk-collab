@@ -27,6 +27,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class UploadActivity extends AppCompatActivity {
 
@@ -84,8 +85,8 @@ public class UploadActivity extends AppCompatActivity {
              */
 
             HashMap<String, Object> data = new HashMap<String, Object>() {{
-                put("name", name.getText());
-                put("description", description.getText());
+                put("name", name.getText().toString());
+                put("description", description.getText().toString());
                 put("author", auth.getUid());
                 put("version", 1);
                 put("open", isOpenSource.isChecked());
