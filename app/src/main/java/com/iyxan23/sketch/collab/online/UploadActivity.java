@@ -35,7 +35,7 @@ public class UploadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
 
-        int projectId = getIntent().getIntExtra("projectid", -1);
+        int projectId = getIntent().getIntExtra("project_id", -1);
 
         if (projectId == -1) {
             // No extras given
