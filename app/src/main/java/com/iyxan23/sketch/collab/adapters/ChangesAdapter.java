@@ -110,6 +110,12 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
 
         holder.summary.setText("+" + addition + " -" + deletion);
 
+        holder.addition.setMax(addition + deletion);
+        holder.deletion.setMax(addition + deletion);
+
+        holder.addition.setProgress(addition);
+        holder.deletion.setProgress(deletion);
+
         holder.push_button.setOnClickListener(v -> {
             // Go to PushCommitActivity
             Intent i = new Intent(activity.get(), PushCommitActivity.class);
