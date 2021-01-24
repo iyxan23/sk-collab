@@ -116,30 +116,32 @@ public class LoginActivity extends AppCompatActivity {
                         userdata.put("uid", user.getUid());
 
                         // Add the user in the database
-                        usersRef.add(userdata).addOnCompleteListener(task -> {
-                            // Hide the progressbar
-                            findViewById(R.id.login_progressbar).setVisibility(View.GONE);
+                        usersRef.document(user.getUid())
+                                .set(userdata)
+                                .addOnCompleteListener(task -> {
+                                    // Hide the progressbar
+                                    findViewById(R.id.login_progressbar).setVisibility(View.GONE);
 
-                            if (task.isSuccessful()) {
-                                // Done! Redirect user to MainActivity
-                                startActivity(new Intent(this, MainActivity.class));
+                                    if (task.isSuccessful()) {
+                                        // Done! Redirect user to MainActivity
+                                        startActivity(new Intent(this, MainActivity.class));
 
-                                // Finish the activity so the user cannot go back
-                                // to this activity using the back button
-                                finish();
-                            } else {
-                                // Hide the progressbar
-                                findViewById(R.id.login_progressbar).setVisibility(View.GONE);
+                                        // Finish the activity so the user cannot go back
+                                        // to this activity using the back button
+                                        finish();
+                                    } else {
+                                        // Hide the progressbar
+                                        findViewById(R.id.login_progressbar).setVisibility(View.GONE);
 
-                                isDoingWork = false;
-                                emailEditText.setEnabled(true);
-                                passwordEditText.setEnabled(true);
-                                usernameEditText.setEnabled(true);
+                                        isDoingWork = false;
+                                        emailEditText.setEnabled(true);
+                                        passwordEditText.setEnabled(true);
+                                        usernameEditText.setEnabled(true);
 
-                                // Something went wrong..
-                                errorText.setText("Error: " + Objects.requireNonNull( task.getException() ).getMessage());
-                            }
-                        });
+                                        // Something went wrong..
+                                        errorText.setText("Error: " + Objects.requireNonNull( task.getException() ).getMessage());
+                                    }
+                                });
                     }).addOnFailureListener(f -> {
                         // Hide the progressbar
                         findViewById(R.id.login_progressbar).setVisibility(View.GONE);
