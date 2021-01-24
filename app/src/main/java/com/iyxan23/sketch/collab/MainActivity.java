@@ -26,6 +26,7 @@ import com.google.firebase.firestore.Source;
 import com.iyxan23.sketch.collab.adapters.ChangesAdapter;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
+import com.iyxan23.sketch.collab.online.BrowseActivity;
 
 import org.json.JSONException;
 
@@ -80,8 +81,23 @@ public class MainActivity extends AppCompatActivity {
                     new Pair<>(findViewById(R.id.textView8), "sketchware_projects_text")
             );
 
-            Intent intent = new Intent(MainActivity.this,SketchwareProjectsListActivity.class);
+            Intent intent = new Intent(MainActivity.this, SketchwareProjectsListActivity.class);
             startActivity(intent, options.toBundle());
+        });
+
+        findViewById(R.id.repositories_main).setOnClickListener(v -> {
+            /* TODO: SHARED ELEMENT TRANSITION BETWEEN MAINACTIVITY AND BROWSEACTIVITY
+            // Move to BrowseActivity (with some shared elements transition)
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    MainActivity.this,
+
+                    new Pair<>(findViewById(R.id.imageView8), "code_icon"),
+                    new Pair<>(findViewById(R.id.textView8), "sketchware_projects_text")
+            );
+            */
+
+            Intent intent = new Intent(MainActivity.this, BrowseActivity.class);
+            startActivity(intent);
         });
     }
 

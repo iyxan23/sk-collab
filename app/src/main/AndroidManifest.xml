@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.iyxan23.sketch.collab">
-    <!-- So we can access the database -->
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -15,6 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SketchCollab">
+
         <activity
             android:name=".CheckActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar">
@@ -24,28 +26,34 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".online.BrowseActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
+
         <activity
             android:name=".online.UploadActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
+
         <activity
             android:name=".SketchwareProjectsListActivity"
-            android:theme="@style/Theme.SketchCollab.NoActionBar" /> <!-- Checks if the server is open -->
-        <!-- Basically login -->
+            android:theme="@style/Theme.SketchCollab.NoActionBar" />
+
         <activity
             android:name=".LoginActivity"
-            android:theme="@style/Theme.SketchCollab.NoActionBar" /> <!-- The Homepage -->
+            android:theme="@style/Theme.SketchCollab.NoActionBar" />
+
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
+
         <activity
             android:name=".online.PushCommitActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
+
         <activity
             android:name=".DebugActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
-    </application>
 
+    </application>
 </manifest>

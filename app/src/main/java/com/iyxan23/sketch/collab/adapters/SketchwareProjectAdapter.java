@@ -55,20 +55,31 @@ public class SketchwareProjectAdapter extends RecyclerView.Adapter<SketchwarePro
         Log.d(TAG, "onBindViewHolder: called.");
         SketchwareProject project = datas.get(position);
 
-        holder.title.setText(project.metadata.project_name);
-        holder.subtitle.setText(project.metadata.app_name);
+        holder.title.setText(project.metadata.app_name);
+        holder.subtitle.setText(project.metadata.project_name);
         holder.details.setText(project.metadata.project_package + "(" + project.metadata.id + ")");
 
-        holder.upload_button.setOnClickListener(v -> {
-            // Go to UploadActivity
-            try {
-                Intent i = new Intent(activity.get(), UploadActivity.class);
-                i.putExtra("project_id", project.getProjectID());
-                activity.get().startActivity(i);
-            } catch (JSONException e) {
-                Toast.makeText(activity.get(), "An error occured: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        try {
+            if (project.isSketchCollabProject())
+                holder.upload_button.setEnabled(false);
+
+            else {
+                holder.upload_button.setOnClickListener(v -> {
+                    // Go to UploadActivity
+                    try {
+                        Intent i = new Intent(activity.get(), UploadActivity.class);
+                        i.putExtra("project_id", project.getProjectID());
+                        activity.get().startActivity(i);
+                    } catch (JSONException e) {
+                        Toast.makeText(activity.get(), "An error occured: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
             }
-        });
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(activity.get(), "An error occured: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

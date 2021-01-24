@@ -60,11 +60,13 @@ public class SketchwareProjectsListActivity extends AppCompatActivity {
 
             if (savedInstanceState != null) savedInstanceState.putParcelableArrayList("sketchware_projects", projects);
 
-            // Hide the progressbar
-            findViewById(R.id.progressBar_swplist).setVisibility(View.GONE);
+            runOnUiThread(() -> {
+                // Hide the progressbar
+                findViewById(R.id.progressBar_swplist).setVisibility(View.GONE);
 
-            // Update the data
-            runOnUiThread(() -> adapter.updateView(projects));
+                // Update the data
+                adapter.updateView(projects);
+            });
         }).start();
     }
 }
