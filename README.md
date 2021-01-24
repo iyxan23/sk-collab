@@ -36,7 +36,7 @@ SketchCollab break these limits, SketchCollab allows you to edit the project at 
 I didn't invent version control. SketchCollab is only a version control system for Sketchware projects.
 
 ## Branches
- - [stable](https://github.com/Iyxan23/sk-collab/tree/stable): Stable branch, where every release / beta / alpha version will be pushed into
+ - [release](https://github.com/Iyxan23/sk-collab/tree/release): Stable branch, where every release / beta / alpha version will be pushed into
  - [main](https://github.com/Iyxan23/sk-collab/tree/main): Development branch, checked, but unstable
  - [dev](https://github.com/Iyxan23/sk-collab/tree/dev): Development branch, unstable, unchecked, and untested
  - [new-old-kotlin](https://github.com/Iyxan23/sk-collab/tree/new-old-kotlin): The old Kotlin codebase and unfinished version of SketchCollab
