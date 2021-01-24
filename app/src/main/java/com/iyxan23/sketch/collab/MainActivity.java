@@ -26,6 +26,7 @@ import com.google.firebase.firestore.Source;
 import com.iyxan23.sketch.collab.adapters.ChangesAdapter;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
+import com.iyxan23.sketch.collab.online.BrowseActivity;
 
 import org.json.JSONException;
 
