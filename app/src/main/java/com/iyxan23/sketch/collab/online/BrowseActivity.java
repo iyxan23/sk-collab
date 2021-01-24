@@ -1,6 +1,7 @@
 package com.iyxan23.sketch.collab.online;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,6 +44,11 @@ public class BrowseActivity extends AppCompatActivity {
         // TODO: RECYCLERVIEW PAGINATION
         projects.get()
                 .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Toast.makeText(BrowseActivity.this, "An error occured while retrieving data: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
                     ArrayList<BrowseItem> items = new ArrayList<>();
 
                     for (DocumentSnapshot project: task.getResult().getDocuments()) {
