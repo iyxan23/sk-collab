@@ -55,8 +55,8 @@ public class SketchwareProjectAdapter extends RecyclerView.Adapter<SketchwarePro
         Log.d(TAG, "onBindViewHolder: called.");
         SketchwareProject project = datas.get(position);
 
-        holder.title.setText(project.metadata.project_name);
-        holder.subtitle.setText(project.metadata.app_name);
+        holder.title.setText(project.metadata.app_name);
+        holder.subtitle.setText(project.metadata.project_name);
         holder.details.setText(project.metadata.project_package + "(" + project.metadata.id + ")");
 
         try {
