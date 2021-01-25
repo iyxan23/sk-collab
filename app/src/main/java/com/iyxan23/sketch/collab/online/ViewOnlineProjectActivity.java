@@ -12,7 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 
 import com.iyxan23.sketch.collab.R;
-import com.iyxan23.sketch.collab.online.databinding.ActivityViewOnlineProjectBinding;
+import com.iyxan23.sketch.collab.databinding.ActivityViewOnlineProjectBinding;
 
 public class ViewOnlineProjectActivity extends AppCompatActivity {
 
@@ -31,12 +31,7 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
         toolBarLayout.setTitle(getTitle());
 
         FloatingActionButton fab = binding.fab;
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show());
     }
 }
