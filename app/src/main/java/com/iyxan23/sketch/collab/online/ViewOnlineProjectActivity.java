@@ -140,6 +140,16 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
                 });
     }
 
+    // onClick for the "Browse Code" button
+    public void browseCodeOnClick(View v) {
+
+    }
+
+    // onClick for the "
+    public void commitsOnClick(View v) {
+
+    }
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
