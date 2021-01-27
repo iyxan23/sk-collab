@@ -45,9 +45,21 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
 
         CollapsingToolbarLayout toolbar_layout = findViewById(R.id.toolbar_layout);
 
-        FloatingActionButton fab = binding.fab;
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
+        final FloatingActionButton fab_edit = binding.fabEdit;
+        final ExtendedFloatingActionButton fab_fork = binding.fabFork;
+
+        // TODO: CREATE A GENERATED IMAGE USING CANVAS IF THE PROJECT'S BANNER IS EMPTY
+
+        // Author edits the project
+        // The user can only click this fab if he is the author (check line 78)
+        fab_edit.setOnClickListener(v -> {
+
+        });
+
+        // Fork the project
+        fab_fork.setOnClickListener(v -> {
+            // TODO: IMPLEMENT FORKING PROJECTS
+        });
 
         String project_key = getIntent().getStringExtra("project_key");
 
