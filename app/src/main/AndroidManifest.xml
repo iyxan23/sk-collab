@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -16,7 +15,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SketchCollab">
-
+        <activity
+            android:name=".online.ViewOnlineProjectActivity"
+            android:label="@string/title_activity_view_online_project"
+            android:theme="@style/Theme.SketchCollab.NoActionBar"></activity>
         <activity
             android:name=".CheckActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar">
@@ -26,34 +28,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".online.BrowseActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
-
         <activity
             android:name=".online.UploadActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
-
         <activity
             android:name=".SketchwareProjectsListActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
-
         <activity
             android:name=".LoginActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
-
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
-
         <activity
             android:name=".online.PushCommitActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
-
         <activity
             android:name=".DebugActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
-
     </application>
+
 </manifest>
