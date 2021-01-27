@@ -217,7 +217,7 @@ public class UploadActivity extends AppCompatActivity {
                                 )
                                 // Upload data/library
                                 .continueWithTask(unused -> {
-                                        progressDialog.setMessage("Uploading project metadata");
+                                        progressDialog.setMessage("Uploading library");
                                         return snapshotRef
                                                 .document("library")
                                                 .set(new HashMap<String, Object>() {{
