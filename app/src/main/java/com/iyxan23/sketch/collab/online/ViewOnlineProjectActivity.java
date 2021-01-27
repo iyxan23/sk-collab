@@ -65,9 +65,12 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
 
         // Fetch the project from the database
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
         DocumentReference project = firestore.collection("projects").document(project_key);
         CollectionReference project_commits = firestore.collection("projects").document(project_key).collection("commits");
         CollectionReference userdata = firestore.collection("userdata");
+
+        String user_uid = auth.getUid();
 
         final DocumentSnapshot[] tmp = new DocumentSnapshot[3];
 
@@ -79,6 +82,18 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
                 })
                 .continueWithTask(task -> {
                     tmp[1] = task.getResult();
+
+                    // Hide / Show these FABs
+                    // Check if this user is the owner / author of this project
+                    if (user_uid.equals(tmp[1].getString("author"))) {
+                        // Yup, He's the owner
+                        // Show the edit fab
+                        fab_edit.setVisibility(View.VISIBLE);
+                    } else {
+                        // Nop, he's a visitor
+                        // Show the fork fab
+                        fab_fork.setVisibility(View.VISIBLE);
+                    }
 
                     // Get the latest commit
                     return project_commits.orderBy("timestamp", Query.Direction.DESCENDING).limit(1).get();
