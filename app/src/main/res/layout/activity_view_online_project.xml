@@ -43,6 +43,16 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@mipmap/ic_launcher" />
 
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="#AA000000"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <ImageView
                     android:id="@+id/imageView10"
                     android:layout_width="16dp"
