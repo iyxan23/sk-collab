@@ -1,5 +1,6 @@
 package com.iyxan23.sketch.collab.online;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -25,6 +26,8 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
 
     private ActivityViewOnlineProjectBinding binding;
 
+    private String description_;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,20 +45,23 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
         final FloatingActionButton fab_edit = binding.fabEdit;
         final ExtendedFloatingActionButton fab_fork = binding.fabFork;
 
+        String project_key = getIntent().getStringExtra("project_key");
+
         // TODO: CREATE A GENERATED IMAGE USING CANVAS IF THE PROJECT'S BANNER IS EMPTY
 
         // Author edits the project
         // The user can only click this fab if he is the author (check line 78)
         fab_edit.setOnClickListener(v -> {
-
+            Intent i = new Intent(this, EditProjectActivity.class);
+            i.putExtra("description", description_);
+            i.putExtra("project_key", project_key);
+            startActivity(i);
         });
 
         // Fork the project
         fab_fork.setOnClickListener(v -> {
             // TODO: IMPLEMENT FORKING PROJECTS
         });
-
-        String project_key = getIntent().getStringExtra("project_key");
 
         // Fetch the project from the database
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
@@ -120,6 +126,8 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
                     String first_commit_id = "initial";
                     String first_commit_message = "Initial Commit";
 
+                    description_ = description;
+
                     // Set these to the views
                     app_title.setText(author_name + "/" + name);
                     toolbar_layout.setTitle(name);
@@ -139,7 +147,7 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
 
     }
 
-    // onClick for the "
+    // onClick for the "Commits" button
     public void commitsOnClick(View v) {
 
     }
