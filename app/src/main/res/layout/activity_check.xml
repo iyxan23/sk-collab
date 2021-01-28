@@ -65,7 +65,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/log_red" />
+        app:srcCompat="@drawable/logo_red" />
 
     <ImageView
         android:id="@+id/logo_branch_part_check"
