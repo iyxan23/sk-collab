@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/commit_body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/rv_commit_icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_commit" />
+
+        <TextView
+            android:id="@+id/rv_commit_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:text="Commit Title"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/rv_commit_icon"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/rv_commit_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Author"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/rv_commit_title"
+            app:layout_constraintTop_toBottomOf="@+id/rv_commit_title" />
+
+        <View
+            android:id="@+id/divider7"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="?android:attr/listDivider"
+            android:backgroundTint="#ABABAB"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/rv_commit_icon"
+            app:layout_constraintTop_toBottomOf="@+id/rv_commit_author" />
+
+        <TextView
+            android:id="@+id/rv_commit_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sourcecodepro_regular"
+            android:text="Timestamp"
+            android:textColor="#BCBCBC"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@+id/rv_commit_title"
+            app:layout_constraintTop_toBottomOf="@+id/rv_commit_title" />
+
+        <TextView
+            android:id="@+id/rv_commit_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/sourcecodepro_regular"
+            android:text="QUNFGbqwfkvNqwb"
+            android:textColor="#878787"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@+id/rv_commit_timestamp"
+            app:layout_constraintTop_toBottomOf="@+id/rv_commit_title" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

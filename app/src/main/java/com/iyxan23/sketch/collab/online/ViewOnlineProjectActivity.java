@@ -28,6 +28,8 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
 
     private String description_;
 
+    String project_key;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +47,7 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
         final FloatingActionButton fab_edit = binding.fabEdit;
         final ExtendedFloatingActionButton fab_fork = binding.fabFork;
 
-        String project_key = getIntent().getStringExtra("project_key");
+        project_key = getIntent().getStringExtra("project_key");
 
         // TODO: CREATE A GENERATED IMAGE USING CANVAS IF THE PROJECT'S BANNER IS EMPTY
 
@@ -149,7 +151,9 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
 
     // onClick for the "Commits" button
     public void commitsOnClick(View v) {
-
+        Intent i = new Intent(this, CommitsActivity.class);
+        i.putExtra("project_key", project_key);
+        startActivity(i);
     }
 
     @Override
