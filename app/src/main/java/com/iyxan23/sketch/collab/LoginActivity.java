@@ -113,7 +113,6 @@ public class LoginActivity extends AppCompatActivity {
                         // Build the user's data
                         HashMap<String, Object> userdata = new HashMap<>();
                         userdata.put("name", usernameEditText.getText().toString());
-                        userdata.put("uid", user.getUid());
 
                         // Add the user in the database
                         usersRef.document(user.getUid())
