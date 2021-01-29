@@ -79,8 +79,8 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.ViewHolder
         // https://stackoverflow.com/questions/11275034/android-calculating-minutes-hours-days-from-point-in-time
         CharSequence relativeTimeStr =
                 DateUtils.getRelativeTimeSpanString(
-                        item.timestamp.getSeconds(),
-                        Timestamp.now().getSeconds(),
+                        item.timestamp.getSeconds() * 1000,
+                        System.currentTimeMillis(),
 
                         DateUtils.SECOND_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE
                 );
