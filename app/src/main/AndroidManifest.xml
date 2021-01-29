@@ -27,7 +27,6 @@
         </activity>
         <activity
             android:name=".online.ViewOnlineProjectActivity"
-            android:label="@string/title_activity_view_online_project"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
         <activity
             android:name=".online.EditProjectActivity"
