@@ -16,6 +16,8 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.adapters.BrowseItemAdapter;
@@ -73,6 +75,7 @@ public class BrowseActivity extends AppCompatActivity {
             ArrayList<BrowseItem> items = new ArrayList<>();
 
             for (DocumentSnapshot project: task.getResult().getDocuments()) {
+                // TODO: OPTIMIZE THIS
 
                 String username;
                 String uid_uploader = project.getString("author");
@@ -107,15 +110,33 @@ public class BrowseActivity extends AppCompatActivity {
                     }
                 }
 
+                // Get the latest commit timestamp
+                CollectionReference commits = firestore.collection("projects").document(project.getId()).collection("commits");
+                Timestamp latest_commit_timestamp;
+
+                try {
+                    QuerySnapshot latest_commit = Tasks.await(
+                            commits
+                                    .orderBy("timestamp", Query.Direction.DESCENDING)
+                                    .limit(1)
+                                    .get()
+                    );
+
+                    latest_commit_timestamp = latest_commit.getDocuments().get(0).getTimestamp("timestamp");
+
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                    Toast.makeText(BrowseActivity.this, "Error while fetching latest commit: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 items.add(
                         new BrowseItem(
                                 project.getId(),
                                 username,
                                 project.getString("name"),
                                 uid_uploader,
-                                // TODO: THIS
-                                // project.getTimestamp("last_updated_timestamp") == null ? project.child("last_updated_timestamp").getValue(int.class) : 0
-                                new Timestamp(0,0)  // Temporarily Hardcoded
+                                latest_commit_timestamp
                         )
                 );
             }
