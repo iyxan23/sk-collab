@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -61,6 +62,15 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.ViewHolder
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder: called.");
         Commit item = datas.get(position);
+
+        if (position == 0) {
+            // First commit
+            holder.icon.setImageDrawable(activity.get().getDrawable(R.drawable.ic_commit_start));
+
+        } else if (position == datas.size() - 1) {
+            // First commit
+            holder.icon.setImageDrawable(activity.get().getDrawable(R.drawable.ic_commit_end));
+        }
 
         holder.title.setText(item.name);
         holder.commit_id.setText(item.id);
