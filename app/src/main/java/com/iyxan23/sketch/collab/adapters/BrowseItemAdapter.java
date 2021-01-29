@@ -3,6 +3,7 @@ package com.iyxan23.sketch.collab.adapters;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,10 +69,16 @@ public class BrowseItemAdapter extends RecyclerView.Adapter<BrowseItemAdapter.Vi
 
         holder.title.setText(item.username + "/" + item.project_name);
 
-        // https://stackoverflow.com/questions/25710457/how-to-subtract-two-calendar-object-in-android
-        // TODO: IMPLEMENT A BETTER VERSION OF THIS THING
-        long difference = Timestamp.now().getSeconds() - item.latest_commit_timestamp.getSeconds();
-        holder.last_updated.setText("Last Updated " + (int) (difference / (60 * 60 * 24)) + " days ago");
+        // https://stackoverflow.com/questions/11275034/android-calculating-minutes-hours-days-from-point-in-time
+        CharSequence relativeTimeStr =
+                DateUtils.getRelativeTimeSpanString(
+                        item.latest_commit_timestamp.getSeconds() * 1000,
+                        System.currentTimeMillis(),
+
+                        DateUtils.SECOND_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE
+                );
+
+        holder.last_updated.setText("Last Updated " + relativeTimeStr);
 
         holder.body.setOnClickListener(v -> {
             // Move to ViewOnlineProjectActivity
