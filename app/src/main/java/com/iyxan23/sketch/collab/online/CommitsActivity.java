@@ -51,10 +51,11 @@ public class CommitsActivity extends AppCompatActivity {
 
         ArrayList<Commit> commits_ = new ArrayList<>();
 
-        new Thread(() -> {
-            commits_reference
-                    .get()
-                    .addOnCompleteListener(task -> {
+        commits_reference
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .get()
+                .addOnCompleteListener(task -> {
+                    new Thread(() -> {
                         if (!task.isSuccessful()) {
                             Toast.makeText(this, "Error while fetching commits: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             return;
@@ -101,8 +102,9 @@ public class CommitsActivity extends AppCompatActivity {
                             runOnUiThread(() -> adapter.updateView(commits_));
                         }
 
-                        findViewById(R.id.progressBar_commits).setVisibility(View.GONE);
-                    });
+                        Log.d(TAG, "onCreate: Finished, exiting");
+                        runOnUiThread(() -> findViewById(R.id.progressBar_commits).setVisibility(View.GONE));
+                    }).start();
         });
     }
 }
