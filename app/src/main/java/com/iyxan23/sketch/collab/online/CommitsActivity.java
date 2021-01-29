@@ -107,7 +107,7 @@ public class CommitsActivity extends AppCompatActivity {
                             c.author = commit.getString("author");
                             c.name = commit.getString("name");
                             c.sha512sum = commit.getString("sha512sum");
-                            c.patch = commit.get("patch", Map.class);
+                            // c.patch = commit.get("patch", Map.class); // Soon
                             c.timestamp = commit.getTimestamp("timestamp");
 
                             commits_.add(c);
