@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class CommitsActivity extends AppCompatActivity {
+
+    public static final String TAG = "CommitsActivity";
 
     HashMap<String, String> cached_usernames = new HashMap<>();
 
@@ -56,7 +59,9 @@ public class CommitsActivity extends AppCompatActivity {
                 .get()
                 .addOnCompleteListener(task -> {
                     new Thread(() -> {
+                        Log.d(TAG, "onCreate: onCompleteListener called.");
                         if (!task.isSuccessful()) {
+                            Log.d(TAG, "onCreate: Task unsuccessful");
                             Toast.makeText(this, "Error while fetching commits: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             return;
                         }
@@ -66,15 +71,22 @@ public class CommitsActivity extends AppCompatActivity {
                         for (QueryDocumentSnapshot commit : commits) {
                             String username;
                             String author_uid = commit.getString("uid");
+                            Log.d(TAG, "onCreate: author: " + author_uid);
 
                             if (!cached_usernames.containsKey(commit.getString("uid"))) {
                                 // Fetch the username
+
+                                Log.d(TAG, "onCreate: Isn't cached");
+                                Log.d(TAG, "onCreate: Fetching userdata for " + author_uid);
 
                                 DocumentReference userdata = firestore.collection("userdata").document(author_uid);
 
                                 try {
                                     DocumentSnapshot userdata_snapshot = Tasks.await(userdata.get());
                                     username = userdata_snapshot.getString("name");
+
+                                    Log.d(TAG, "onCreate: Complete");
+                                    Log.d(TAG, "onCreate: uid: " + author_uid + " username: " + username);
 
                                     cached_usernames.put(author_uid, username);
 
