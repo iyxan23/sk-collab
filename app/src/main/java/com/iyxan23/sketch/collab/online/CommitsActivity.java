@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.Tasks;
@@ -35,6 +36,9 @@ public class CommitsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_commits);
 
         String project_key = getIntent().getStringExtra("project_key");
+
+        // One liner go brrr
+        ((TextView) findViewById(R.id.commits_project_name)).setText("on " + getIntent().getStringExtra("project_name"));
 
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         CollectionReference commits_reference = firestore.collection("projects").document(project_key).collection("commits");

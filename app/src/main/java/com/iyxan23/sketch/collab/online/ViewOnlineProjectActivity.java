@@ -29,6 +29,7 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
     private String description_;
 
     String project_key;
+    String project_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +129,7 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
                     String first_commit_id = "initial";
                     String first_commit_message = "Initial Commit";
 
+                    project_name = name;
                     description_ = description;
 
                     // Set these to the views
@@ -153,6 +155,7 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
     public void commitsOnClick(View v) {
         Intent i = new Intent(this, CommitsActivity.class);
         i.putExtra("project_key", project_key);
+        i.putExtra("project_name", project_name);
         startActivity(i);
     }
 
