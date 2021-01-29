@@ -100,6 +100,8 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.ViewHolder
         TextView commit_id;
         TextView timestamp;
 
+        ImageView icon;
+
         View body;
 
         public ViewHolder(@NonNull View itemView) {
@@ -108,6 +110,8 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.ViewHolder
             author = itemView.findViewById(R.id.rv_commit_author);
             commit_id = itemView.findViewById(R.id.rv_commit_id);
             timestamp = itemView.findViewById(R.id.rv_commit_timestamp);
+
+            icon = itemView.findViewById(R.id.rv_commit_icon);
 
             body = itemView.findViewById(R.id.commit_body);
         }
