@@ -137,11 +137,11 @@
         android:text="Fork"
         android:textColor="#FFFFFF"
         android:visibility="gone"
+        app:icon="@drawable/ic_fork"
         app:iconTint="#FFFFFF"
         app:backgroundTint="@color/colorPrimary"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@drawable/ic_fork"
         app:tint="#FFFFFF" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
