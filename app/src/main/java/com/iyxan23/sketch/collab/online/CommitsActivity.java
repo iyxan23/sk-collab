@@ -33,6 +33,8 @@ public class CommitsActivity extends AppCompatActivity {
 
     HashMap<String, String> cached_usernames = new HashMap<>();
 
+    ArrayList<Commit> commits_ = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,8 +53,6 @@ public class CommitsActivity extends AppCompatActivity {
 
         commit_rv.setLayoutManager(new LinearLayoutManager(this));
         commit_rv.setAdapter(adapter);
-
-        ArrayList<Commit> commits_ = new ArrayList<>();
 
         commits_reference
                 .orderBy("timestamp", Query.Direction.DESCENDING)
