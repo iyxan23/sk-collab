@@ -38,6 +38,14 @@ public class BrowseItemAdapter extends RecyclerView.Adapter<BrowseItemAdapter.Vi
     }
 
     public void updateView(ArrayList<BrowseItem> datas) {
+        if (datas == null) {
+            return;
+        }
+
+        if (datas.size() == 0) {
+            return;
+        }
+
         this.datas = datas;
         notifyDataSetChanged();
     }
