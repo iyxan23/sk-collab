@@ -38,6 +38,14 @@ public class BrowseItemAdapter extends RecyclerView.Adapter<BrowseItemAdapter.Vi
     }
 
     public void updateView(ArrayList<BrowseItem> datas) {
+        if (datas == null) {
+            return;
+        }
+
+        if (datas.size() == 0) {
+            return;
+        }
+
         this.datas = datas;
         notifyDataSetChanged();
     }
@@ -70,7 +78,6 @@ public class BrowseItemAdapter extends RecyclerView.Adapter<BrowseItemAdapter.Vi
             Intent i = new Intent(activity.get(), ViewOnlineProjectActivity.class);
             i.putExtra("project_key", item.project_id);
             activity.get().startActivity(i);
-            activity.get().finish();
         });
     }
 

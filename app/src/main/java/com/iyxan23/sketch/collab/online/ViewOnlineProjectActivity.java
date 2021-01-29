@@ -1,35 +1,35 @@
 package com.iyxan23.sketch.collab.online;
 
+import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.databinding.ActivityViewOnlineProjectBinding;
-
-import org.jetbrains.annotations.NotNull;
 
 public class ViewOnlineProjectActivity extends AppCompatActivity {
 
     private ActivityViewOnlineProjectBinding binding;
+
+    private String description_;
+
+    String project_key;
+    String project_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,17 +45,35 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
 
         CollapsingToolbarLayout toolbar_layout = findViewById(R.id.toolbar_layout);
 
-        FloatingActionButton fab = binding.fab;
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
+        final FloatingActionButton fab_edit = binding.fabEdit;
+        final ExtendedFloatingActionButton fab_fork = binding.fabFork;
 
-        String project_key = getIntent().getStringExtra("project_key");
+        project_key = getIntent().getStringExtra("project_key");
+
+        // TODO: CREATE A GENERATED IMAGE USING CANVAS IF THE PROJECT'S BANNER IS EMPTY
+
+        // Author edits the project
+        // The user can only click this fab if he is the author (check line 78)
+        fab_edit.setOnClickListener(v -> {
+            Intent i = new Intent(this, EditProjectActivity.class);
+            i.putExtra("description", description_);
+            i.putExtra("project_key", project_key);
+            startActivity(i);
+        });
+
+        // Fork the project
+        fab_fork.setOnClickListener(v -> {
+            // TODO: IMPLEMENT FORKING PROJECTS
+        });
 
         // Fetch the project from the database
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
         DocumentReference project = firestore.collection("projects").document(project_key);
         CollectionReference project_commits = firestore.collection("projects").document(project_key).collection("commits");
         CollectionReference userdata = firestore.collection("userdata");
+
+        String user_uid = auth.getUid();
 
         final DocumentSnapshot[] tmp = new DocumentSnapshot[3];
 
@@ -67,6 +85,18 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
                 })
                 .continueWithTask(task -> {
                     tmp[1] = task.getResult();
+
+                    // Hide / Show these FABs
+                    // Check if this user is the owner / author of this project
+                    if (user_uid.equals(tmp[0].getString("author"))) {
+                        // Yup, He's the owner
+                        // Show the edit fab
+                        fab_edit.setVisibility(View.VISIBLE);
+                    } else {
+                        // Nop, he's a visitor
+                        // Show the fork fab
+                        fab_fork.setVisibility(View.VISIBLE);
+                    }
 
                     // Get the latest commit
                     return project_commits.orderBy("timestamp", Query.Direction.DESCENDING).limit(1).get();
@@ -99,6 +129,9 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
                     String first_commit_id = "initial";
                     String first_commit_message = "Initial Commit";
 
+                    project_name = name;
+                    description_ = description;
+
                     // Set these to the views
                     app_title.setText(author_name + "/" + name);
                     toolbar_layout.setTitle(name);
@@ -111,6 +144,19 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
                     // Hide the progressbar
                     findViewById(R.id.progress_project).setVisibility(View.GONE);
                 });
+    }
+
+    // onClick for the "Browse Code" button
+    public void browseCodeOnClick(View v) {
+
+    }
+
+    // onClick for the "Commits" button
+    public void commitsOnClick(View v) {
+        Intent i = new Intent(this, CommitsActivity.class);
+        i.putExtra("project_key", project_key);
+        i.putExtra("project_name", project_name);
+        startActivity(i);
     }
 
     @Override

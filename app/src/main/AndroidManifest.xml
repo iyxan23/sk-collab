@@ -17,10 +17,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SketchCollab">
         <activity
-            android:name=".online.ViewOnlineProjectActivity"
-            android:label="@string/title_activity_view_online_project"
-            android:theme="@style/Theme.SketchCollab.NoActionBar"></activity>
-        <activity
             android:name=".CheckActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar">
             <intent-filter>
@@ -29,6 +25,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".online.ViewOnlineProjectActivity"
+            android:theme="@style/Theme.SketchCollab.NoActionBar" />
+        <activity
+            android:name=".online.EditProjectActivity"
+            android:theme="@style/Theme.SketchCollab.NoActionBar" />
         <activity
             android:name=".online.BrowseActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
@@ -46,6 +48,9 @@
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
         <activity
             android:name=".online.PushCommitActivity"
+            android:theme="@style/Theme.SketchCollab.NoActionBar" />
+        <activity
+            android:name=".online.CommitsActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
         <activity
             android:name=".DebugActivity"
