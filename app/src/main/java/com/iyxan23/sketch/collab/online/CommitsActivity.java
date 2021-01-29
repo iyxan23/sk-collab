@@ -70,10 +70,11 @@ public class CommitsActivity extends AppCompatActivity {
 
                         for (QueryDocumentSnapshot commit : commits) {
                             String username;
-                            String author_uid = commit.getString("uid");
+                            String author_uid = commit.getString("author");
+
                             Log.d(TAG, "onCreate: author: " + author_uid);
 
-                            if (!cached_usernames.containsKey(commit.getString("uid"))) {
+                            if (!cached_usernames.containsKey(author_uid)) {
                                 // Fetch the username
 
                                 Log.d(TAG, "onCreate: Isn't cached");
@@ -91,12 +92,14 @@ public class CommitsActivity extends AppCompatActivity {
                                     cached_usernames.put(author_uid, username);
 
                                 } catch (ExecutionException | InterruptedException e) {
+                                    Log.e(TAG, "onCreate: Failed while fetching userdata of " + author_uid);
                                     e.printStackTrace();
                                     Toast.makeText(this, "Error while fetching userdata: " + e.getMessage(), Toast.LENGTH_LONG).show();
                                     return;
                                 }
 
                             } else {
+                                Log.d(TAG, "onCreate: Username exists in cache");
                                 username = cached_usernames.get(author_uid);
                             }
 
@@ -109,6 +112,8 @@ public class CommitsActivity extends AppCompatActivity {
                             c.sha512sum = commit.getString("sha512sum");
                             // c.patch = commit.get("patch", Map.class); // Soon
                             c.timestamp = commit.getTimestamp("timestamp");
+
+                            Log.d(TAG, "onCreate: Adding commit " + c.id + "to the list ");
 
                             commits_.add(c);
                             runOnUiThread(() -> adapter.updateView(commits_));
