@@ -88,7 +88,7 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
 
                     // Hide / Show these FABs
                     // Check if this user is the owner / author of this project
-                    if (user_uid.equals(tmp[1].getString("author"))) {
+                    if (user_uid.equals(tmp[0].getString("author"))) {
                         // Yup, He's the owner
                         // Show the edit fab
                         fab_edit.setVisibility(View.VISIBLE);
