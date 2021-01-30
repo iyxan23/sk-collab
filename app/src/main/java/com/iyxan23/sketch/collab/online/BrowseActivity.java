@@ -1,6 +1,7 @@
 package com.iyxan23.sketch.collab.online;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -48,6 +49,9 @@ public class BrowseActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             if (!savedInstanceState.isEmpty()) {
                 adapter.updateView(savedInstanceState.getParcelableArrayList("items"));
+                
+                findViewById(R.id.progressBar_browse).setVisibility(View.GONE);
+
                 return;
             }
         }
@@ -142,6 +146,8 @@ public class BrowseActivity extends AppCompatActivity {
             }
 
             if (savedInstanceState != null) savedInstanceState.putParcelableArrayList("items", items);
+
+            findViewById(R.id.progressBar_browse).setVisibility(View.GONE);
 
             runOnUiThread(() -> adapter.updateView(items));
         }).start();
