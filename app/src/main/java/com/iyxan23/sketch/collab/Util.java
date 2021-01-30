@@ -176,6 +176,21 @@ public class Util {
         return null;
     }
 
+    public static int getFreeId() {
+        ArrayList<String> files = listDir(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/");
+
+        int anchor = 601;
+        for (String file : files) {
+            if (!file.equals(String.valueOf(anchor))) {
+                // Heres the free id
+                return anchor;
+            }
+            anchor++;
+        }
+        // Get the last empty ID
+        return Integer.parseInt(files.get(files.size() - 1)) + 1;
+    }
+
     // Copied from: https://www.journaldev.com/9400/android-external-storage-read-write-save-file
     @NonNull
     public static String readFile(String path) throws IOException {
