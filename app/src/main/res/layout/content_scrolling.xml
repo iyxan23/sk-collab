@@ -191,9 +191,9 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="center_vertical"
+            android:onClick="commitsOnClick"
             android:orientation="horizontal"
             android:padding="8dp"
-            android:onClick="commitsOnClick"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -215,6 +215,41 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/linear_clone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:onClick="cloneOnClick"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linear_commit">
+
+            <ImageView
+                android:id="@+id/imageView17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_file_download" />
+
+            <TextView
+                android:id="@+id/textView27"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Clone"
+                android:textColor="#FFFFFF" />
+
+        </LinearLayout>
+
         <View
             android:id="@+id/divider6"
             android:layout_width="0dp"
@@ -226,7 +261,7 @@
             android:backgroundTint="#ACACAC"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linear_commit" />
+            app:layout_constraintTop_toBottomOf="@+id/linear_clone" />
 
         <TextView
             android:id="@+id/textView25"

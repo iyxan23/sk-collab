@@ -1,12 +1,23 @@
 package com.iyxan23.sketch.collab.online;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -19,8 +30,17 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.iyxan23.sketch.collab.R;
+import com.iyxan23.sketch.collab.Util;
 import com.iyxan23.sketch.collab.databinding.ActivityViewOnlineProjectBinding;
+import com.iyxan23.sketch.collab.models.SketchwareProject;
+import com.iyxan23.sketch.collab.services.CloneService;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+
+import java.util.ArrayList;
 
 public class ViewOnlineProjectActivity extends AppCompatActivity {
 
@@ -157,6 +177,52 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
         i.putExtra("project_key", project_key);
         i.putExtra("project_name", project_name);
         startActivity(i);
+    }
+
+    // onClick for the "Clone" button
+    public void cloneOnClick(View v) {
+        new Thread(() -> {
+            boolean already_exists = false;
+            ArrayList<SketchwareProject> projects = Util.fetch_sketchware_projects();
+
+            for (SketchwareProject project : projects) {
+                try {
+                    String key = project.getSketchCollabKey();
+
+                    if (key.equals(project_key)) {
+                        // There's already a project
+                        already_exists = true;
+
+                        break;
+                    }
+                } catch (JSONException ignore) { }
+            }
+
+            if (already_exists) {
+                AlertDialog.Builder exists_dialog = new AlertDialog.Builder(this);
+                exists_dialog.setCancelable(true);
+                exists_dialog.setTitle("Duplicate Project");
+                exists_dialog.setMessage("This project already exists in your device (ID: " + project_key + "), are you sure you want to continue?");
+                exists_dialog.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+                exists_dialog.setPositiveButton("Yes", (dialog, which) -> {
+                    dialog.dismiss();
+                    do_clone();
+                });
+
+                exists_dialog.create().show();
+            }
+        }).start();
+    }
+
+    private void do_clone() {
+        Intent cloneService = new Intent(this, CloneService.class);
+        cloneService.putExtra("project_key", project_key);
+        cloneService.putExtra("project_name", project_name);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(cloneService);
+        } else {
+            startService(cloneService);
+        }
     }
 
     @Override
