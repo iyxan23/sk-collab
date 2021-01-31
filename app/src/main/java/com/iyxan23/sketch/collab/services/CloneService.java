@@ -107,7 +107,7 @@ public class CloneService extends Service {
                 // Get the snapshot, get the commits, and apply the commits to the snapshot
                 DocumentSnapshot project_metadata = Tasks.await(project.get());
                 QuerySnapshot snapshot = Tasks.await(project_snapshot.get());
-                QuerySnapshot commits  = Tasks.await(project_commits .get());
+                QuerySnapshot commits  = Tasks.await(project_commits .orderBy("timestamp", Query.Direction.ASCENDING).get());
 
                 for (DocumentSnapshot doc: snapshot.getDocuments()) {
                     project_data.put(doc.getId(), Util.decrypt(doc.getBlob("data").toBytes()));
