@@ -28,6 +28,7 @@ import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.Util;
 import com.iyxan23.sketch.collab.models.Commit;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
+import com.iyxan23.sketch.collab.online.ViewOnlineProjectActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,8 +65,8 @@ public class CloneService extends Service {
 
         @Override
         public void handleMessage(Message msg) {
-            // Normally we would do some work here, like download a file.
-            // For our sample, we just sleep for 5 seconds.
+            Toast.makeText(CloneService.this, "Cloning started.", Toast.LENGTH_SHORT).show();
+            
             try {
                 FirebaseFirestore firestore = FirebaseFirestore.getInstance();
                 DocumentReference   project = firestore.collection("projects").document(project_key);
@@ -154,7 +155,7 @@ public class CloneService extends Service {
                 Thread.currentThread().interrupt();
             }
 
-            Toast.makeText(CloneService.this, "Cloning " + project_name + " finished", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CloneService.this, "Clone " + project_name + " finished", Toast.LENGTH_SHORT).show();
 
             // Stop the service using the startId, so that we don't stop
             // the service in the middle of handling another job
