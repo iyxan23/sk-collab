@@ -187,14 +187,24 @@ public class CloneService extends Service {
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-        Notification notification =
-                new Notification.Builder(this)
-                        .setContentTitle("Cloning Project")
-                        .setContentText("Cloning " + project_name + " (" + project_key + ")")
-                        .setProgress(100, 1, true)
-                        .setSmallIcon(R.drawable.ic_file_download)
-                        .setContentIntent(pendingIntent)
-                        .build();
+        final Notification.Builder notification_builder;
+
+        // Channel ID is for 26+ / Android 8+ / Android Oreo+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createCloneNotificationChannel();
+
+            notification_builder = new Notification.Builder(this, CLONE_CHANNEL_ID);
+        } else {
+            notification_builder = new Notification.Builder(this);
+        }
+
+        Notification notification = notification_builder
+                                        .setContentTitle("Cloning Project")
+                                        .setContentText("Cloning " + project_name + " (" + project_key + ")")
+                                        .setProgress(100, 1, true)
+                                        .setSmallIcon(R.drawable.ic_file_download)
+                                        .setContentIntent(pendingIntent)
+                                        .build();
 
         startForeground(NOTIFICATION_ID, notification);
 
@@ -206,19 +216,18 @@ public class CloneService extends Service {
         super.onDestroy();
     }
 
-    private void createNotificationChannel() {
+    @RequiresApi(Build.VERSION_CODES.O)
+    private void createCloneNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Clone Project";
-            String description = "";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CLONE_CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
+        CharSequence name = "Clone Project";
+        String description = "This notification will appear when you clone a project in SketchCollab.";
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        NotificationChannel channel = new NotificationChannel(CLONE_CHANNEL_ID, name, importance);
+        channel.setDescription(description);
+        // Register the channel with the system; you can't change the importance
+        // or other notification behaviors after this
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
     }
 }
