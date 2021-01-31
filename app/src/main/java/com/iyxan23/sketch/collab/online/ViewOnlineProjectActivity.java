@@ -212,6 +212,10 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
 
             if (already_exists) {
                 runOnUiThread(exists_dialog::show);
+            } else {
+                // Clone right away
+                // Probably will add a confirmation dialog
+                do_clone();
             }
         }).start();
     }
