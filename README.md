@@ -11,6 +11,8 @@
 [![Open Source? Yes!](https://badgen.net/badge/Open%20Source%20%3F/Yes%21/blue?icon=github)](https://github.com/Iyxan23/sk-collab)
 [![GitHub forks](https://img.shields.io/github/forks/Iyxan23/sk-collab.svg?style=social&label=Fork&maxAge=2592000)](https://GitHub.com/Iyxan23/sk-collab/network/)
 
+[![CI Build](https://github.com/Iyxan23/sk-collab/workflows/Java%20CI%20with%20Gradle/badge.svg)](.)
+
 # SketchCollab
 SketchCollab is an android application that let's you collaborate in sketchware without any hassle. It is similar to github, but specialized for sketchware.
 
