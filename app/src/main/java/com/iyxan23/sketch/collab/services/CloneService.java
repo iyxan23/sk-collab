@@ -116,12 +116,16 @@ public class CloneService extends Service {
                 diff_match_patch dmp = new diff_match_patch();
                 // Apply the patch
                 for (DocumentSnapshot commit: commits) {
-                    Commit c = commit.toObject(Commit.class);
+                    HashMap<String, String> patch = (HashMap<String, String>) commit.get("patch");
+
+                    if (patch == null) continue;
 
                     for (String key: keys) {
-                        LinkedList<diff_match_patch.Patch> patches = (LinkedList<diff_match_patch.Patch>) dmp.patch_fromText(c.patch.get(key));
+                        if (!patch.containsKey(key)) continue;
+
+                        LinkedList<diff_match_patch.Patch> patches = (LinkedList<diff_match_patch.Patch>) dmp.patch_fromText(patch.get(key));
                         // TODO: CHECK PATCH STATUSES
-                        Object[] result = dmp.patch_apply(patches, c.patch.get(key));
+                        Object[] result = dmp.patch_apply(patches, patch.get(key));
 
                         project_data.put(key, (String) result[0]);
                     }
