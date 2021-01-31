@@ -23,6 +23,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -181,6 +182,17 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
 
     // onClick for the "Clone" button
     public void cloneOnClick(View v) {
+        AlertDialog.Builder exists_dialog_builder = new AlertDialog.Builder(this);
+        exists_dialog_builder.setCancelable(true);
+        exists_dialog_builder.setTitle("Duplicate Project");
+        exists_dialog_builder.setMessage("This project already exists in your device (ID: " + project_key + "), are you sure you want to continue?");
+        exists_dialog_builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        exists_dialog_builder.setPositiveButton("Yes", (dialog, which) -> {
+            dialog.dismiss();
+            do_clone();
+        });
+        AlertDialog exists_dialog = exists_dialog_builder.create();
+
         new Thread(() -> {
             boolean already_exists = false;
             ArrayList<SketchwareProject> projects = Util.fetch_sketchware_projects();
@@ -199,17 +211,7 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
             }
 
             if (already_exists) {
-                AlertDialog.Builder exists_dialog = new AlertDialog.Builder(this);
-                exists_dialog.setCancelable(true);
-                exists_dialog.setTitle("Duplicate Project");
-                exists_dialog.setMessage("This project already exists in your device (ID: " + project_key + "), are you sure you want to continue?");
-                exists_dialog.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-                exists_dialog.setPositiveButton("Yes", (dialog, which) -> {
-                    dialog.dismiss();
-                    do_clone();
-                });
-
-                exists_dialog.create().show();
+                runOnUiThread(exists_dialog::show);
             }
         }).start();
     }
