@@ -147,9 +147,10 @@ public class BrowseActivity extends AppCompatActivity {
 
             if (savedInstanceState != null) savedInstanceState.putParcelableArrayList("items", items);
 
-            findViewById(R.id.progressBar_browse).setVisibility(View.GONE);
-
-            runOnUiThread(() -> adapter.updateView(items));
+            runOnUiThread(() -> {
+                findViewById(R.id.progressBar_browse).setVisibility(View.GONE);
+                adapter.updateView(items);
+            });
         }).start();
     }
 }
