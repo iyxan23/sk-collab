@@ -43,4 +43,5 @@ I didn't invent version control. SketchCollab is only a version control system f
  - [dev](https://github.com/Iyxan23/sk-collab/tree/dev): Development branch, unstable, unchecked, and untested, bugs are expected in this branch
  - [new-old-kotlin](https://github.com/Iyxan23/sk-collab/tree/new-old-kotlin): The old Kotlin codebase and unfinished version of SketchCollab
  - [old-java](https://github.com/Iyxan23/sk-collab/tree/old-java): The old Java and unfinished version of SketchCollab
+ - [feature/ branches] - Usually used to add big / important features for the app, will soon be merged with dev when it's complete.
  - [other branches] - Usually used to add breaking features and soon will be merged into dev when it's complete.
