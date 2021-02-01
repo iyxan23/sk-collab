@@ -180,9 +180,14 @@ public class CloneService extends Service {
                         Util.encrypt(project_data.get("mysc_project").getBytes())
                 ).applyChanges();
 
-            } catch (InterruptedException | ExecutionException | JSONException | IOException e) {
+            } catch (InterruptedException e) {
                 // Restore interrupt status.
                 Thread.currentThread().interrupt();
+            } catch (ExecutionException | JSONException | IOException e) {
+                e.printStackTrace();
+
+                // So it will appear on the debug page
+                throw new RuntimeException(e);
             }
 
             // Stop the service using the startId, so that we don't stop
