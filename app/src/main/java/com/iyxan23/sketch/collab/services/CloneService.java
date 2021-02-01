@@ -125,7 +125,7 @@ public class CloneService extends Service {
 
                         LinkedList<diff_match_patch.Patch> patches = (LinkedList<diff_match_patch.Patch>) dmp.patch_fromText(patch.get(key));
                         // TODO: CHECK PATCH STATUSES
-                        Object[] result = dmp.patch_apply(patches, patch.get(key));
+                        Object[] result = dmp.patch_apply(patches, project_data.get(key));
 
                         project_data.put(key, (String) result[0]);
                     }
