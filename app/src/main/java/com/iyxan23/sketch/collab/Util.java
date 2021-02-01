@@ -264,6 +264,10 @@ public class Util {
     }
 
     public static void writeFile(File file, byte[] data) throws IOException {
+        if (!file.exists()) {
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+        }
         FileOutputStream outputStream = new FileOutputStream(file);
         outputStream.write(data);
         outputStream.flush();
