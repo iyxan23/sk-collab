@@ -127,23 +127,21 @@ public class Util {
     // This function should be ran on a different thread
     public static ArrayList<SketchwareProject> fetch_sketchware_projects() {
         ArrayList<SketchwareProject> projects = new ArrayList<>();
-        ArrayList<String> files = listDir(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/");
+        ArrayList<File> files = listDir(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/");
 
-        for (String project_folder_path: files) {
-            File project_folder = new File(project_folder_path);
-
+        for (File project_folder_path: files) {
             // Just in case
-            if (project_folder.isFile())
+            if (project_folder_path.isFile())
                 continue;
 
             try {
-                FileInputStream file = new FileInputStream(new File(project_folder.getAbsolutePath() + "/file"));
-                FileInputStream logic = new FileInputStream(new File(project_folder.getAbsolutePath() + "/logic"));
-                FileInputStream library = new FileInputStream(new File(project_folder.getAbsolutePath() + "/library"));
-                FileInputStream view = new FileInputStream(new File(project_folder.getAbsolutePath() + "/view"));
-                FileInputStream resource = new FileInputStream(new File(project_folder.getAbsolutePath() + "/resource"));
+                FileInputStream file = new FileInputStream(new File(project_folder_path.getAbsolutePath() + "/file"));
+                FileInputStream logic = new FileInputStream(new File(project_folder_path.getAbsolutePath() + "/logic"));
+                FileInputStream library = new FileInputStream(new File(project_folder_path.getAbsolutePath() + "/library"));
+                FileInputStream view = new FileInputStream(new File(project_folder_path.getAbsolutePath() + "/view"));
+                FileInputStream resource = new FileInputStream(new File(project_folder_path.getAbsolutePath() + "/resource"));
 
-                FileInputStream mysc_project = new FileInputStream(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/" + project_folder.getName() + "/project"));
+                FileInputStream mysc_project = new FileInputStream(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/" + project_folder_path.getName() + "/project"));
 
                 projects.add(new SketchwareProject(readFile(logic), readFile(view), readFile(resource), readFile(library), readFile(file), readFile(mysc_project)));
 
