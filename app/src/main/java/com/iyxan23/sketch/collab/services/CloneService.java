@@ -155,7 +155,7 @@ public class CloneService extends Service {
                      */
                 }
 
-                int free_id = Util.getFreeId();
+                int free_id = Util.getLatestId();
 
                 // Alter the mysc project
                 JSONObject project_json = new JSONObject(project_data.get("mysc_project"));

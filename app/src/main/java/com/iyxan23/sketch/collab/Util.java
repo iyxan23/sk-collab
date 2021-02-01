@@ -174,17 +174,9 @@ public class Util {
         return null;
     }
 
-    public static int getFreeId() {
+    public static int getLatestId() {
         ArrayList<File> files = listDir(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/");
 
-        int anchor = 601;
-        for (File file : files) {
-            if (!file.getName().equals(String.valueOf(anchor))) {
-                // Heres the free id
-                return anchor;
-            }
-            anchor++;
-        }
         // Get the last empty ID
         return Integer.parseInt(files.get(files.size() - 1).getName()) + 1;
     }
