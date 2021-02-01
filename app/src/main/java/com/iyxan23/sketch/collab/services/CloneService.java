@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
@@ -125,7 +126,7 @@ public class CloneService extends Service {
 
                         LinkedList<diff_match_patch.Patch> patches = (LinkedList<diff_match_patch.Patch>) dmp.patch_fromText(patch.get(key));
                         // TODO: CHECK PATCH STATUSES
-                        Object[] result = dmp.patch_apply(patches, patch.get(key));
+                        Object[] result = dmp.patch_apply(patches, project_data.get(key));
 
                         project_data.put(key, (String) result[0]);
                     }
@@ -155,12 +156,12 @@ public class CloneService extends Service {
                      */
                 }
 
-                int free_id = Util.getFreeId();
+                int free_id = Util.getLatestId();
 
                 // Alter the mysc project
                 JSONObject project_json = new JSONObject(project_data.get("mysc_project"));
 
-                project_json.put("sc_id", free_id);
+                project_json.put("sc_id", String.valueOf(free_id));
 
                 project_json.put("sk-collab-project-key", project_key);
                 project_json.put("sk-collab-owner", project_metadata.getString("author"));
@@ -180,10 +181,36 @@ public class CloneService extends Service {
                         Util.encrypt(project_data.get("mysc_project").getBytes())
                 ).applyChanges();
 
-            } catch (InterruptedException | ExecutionException | JSONException | IOException e) {
+            } catch (InterruptedException e) {
                 // Restore interrupt status.
                 Thread.currentThread().interrupt();
+            } catch (ExecutionException | JSONException | IOException e) {
+                e.printStackTrace();
+
+                // So it will appear on the debug page
+                throw new RuntimeException(e);
             }
+
+            // Show a "clone finished" notification
+            final Notification.Builder notification_builder_finished;
+
+            // Channel ID is for 26+ / Android 8+ / Android Oreo+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                notification_builder_finished = new Notification.Builder(this, CLONE_CHANNEL_ID);
+            } else {
+                notification_builder_finished = new Notification.Builder(this);
+            }
+
+            Notification finished_notification = notification_builder_finished
+                    .setContentTitle("Clone finished")
+                    .setContentText("Clone " + project_name + " (" + project_key + ") has finished.")
+                    .setSmallIcon(R.drawable.ic_check)
+                    .setContentIntent(pendingIntent)
+                    .build();
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+            notificationManager.notify(1, finished_notification);
 
             // Stop the service using the startId, so that we don't stop
             // the service in the middle of handling another job

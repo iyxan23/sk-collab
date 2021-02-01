@@ -48,38 +48,23 @@ public class SketchwareProject implements Parcelable {
     }
 
     public void applyChanges() throws IOException {
-        String project_folder = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/" + project_id;
-        FileOutputStream file = new FileOutputStream(new File(project_folder + "/file"));
-        FileOutputStream logic = new FileOutputStream(new File(project_folder + "/logic"));
-        FileOutputStream library = new FileOutputStream(new File(project_folder + "/library"));
-        FileOutputStream view = new FileOutputStream(new File(project_folder + "/view"));
-        FileOutputStream resource = new FileOutputStream(new File(project_folder + "/resource"));
+        String project_folder = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/" + project_id + "/";
 
-        FileOutputStream mysc_project = new FileOutputStream(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/" + project_id + "/project"));
+        File file       = new File(project_folder + "file");
+        File logic      = new File(project_folder + "logic");
+        File library    = new File(project_folder + "library");
+        File view       = new File(project_folder + "view");
+        File resource   = new File(project_folder + "resource");
 
-        file.write(this.file);
-        file.flush();
-        file.close();
+        File mysc_project = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/" + project_id + "/project");
 
-        logic.write(this.logic);
-        file.flush();
-        logic.close();
+        Util.writeFile(file     , this.file     );
+        Util.writeFile(logic    , this.logic    );
+        Util.writeFile(library  , this.library  );
+        Util.writeFile(view     , this.view     );
+        Util.writeFile(resource , this.resource );
 
-        library.write(this.library);
-        library.flush();
-        library.close();
-
-        view.write(this.view);
-        view.flush();
-        view.close();
-
-        resource.write(this.resource);
-        resource.flush();
-        resource.close();
-
-        mysc_project.write(this.mysc_project);
-        mysc_project.flush();
-        mysc_project.close();
+        Util.writeFile(mysc_project, this.mysc_project);
     }
 
     @Nullable
