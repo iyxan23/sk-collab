@@ -160,7 +160,7 @@ public class CloneService extends Service {
                 // Alter the mysc project
                 JSONObject project_json = new JSONObject(project_data.get("mysc_project"));
 
-                project_json.put("sc_id", free_id);
+                project_json.put("sc_id", String.valueOf(free_id));
 
                 project_json.put("sk-collab-project-key", project_key);
                 project_json.put("sk-collab-owner", project_metadata.getString("author"));
