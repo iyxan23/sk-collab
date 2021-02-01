@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
@@ -189,6 +190,27 @@ public class CloneService extends Service {
                 // So it will appear on the debug page
                 throw new RuntimeException(e);
             }
+
+            // Show a "clone finished" notification
+            final Notification.Builder notification_builder_finished;
+
+            // Channel ID is for 26+ / Android 8+ / Android Oreo+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                notification_builder_finished = new Notification.Builder(this, CLONE_CHANNEL_ID);
+            } else {
+                notification_builder_finished = new Notification.Builder(this);
+            }
+
+            Notification finished_notification = notification_builder_finished
+                    .setContentTitle("Clone finished")
+                    .setContentText("Clone " + project_name + " (" + project_key + ") has finished.")
+                    .setSmallIcon(R.drawable.ic_check)
+                    .setContentIntent(pendingIntent)
+                    .build();
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+            notificationManager.notify(1, finished_notification);
 
             // Stop the service using the startId, so that we don't stop
             // the service in the middle of handling another job
