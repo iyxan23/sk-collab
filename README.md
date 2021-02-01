@@ -37,6 +37,9 @@ SketchCollab break these limits, SketchCollab allows you to edit the project at 
 ## Note
 I didn't invent version control. SketchCollab is only a version control system for Sketchware projects.
 
+## Building
+Steps in building SketchCollab on your own is written in this [wiki](https://github.com/Iyxan23/sk-collab/wiki/Building-Sketch-Collab).
+
 ## Branches
  - [release](https://github.com/Iyxan23/sk-collab/tree/release): The branch where every release / beta / alpha version will be pushed into
  - [main](https://github.com/Iyxan23/sk-collab/tree/main): Development branch, checked, and tested
