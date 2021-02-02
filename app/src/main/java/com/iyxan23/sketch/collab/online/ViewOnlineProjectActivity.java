@@ -169,7 +169,10 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
 
     // onClick for the "Browse Code" button
     public void browseCodeOnClick(View v) {
-
+        Intent i = new Intent(this, BrowseCodeActivity.class);
+        i.putExtra("project_key", project_key);
+        i.putExtra("project_name", project_name);
+        startActivity(i);
     }
 
     // onClick for the "Commits" button
