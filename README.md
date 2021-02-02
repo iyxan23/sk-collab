@@ -6,7 +6,6 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/Iyxan23/sk-collab.svg?style=flat)]()
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/w/Iyxan23/sk-collab?style=flat)]()
 [![GitHub pull-requests](https://img.shields.io/github/issues-pr/Iyxan23/sk-collab.svg)](https://GitHub.com/Iyxan23/sk-collab/pull/)
-[![GitHub pull-requests closed](https://img.shields.io/github/issues-pr-closed/Iyxan23/sk-collab.svg)](https://GitHub.com/Iyxan23/sk-collab/pull/)
 [![PR's Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](http://makeapullrequest.com)
 [![Open Source? Yes!](https://badgen.net/badge/Open%20Source%20%3F/Yes%21/blue?icon=github)](https://github.com/Iyxan23/sk-collab)
 [![GitHub forks](https://img.shields.io/github/forks/Iyxan23/sk-collab.svg?style=social&label=Fork&maxAge=2592000)](https://GitHub.com/Iyxan23/sk-collab/network/)
