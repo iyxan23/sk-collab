@@ -127,23 +127,21 @@ public class Util {
     // This function should be ran on a different thread
     public static ArrayList<SketchwareProject> fetch_sketchware_projects() {
         ArrayList<SketchwareProject> projects = new ArrayList<>();
-        ArrayList<String> files = listDir(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/");
+        ArrayList<File> files = listDir(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/");
 
-        for (String project_folder_path: files) {
-            File project_folder = new File(project_folder_path);
-
+        for (File project_folder_path: files) {
             // Just in case
-            if (project_folder.isFile())
+            if (project_folder_path.isFile())
                 continue;
 
             try {
-                FileInputStream file = new FileInputStream(new File(project_folder.getAbsolutePath() + "/file"));
-                FileInputStream logic = new FileInputStream(new File(project_folder.getAbsolutePath() + "/logic"));
-                FileInputStream library = new FileInputStream(new File(project_folder.getAbsolutePath() + "/library"));
-                FileInputStream view = new FileInputStream(new File(project_folder.getAbsolutePath() + "/view"));
-                FileInputStream resource = new FileInputStream(new File(project_folder.getAbsolutePath() + "/resource"));
+                FileInputStream file = new FileInputStream(new File(project_folder_path.getAbsolutePath() + "/file"));
+                FileInputStream logic = new FileInputStream(new File(project_folder_path.getAbsolutePath() + "/logic"));
+                FileInputStream library = new FileInputStream(new File(project_folder_path.getAbsolutePath() + "/library"));
+                FileInputStream view = new FileInputStream(new File(project_folder_path.getAbsolutePath() + "/view"));
+                FileInputStream resource = new FileInputStream(new File(project_folder_path.getAbsolutePath() + "/resource"));
 
-                FileInputStream mysc_project = new FileInputStream(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/" + project_folder.getName() + "/project"));
+                FileInputStream mysc_project = new FileInputStream(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/" + project_folder_path.getName() + "/project"));
 
                 projects.add(new SketchwareProject(readFile(logic), readFile(view), readFile(resource), readFile(library), readFile(file), readFile(mysc_project)));
 
@@ -176,19 +174,11 @@ public class Util {
         return null;
     }
 
-    public static int getFreeId() {
-        ArrayList<String> files = listDir(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/");
+    public static int getLatestId() {
+        ArrayList<File> files = listDir(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/");
 
-        int anchor = 601;
-        for (String file : files) {
-            if (!file.equals(String.valueOf(anchor))) {
-                // Heres the free id
-                return anchor;
-            }
-            anchor++;
-        }
         // Get the last empty ID
-        return Integer.parseInt(files.get(files.size() - 1)) + 1;
+        return Integer.parseInt(files.get(files.size() - 1).getName()) + 1;
     }
 
     // Copied from: https://www.journaldev.com/9400/android-external-storage-read-write-save-file
@@ -266,6 +256,10 @@ public class Util {
     }
 
     public static void writeFile(File file, byte[] data) throws IOException {
+        if (!file.exists()) {
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+        }
         FileOutputStream outputStream = new FileOutputStream(file);
         outputStream.write(data);
         outputStream.flush();
@@ -316,15 +310,15 @@ public class Util {
         return joinedArray;
     }
 
-    public static ArrayList<String> listDir(String str) {
-        ArrayList<String> arrayList = new ArrayList<>();
+    public static ArrayList<File> listDir(String str) {
+        ArrayList<File> arrayList = new ArrayList<>();
         File file = new File(str);
         if (file.exists() && !file.isFile()) {
             File[] listFiles = file.listFiles();
             if (listFiles != null && listFiles.length > 0) {
                 arrayList.clear();
-                for (File absolutePath : listFiles) {
-                    arrayList.add(absolutePath.getAbsolutePath());
+                for (File f : listFiles) {
+                    arrayList.add(f);
                 }
             }
         }

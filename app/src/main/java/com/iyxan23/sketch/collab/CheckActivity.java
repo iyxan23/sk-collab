@@ -72,8 +72,10 @@ public class CheckActivity extends AppCompatActivity {
                 // Ight, get the exception and print the stacktrace
                 task.getException().printStackTrace();
 
-                // And also tell it to the user
-                Toast.makeText(CheckActivity.this, "An error occured: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                // And also tell the use that we've failed to connect to the server
+                loading_text.setText("Failed to reach the server, check if you have an interent connection.");
+                loading_text.setTextColor(0xFFE51515);
+                progressbar.setVisibility(View.INVISIBLE);
             }
         });
     }

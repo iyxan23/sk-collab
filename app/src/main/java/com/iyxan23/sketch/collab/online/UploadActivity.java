@@ -13,11 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.Blob;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.Util;
@@ -28,7 +26,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 public class UploadActivity extends AppCompatActivity {
 
@@ -67,7 +64,6 @@ public class UploadActivity extends AppCompatActivity {
         EditText description = findViewById(R.id.description_upload);
         EditText name = findViewById(R.id.name_upload);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
