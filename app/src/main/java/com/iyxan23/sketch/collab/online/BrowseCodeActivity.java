@@ -64,7 +64,6 @@ public class BrowseCodeActivity extends AppCompatActivity {
         new Thread(() -> {
             try {
                 FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-                DocumentReference project = firestore.collection("projects").document(project_key);
                 CollectionReference project_snapshot = firestore.collection("projects").document(project_key).collection("snapshot");
                 CollectionReference project_commits  = firestore.collection("projects").document(project_key).collection("commits");
 
