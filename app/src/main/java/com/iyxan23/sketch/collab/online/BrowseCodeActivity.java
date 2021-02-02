@@ -72,7 +72,6 @@ public class BrowseCodeActivity extends AppCompatActivity {
                 String[] keys = new String[] {"mysc_project", "logic", "view", "library", "resource", "file"};
 
                 // Get the snapshot, get the commits, and apply the commits to the snapshot
-                DocumentSnapshot project_metadata = Tasks.await(project.get());
                 QuerySnapshot snapshot = Tasks.await(project_snapshot.get());
                 QuerySnapshot commits  = Tasks.await(project_commits .orderBy("timestamp", Query.Direction.ASCENDING).get());
 
