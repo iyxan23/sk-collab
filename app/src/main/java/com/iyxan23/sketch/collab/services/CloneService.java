@@ -194,9 +194,9 @@ public class CloneService extends Service {
             }
 
             // Show a "clone finished" toast
-            new Handler(Looper.getMainLooper()).post(() -> {
-                Toast.makeText(this, "Clone " + project_name + " finished, check and refresh your sketchware.", Toast.LENGTH_LONG).show();
-            });
+            new Handler(Looper.getMainLooper()).post(() ->
+                    Toast.makeText(this, "Clone " + project_name + " finished, check and refresh your sketchware.", Toast.LENGTH_LONG).show()
+            );
 
             // Stop the service using the startId, so that we don't stop
             // the service in the middle of handling another job
