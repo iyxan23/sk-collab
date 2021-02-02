@@ -118,25 +118,40 @@ public class BrowseCodeActivity extends AppCompatActivity {
         // Kinda hacky, but this code is to toggle the view's visibility between VISIBLE (0x0) and GONE (0x8)
         // I don't really like the branching way of doing it, so I'm doing it mathematically
         code_logic.setVisibility(code_logic.getVisibility() ^ View.GONE);
+
+        // Rotate the chevron 180 degree(s)
+        view.setRotation((view.getRotation() + 180) % 360);
     }
 
     @SuppressLint("WrongConstant")
     public void chevron_view(View view) {
         code_view.setVisibility(code_view.getVisibility() ^ View.GONE);
+
+        // Rotate the chevron 180 degree(s)
+        view.setRotation((view.getRotation() + 180) % 360);
     }
 
     @SuppressLint("WrongConstant")
     public void chevron_file(View view) {
         code_file.setVisibility(code_file.getVisibility() ^ View.GONE);
+
+        // Rotate the chevron 180 degree(s)
+        view.setRotation((view.getRotation() + 180) % 360);
     }
 
     @SuppressLint("WrongConstant")
     public void chevron_library(View view) {
         code_library.setVisibility(code_library.getVisibility() ^ View.GONE);
+
+        // Rotate the chevron 180 degree(s)
+        view.setRotation((view.getRotation() + 180) % 360);
     }
 
     @SuppressLint("WrongConstant")
     public void chevron_resource(View view) {
         code_resource.setVisibility(code_resource.getVisibility() ^ View.GONE);
+
+        // Rotate the chevron 180 degree(s)
+        view.setRotation((view.getRotation() + 180) % 360);
     }
 }
