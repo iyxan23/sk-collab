@@ -42,7 +42,7 @@
             app:layout_constraintTop_toTopOf="@+id/imageView18" />
 
         <TextView
-            android:id="@+id/commits_project_name"
+            android:id="@+id/project_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"

@@ -57,6 +57,8 @@ public class BrowseCodeActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String project_key  = intent.getStringExtra("project_key"   );
         String project_name = intent.getStringExtra("project_name"  );
+        
+        ((TextView) findViewById(R.id.project_name)).setText("on " + project_name);
 
         // Fetch the snapshot of the project
         new Thread(() -> {
