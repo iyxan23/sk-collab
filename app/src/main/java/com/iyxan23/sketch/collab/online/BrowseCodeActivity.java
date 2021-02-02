@@ -97,11 +97,13 @@ public class BrowseCodeActivity extends AppCompatActivity {
                     }
                 }
 
-                code_logic.setText(project_data.get("logic"));
-                code_view.setText(project_data.get("view"));
-                code_file.setText(project_data.get("file"));
-                code_library.setText(project_data.get("library"));
-                code_resource.setText(project_data.get("resource"));
+                runOnUiThread(() -> {
+                    code_logic.setText(project_data.get("logic"));
+                    code_view.setText(project_data.get("view"));
+                    code_file.setText(project_data.get("file"));
+                    code_library.setText(project_data.get("library"));
+                    code_resource.setText(project_data.get("resource"));
+                });
 
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
