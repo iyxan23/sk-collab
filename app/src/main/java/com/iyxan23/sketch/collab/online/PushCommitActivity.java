@@ -118,26 +118,27 @@ public class PushCommitActivity extends AppCompatActivity {
             // Get the changed files
             int files_changed = commit_change.getFilesChanged();
 
-            // Yeah i gotta make this dry, i'll do it later
-            // TODO: MAKE THIS DRY
-            if ((files_changed & SketchwareProjectChanges.LOGIC) == SketchwareProjectChanges.LOGIC) {
-                patch.put("logic", commit_change.getPatch(SketchwareProjectChanges.LOGIC));
-            }
+            // Pack every patches into one map
+            int[] data_keys = new int[] {
+                    SketchwareProjectChanges.LOGIC      ,
+                    SketchwareProjectChanges.VIEW       ,
+                    SketchwareProjectChanges.FILE       ,
+                    SketchwareProjectChanges.LIBRARY    ,
+                    SketchwareProjectChanges.RESOURCES  ,
+            };
 
-            if ((files_changed & SketchwareProjectChanges.VIEW) == SketchwareProjectChanges.VIEW) {
-                patch.put("view", commit_change.getPatch(SketchwareProjectChanges.VIEW));
-            }
+            String[] data_keys_str = new String[] {
+                    "logic"      ,
+                    "view"       ,
+                    "file"       ,
+                    "library"    ,
+                    "resources"  ,
+            };
 
-            if ((files_changed & SketchwareProjectChanges.FILE) == SketchwareProjectChanges.FILE) {
-                patch.put("file", commit_change.getPatch(SketchwareProjectChanges.FILE));
-            }
-
-            if ((files_changed & SketchwareProjectChanges.LIBRARY) == SketchwareProjectChanges.LIBRARY) {
-                patch.put("library", commit_change.getPatch(SketchwareProjectChanges.LIBRARY));
-            }
-
-            if ((files_changed & SketchwareProjectChanges.RESOURCES) == SketchwareProjectChanges.RESOURCES) {
-                patch.put("resources", commit_change.getPatch(SketchwareProjectChanges.RESOURCES));
+            for (int index = 0; index < data_keys.length; index++) {
+                if ((files_changed & data_keys[index]) == data_keys[index]) {
+                    patch.put(data_keys_str[index], commit_change.getPatch(data_keys[index]));
+                }
             }
 
             // Alright, patch is ready!
