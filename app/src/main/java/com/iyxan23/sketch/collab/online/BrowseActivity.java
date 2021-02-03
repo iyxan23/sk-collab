@@ -116,23 +116,7 @@ public class BrowseActivity extends AppCompatActivity {
 
                 // Get the latest commit timestamp
                 CollectionReference commits = firestore.collection("projects").document(project.getId()).collection("commits");
-                Timestamp latest_commit_timestamp;
-
-                try {
-                    QuerySnapshot latest_commit = Tasks.await(
-                            commits
-                                    .orderBy("timestamp", Query.Direction.DESCENDING)
-                                    .limit(1)
-                                    .get()
-                    );
-
-                    latest_commit_timestamp = latest_commit.getDocuments().get(0).getTimestamp("timestamp");
-
-                } catch (ExecutionException | InterruptedException e) {
-                    e.printStackTrace();
-                    Toast.makeText(BrowseActivity.this, "Error while fetching latest commit: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    return;
-                }
+                Timestamp latest_commit_timestamp = project.getTimestamp("latest_commit_timestamp");
 
                 items.add(
                         new BrowseItem(

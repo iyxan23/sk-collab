@@ -1,5 +1,6 @@
 package com.iyxan23.sketch.collab.online;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
@@ -7,15 +8,19 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.Util;
 import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,6 +38,7 @@ public class PushCommitActivity extends AppCompatActivity {
 
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     CollectionReference commits;
+    DocumentReference project;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,7 @@ public class PushCommitActivity extends AppCompatActivity {
         String project_key = getIntent().getStringExtra("project_key");
 
         commits = firestore.collection("projects/" + project_key + "/commits");
+        project = firestore.document("projects/" + project_key);
 
         patch_text = findViewById(R.id.patch_push);
 
@@ -66,6 +73,8 @@ public class PushCommitActivity extends AppCompatActivity {
                 put("author", user_uid);
             }};
 
+            Task<Void> update_last_commit_timestamp = project.update("latest_commit_timestamp", Timestamp.now());
+
             try {
                 data.put("sha512sum", commit_change.after.sha512sum());
             } catch (JSONException e) {
@@ -81,7 +90,8 @@ public class PushCommitActivity extends AppCompatActivity {
             progressDialog.setIndeterminate(true);
             progressDialog.show();
 
-            commits .add(data)
+            update_last_commit_timestamp
+                    .continueWithTask(task -> commits.add(data))
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             // Update the project's local commit id

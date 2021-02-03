@@ -87,6 +87,7 @@ public class UploadActivity extends AppCompatActivity {
                 put("author", auth.getUid());
                 put("version", 1);
                 put("open", isOpenSource.isChecked());
+                put("latest_commit_timestamp", Timestamp.now());
             }};
 
             try {
