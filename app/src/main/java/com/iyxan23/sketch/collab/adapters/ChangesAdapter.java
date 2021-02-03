@@ -62,7 +62,6 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
         Log.d(TAG, "onBindViewHolder: called.");
         SketchwareProjectChanges item = datas.get(position);
 
-        // TODO: EXTEND THIS
         holder.project_name.setText(item.before.metadata.project_name);
         holder.project_details.setText(item.before.metadata.project_package + " (" + item.before.metadata.id + ")");
 
@@ -76,36 +75,20 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
         int addition = 0;
         int deletion = 0;
 
-        // Yeah i gotta make this dry, i'll do it later
-        // TODO: MAKE THIS DRY
-        if ((files_changed & SketchwareProjectChanges.LOGIC) == SketchwareProjectChanges.LOGIC) {
-            int[] res = Util.getAdditionAndDeletion(item.getPatch(SketchwareProjectChanges.LOGIC));
-            addition += res[0];
-            deletion += res[1];
-        }
-        
-        if ((files_changed & SketchwareProjectChanges.VIEW) == SketchwareProjectChanges.VIEW) {
-            int[] res = Util.getAdditionAndDeletion(item.getPatch(SketchwareProjectChanges.VIEW));
-            addition += res[0];
-            deletion += res[1];
-        }
-        
-        if ((files_changed & SketchwareProjectChanges.FILE) == SketchwareProjectChanges.FILE) {
-            int[] res = Util.getAdditionAndDeletion(item.getPatch(SketchwareProjectChanges.FILE));
-            addition += res[0];
-            deletion += res[1];
-        }
-        
-        if ((files_changed & SketchwareProjectChanges.LIBRARY) == SketchwareProjectChanges.LIBRARY) {
-            int[] res = Util.getAdditionAndDeletion(item.getPatch(SketchwareProjectChanges.LIBRARY));
-            addition += res[0];
-            deletion += res[1];
-        }
-        
-        if ((files_changed & SketchwareProjectChanges.RESOURCES) == SketchwareProjectChanges.RESOURCES) {
-            int[] res = Util.getAdditionAndDeletion(item.getPatch(SketchwareProjectChanges.RESOURCES));
-            addition += res[0];
-            deletion += res[1];
+        int[] data_keys = new int[] {
+                SketchwareProjectChanges.LOGIC      ,
+                SketchwareProjectChanges.VIEW       ,
+                SketchwareProjectChanges.FILE       ,
+                SketchwareProjectChanges.LIBRARY    ,
+                SketchwareProjectChanges.RESOURCES  ,
+        };
+
+        for (int data_key: data_keys) {
+            if ((files_changed & data_key) == data_key) {
+                int[] res = Util.getAdditionAndDeletion(item.getPatch(data_key));
+                addition += res[0];
+                deletion += res[1];
+            }
         }
 
         holder.summary.setText("+" + addition + " -" + deletion);
