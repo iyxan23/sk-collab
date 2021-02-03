@@ -62,7 +62,6 @@ public class ChangesAdapter extends RecyclerView.Adapter<ChangesAdapter.ViewHold
         Log.d(TAG, "onBindViewHolder: called.");
         SketchwareProjectChanges item = datas.get(position);
 
-        // TODO: EXTEND THIS
         holder.project_name.setText(item.before.metadata.project_name);
         holder.project_details.setText(item.before.metadata.project_package + " (" + item.before.metadata.id + ")");
 
