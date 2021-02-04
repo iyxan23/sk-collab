@@ -62,7 +62,8 @@ public class BrowseActivity extends AppCompatActivity {
 
         // TODO: RECYCLERVIEW PAGINATION
         new Thread(() -> {
-            Task<QuerySnapshot> task = projects.get();
+            // Only show open source projects
+            Task<QuerySnapshot> task = projects.whereEqualTo("open", true).get();
 
             try {
                 Tasks.await(task);
