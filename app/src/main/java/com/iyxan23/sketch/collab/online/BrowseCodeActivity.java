@@ -155,4 +155,8 @@ public class BrowseCodeActivity extends AppCompatActivity {
         // Rotate the chevron 180 degree(s)
         view.setRotation((view.getRotation() + 180) % 360);
     }
+
+    public void open_commit_history(View view) {
+
+    }
 }
