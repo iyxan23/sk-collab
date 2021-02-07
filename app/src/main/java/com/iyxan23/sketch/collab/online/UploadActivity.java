@@ -1,7 +1,9 @@
 package com.iyxan23.sketch.collab.online;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -287,5 +289,23 @@ public class UploadActivity extends AppCompatActivity {
 
              */
         });
+    }
+
+    public void show_help(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Help");
+        builder.setMessage(
+                "Open Source:\n" +
+                "Enabled: People can view your project and your project's source code, only selected collaborators can contribute.\n" +
+                "Disabled: People cannot view or view your project's source code, only selected collaborators can view / contribute to your project.\n\n" +
+
+                "Private:\n" +
+                "Enabled: Only YOU can view / edit the project, collaborators are disabled in this private mode.\n" +
+                "Disabled: People can view / contribute to your project depending if it's open source or not.\n\n" +
+
+                "Still need help? Ask it on https://github.com/Iyxan23/sk-collab/issues"
+        );
+
+        builder.create().show();
     }
 }
