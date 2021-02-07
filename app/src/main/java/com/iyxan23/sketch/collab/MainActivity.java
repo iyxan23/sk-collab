@@ -419,4 +419,30 @@ public class MainActivity extends AppCompatActivity {
 
         // TODO: ADD PUBLIC PROJECTS FUNCTIONALITY
     }
+
+    @Override
+    public void onBackPressed() {
+        s_edittext = findViewById(R.id.search_edittext);
+
+        View settings_button = findViewById(R.id.imageView);
+        View home_textview = findViewById(R.id.home_textview);
+        View search_autocomplete_layout = findViewById(R.id.inc_search);
+        View main_content = findViewById(R.id.scrollView2);
+
+        if (isOpened) {
+            // Close the search thing
+            settings_button.setVisibility(View.VISIBLE);
+            home_textview.setVisibility(View.VISIBLE);
+            s_edittext.setVisibility(View.GONE);
+            search_autocomplete_layout.setVisibility(View.GONE);
+            main_content.setVisibility(View.VISIBLE);
+
+            // Clear some stuff to reduce the memory usage
+            s_items.clear();
+            index.clear();
+
+        } else {
+            super.onBackPressed();
+        }
+    }
 }
