@@ -202,7 +202,7 @@ public class BrowseCodeActivity extends AppCompatActivity {
             Toast.makeText(this, "Please wait", Toast.LENGTH_SHORT).show();
 
             new Thread(() -> {
-                PatchHelper.go_to_commit(project_data, c_commits, current_commit_index, which);
+                updateCode(PatchHelper.go_to_commit(project_data, c_commits, current_commit_index, which));
 
                 current_commit_index = which;
 
