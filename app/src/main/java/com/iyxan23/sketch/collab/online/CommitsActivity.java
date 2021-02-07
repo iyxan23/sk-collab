@@ -54,6 +54,7 @@ public class CommitsActivity extends AppCompatActivity {
         commit_rv.setLayoutManager(new LinearLayoutManager(this));
         commit_rv.setAdapter(adapter);
 
+        // TODO: PAGINATION
         commits_reference
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .get()
