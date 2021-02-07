@@ -2,6 +2,7 @@ package com.iyxan23.sketch.collab.adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;

@@ -3,9 +3,13 @@ package com.iyxan23.sketch.collab;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -391,9 +395,23 @@ public class MainActivity extends AppCompatActivity {
         Pattern pattern = Pattern.compile(input);
 
         for (String command: commands) {
-            if (command.matches(input)) {
-                s_items.add(new SearchItem(command, "Command"));
+            boolean matched = false;
+
+            Matcher m = pattern.matcher(command);
+
+            SpannableString command_s = new SpannableString(command);
+            while (m.find()) {
+                matched = true;
+                command_s.setSpan(
+                        new StyleSpan(Typeface.BOLD),
+                        m.start(),
+                        m.end(),
+                        Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                );
             }
+
+            if (matched)
+                s_items.add(new SearchItem(command_s, "Command"));
         }
 
         s_adapter.updateView(s_items);
@@ -404,15 +422,19 @@ public class MainActivity extends AppCompatActivity {
 
             Matcher m = pattern.matcher(name);
 
+            SpannableString name_s = new SpannableString(name);
             while (m.find()) {
                 matched = true;
-                // TODO: CREATE A SPANNABLE THING
-                // m.start();
-                // m.end();
+                name_s.setSpan(
+                        new StyleSpan(Typeface.BOLD),
+                        m.start(),
+                        m.end(),
+                        Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                );
             }
 
             if (matched)
-                s_items.add(new SearchItem(name, "Open Local Project"));
+                s_items.add(new SearchItem(name_s, "Open Local Project"));
         }
 
         s_adapter.updateView(s_items);
