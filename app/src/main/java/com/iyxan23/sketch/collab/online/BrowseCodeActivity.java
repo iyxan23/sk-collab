@@ -204,6 +204,12 @@ public class BrowseCodeActivity extends AppCompatActivity {
             new Thread(() -> {
                 updateCode(PatchHelper.go_to_commit(project_data, c_commits, current_commit_index, which));
 
+                runOnUiThread(() -> {
+                    TextView commit_id = findViewById(R.id.commit_id_browse_code);
+                    commit_id.setText("At: " + c_commits.get(which).id);
+                    commit_id.setVisibility(View.VISIBLE);
+                });
+
                 current_commit_index = which;
 
                 runOnUiThread(dialog::dismiss);
