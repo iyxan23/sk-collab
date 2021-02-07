@@ -69,6 +69,12 @@ public class UploadActivity extends AppCompatActivity {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
+        isPrivate.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // Private project cannot be open source
+            isOpenSource.setChecked(!isChecked);
+            isOpenSource.setEnabled(!isChecked);
+        });
+
         uploadButton.setOnClickListener(v -> {
             // DatabaseReference projectReference = database.getReference("/" + (isPrivate.isChecked() ? "userprojects/" + auth.getUid() + "/projects" : "projects"));
             CollectionReference projectRef = firestore.collection("/" + (isPrivate.isChecked() ? "userdata/" + auth.getUid() + "/projects" : "projects"));
