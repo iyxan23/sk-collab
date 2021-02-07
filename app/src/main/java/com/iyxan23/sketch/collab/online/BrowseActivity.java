@@ -69,11 +69,11 @@ public class BrowseActivity extends AppCompatActivity {
                 Tasks.await(task);
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
-                Toast.makeText(BrowseActivity.this, "An error occured while fetching data: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                runOnUiThread(() -> Toast.makeText(BrowseActivity.this, "An error occured while fetching data: " + task.getException().getMessage(), Toast.LENGTH_LONG).show());
             }
 
             if (!task.isSuccessful()) {
-                Toast.makeText(BrowseActivity.this, "An error occured while retrieving data: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                runOnUiThread(() -> Toast.makeText(BrowseActivity.this, "An error occured while retrieving data: " + task.getException().getMessage(), Toast.LENGTH_LONG).show());
                 return;
             }
 
@@ -96,7 +96,7 @@ public class BrowseActivity extends AppCompatActivity {
                         Tasks.await(userdata_fetch);
 
                         if (!userdata_fetch.isSuccessful()) {
-                            Toast.makeText(BrowseActivity.this, "Error while fetching userdata: " + userdata_fetch.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            runOnUiThread(() -> Toast.makeText(BrowseActivity.this, "Error while fetching userdata: " + userdata_fetch.getException().getMessage(), Toast.LENGTH_LONG).show());
 
                             return;
                         }
@@ -109,7 +109,7 @@ public class BrowseActivity extends AppCompatActivity {
 
                     } catch (ExecutionException | InterruptedException e) {
                         e.printStackTrace();
-                        Toast.makeText(BrowseActivity.this, "Error while fetching userdata: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        runOnUiThread(() -> Toast.makeText(BrowseActivity.this, "Error while fetching userdata: " + e.getMessage(), Toast.LENGTH_LONG).show());
 
                         return;
                     }
