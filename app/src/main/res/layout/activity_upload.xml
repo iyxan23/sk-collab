@@ -167,7 +167,7 @@
                     android:id="@+id/imageView19"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="16dp"
                     android:background="?android:selectableItemBackgroundBorderless"
                     android:onClick="show_help"
                     app:layout_constraintStart_toStartOf="@+id/private_upload"
