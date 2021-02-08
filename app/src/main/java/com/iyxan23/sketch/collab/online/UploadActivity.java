@@ -340,7 +340,7 @@ public class UploadActivity extends AppCompatActivity {
 
                 boolean is_first = false;
                 for (Userdata userdata: members) {
-                    members_list.setText((is_first ? "" : members_list.getText() + ",") + userdata.getName());
+                    members_list.setText((!is_first ? "" : members_list.getText() + ", ") + userdata.getName());
 
                     is_first = true;
                 }
