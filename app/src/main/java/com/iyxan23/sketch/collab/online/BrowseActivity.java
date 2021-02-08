@@ -1,6 +1,7 @@
 package com.iyxan23.sketch.collab.online;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -39,6 +40,8 @@ public class BrowseActivity extends AppCompatActivity {
 
     ArrayList<BrowseItem> items = new ArrayList<>();
 
+    BrowseItemAdapter adapter;
+
     // This variable is used to point at the bottom of our fetches
     DocumentReference after;
 
@@ -56,7 +59,7 @@ public class BrowseActivity extends AppCompatActivity {
         RecyclerView rv = findViewById(R.id.browse_rv);
         rv.setLayoutManager(new LinearLayoutManager(this));
 
-        BrowseItemAdapter adapter = new BrowseItemAdapter(this);
+        adapter = new BrowseItemAdapter(this);
         rv.setAdapter(adapter);
 
         if (savedInstanceState != null) {
@@ -100,97 +103,107 @@ public class BrowseActivity extends AppCompatActivity {
     }
 
     private void load_projects(int count) {
-        // Check if we're at the bottom
-        if (is_at_bottom)
-            // Don't load more projects :doggo_cheems:
-            return;
+        Log.d("BrowseActivity", "load_projects: called.");
+        new Thread(() -> {
+            // Check if we're at the bottom
+            if (is_at_bottom)
+                // Don't load more projects :doggo_cheems:
+                return;
 
-        Query fetch_projects_query = projects
-                                        .whereEqualTo("open", true)
-                                        .limit(count);
+            Query fetch_projects_query = projects
+                                            .orderBy("name")
+                                            .whereEqualTo("open", true)
+                                            .limit(count);
 
-        // Check if the pointer has been set (if it hasn't then this is the first time we call this function)
-        if (after != null) fetch_projects_query.startAfter(after);
+            // Check if the pointer has been set (if it hasn't then this is the first time we call this function)
+            if (after != null) fetch_projects_query.startAfter(after);
 
-        Task<QuerySnapshot> task = fetch_projects_query.get();
+            Task<QuerySnapshot> task = fetch_projects_query.get();
 
-        try {
-            Tasks.await(task);
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-            runOnUiThread(() -> Toast.makeText(BrowseActivity.this, "An error occured while fetching data: " + task.getException().getMessage(), Toast.LENGTH_LONG).show());
-        }
+            try {
+                Log.d("BrowseActivity", "Waiting for query");
+                Tasks.await(task);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(BrowseActivity.this, "An error occured while fetching data: " + task.getException().getMessage(), Toast.LENGTH_LONG).show());
+            }
 
-        if (!task.isSuccessful()) {
-            runOnUiThread(() -> Toast.makeText(BrowseActivity.this, "An error occured while retrieving data: " + task.getException().getMessage(), Toast.LENGTH_LONG).show());
-            return;
-        }
+            if (!task.isSuccessful()) {
+                runOnUiThread(() -> Toast.makeText(BrowseActivity.this, "An error occured while retrieving data: " + task.getException().getMessage(), Toast.LENGTH_LONG).show());
+                return;
+            }
 
-        int counter = 0;    // This counter is used if we've reached to the bottom of the projects list
-                            // and if we did, don't load more projects
+            int counter = 0;    // This counter is used if we've reached to the bottom of the projects list
+                                // and if we did, don't load more projects
 
-        for (DocumentSnapshot project: task.getResult().getDocuments()) {
-            counter++;
+            for (DocumentSnapshot project: task.getResult().getDocuments()) {
+                counter++;
 
-            String username;
-            String uid_uploader = project.getString("author");
+                Log.d("BrowseActivity", "At loop: " + counter);
 
-            if (cached_names.containsKey(uid_uploader)) {
-                username = cached_names.get(uid_uploader);
+                String username;
+                String uid_uploader = project.getString("author");
 
-            } else {
-                // Fetch it's username
-                Task<DocumentSnapshot> userdata_fetch = userdata.document(uid_uploader).get();
+                if (cached_names.containsKey(uid_uploader)) {
+                    username = cached_names.get(uid_uploader);
 
-                try {
-                    Tasks.await(userdata_fetch);
+                } else {
+                    // Fetch it's username
+                    Task<DocumentSnapshot> userdata_fetch = userdata.document(uid_uploader).get();
 
-                    if (!userdata_fetch.isSuccessful()) {
-                        runOnUiThread(() -> Toast.makeText(BrowseActivity.this, "Error while fetching userdata: " + userdata_fetch.getException().getMessage(), Toast.LENGTH_LONG).show());
+                    try {
+                        Tasks.await(userdata_fetch);
+
+                        if (!userdata_fetch.isSuccessful()) {
+                            runOnUiThread(() -> Toast.makeText(BrowseActivity.this, "Error while fetching userdata: " + userdata_fetch.getException().getMessage(), Toast.LENGTH_LONG).show());
+
+                            return;
+                        }
+
+                        DocumentSnapshot user = userdata_fetch.getResult();
+
+                        username = user.getString("name");
+
+                        cached_names.put(uid_uploader, username);
+
+                    } catch (ExecutionException | InterruptedException e) {
+                        e.printStackTrace();
+                        runOnUiThread(() -> Toast.makeText(BrowseActivity.this, "Error while fetching userdata: " + e.getMessage(), Toast.LENGTH_LONG).show());
 
                         return;
                     }
-
-                    DocumentSnapshot user = userdata_fetch.getResult();
-
-                    username = user.getString("name");
-
-                    cached_names.put(uid_uploader, username);
-
-                } catch (ExecutionException | InterruptedException e) {
-                    e.printStackTrace();
-                    runOnUiThread(() -> Toast.makeText(BrowseActivity.this, "Error while fetching userdata: " + e.getMessage(), Toast.LENGTH_LONG).show());
-
-                    return;
                 }
+
+                // Get the latest commit timestamp
+                Timestamp latest_commit_timestamp;
+
+                // Add backwards compatibility for the old ealry-alpha version
+                if (!project.contains("latest_commit_timestamp")) {
+                    latest_commit_timestamp = Timestamp.now();
+                } else {
+                    latest_commit_timestamp = project.getTimestamp("latest_commit_timestamp");
+                }
+
+                items.add(
+                        new BrowseItem(
+                                project.getId(),
+                                username,
+                                project.getString("name"),
+                                uid_uploader,
+                                latest_commit_timestamp
+                        )
+                );
+
+                Log.d("BrowseActivity", "load_projects: UpdateView");
+                runOnUiThread(() -> adapter.updateView(items));
+
+                // Set the pointer of the last project loaded
+                after = project.getReference();
             }
 
-            // Get the latest commit timestamp
-            Timestamp latest_commit_timestamp;
-
-            // Add backwards compatibility for the old ealry-alpha version
-            if (!project.contains("latest_commit_timestamp")) {
-                latest_commit_timestamp = Timestamp.now();
-            } else {
-                latest_commit_timestamp = project.getTimestamp("latest_commit_timestamp");
-            }
-
-            items.add(
-                    new BrowseItem(
-                            project.getId(),
-                            username,
-                            project.getString("name"),
-                            uid_uploader,
-                            latest_commit_timestamp
-                    )
-            );
-
-            // Set the pointer of the last project loaded
-            after = project.getReference();
-        }
-
-        // Check if we're at the bottom (means we've laoded less projects than we should've been)
-        if (counter < count)
-            is_at_bottom = true;
+            // Check if we're at the bottom (means we've laoded less projects than we should've been)
+            if (counter < count)
+                is_at_bottom = true;
+        }).start();
     }
 }
