@@ -5,16 +5,15 @@
     android:id="@+id/user_pick_item_body"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorBackground"
-    android:animateLayoutChanges="true">
+    android:background="@color/colorBackground">
 
     <TextView
         android:id="@+id/user_pick_item_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:text="Username"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
