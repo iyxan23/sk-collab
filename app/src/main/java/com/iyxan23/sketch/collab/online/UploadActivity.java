@@ -1,8 +1,11 @@
 package com.iyxan23.sketch.collab.online;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,11 +25,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.Util;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
+import com.iyxan23.sketch.collab.models.Userdata;
+import com.iyxan23.sketch.collab.pickers.UserPicker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class UploadActivity extends AppCompatActivity {
@@ -59,6 +65,8 @@ public class UploadActivity extends AppCompatActivity {
         TextView projectName = findViewById(R.id.project_name_upload);
         projectName.setText(swProj.metadata.project_name);
 
+        members_list = findViewById(R.id.members_upload);
+
         Button uploadButton = findViewById(R.id.upload_upload);
         SwitchMaterial isPrivate = findViewById(R.id.private_upload);
         SwitchMaterial isOpenSource = findViewById(R.id.open_source_upload);
@@ -73,21 +81,26 @@ public class UploadActivity extends AppCompatActivity {
             // Private project cannot be open source
             isOpenSource.setChecked(!isChecked);
             isOpenSource.setEnabled(!isChecked);
+
+            if (isChecked) {
+                findViewById(R.id.add_member_button).setEnabled(false);
+                members_list.setText("Members are disabled. To add members, make the project to be public.");
+
+                members_list.animate().setDuration(500).alpha(0.25f);
+                findViewById(R.id.members_title).animate().setDuration(500).alpha(0.25f);
+
+                members.clear();
+            } else {
+                findViewById(R.id.add_member_button).setEnabled(true);
+                members_list.setText("None, click the Add button to add Member(s).");
+
+                members_list.animate().setDuration(500).alpha(1f);
+                findViewById(R.id.members_title).animate().setDuration(500).alpha(1f);
+            }
         });
 
         uploadButton.setOnClickListener(v -> {
-            // DatabaseReference projectReference = database.getReference("/" + (isPrivate.isChecked() ? "userprojects/" + auth.getUid() + "/projects" : "projects"));
             CollectionReference projectRef = firestore.collection("/" + (isPrivate.isChecked() ? "userdata/" + auth.getUid() + "/projects" : "projects"));
-            // String pushKey = projectReference.push().getKey();
-            // DatabaseReference commitsReference = database.getReference("/" + (isPrivate.isChecked() ? "userprojects/" + auth.getUid() + "/commits" : "commits"));
-
-            // Nullcheck
-            /*
-            if (pushKey == null) {
-                Toast.makeText(UploadActivity.this, "An error occured: pushKey is null", Toast.LENGTH_LONG).show();
-                return;
-            }
-             */
 
             HashMap<String, Object> data = new HashMap<String, Object>() {{
                 put("name", name.getText().toString());
@@ -97,6 +110,19 @@ public class UploadActivity extends AppCompatActivity {
                 put("open", isOpenSource.isChecked());
                 put("latest_commit_timestamp", Timestamp.now());
             }};
+
+            // Check if the user has added any members yet
+            if (!members.isEmpty()) {
+                // Put all of those members into one String array
+                String[] members_ = new String[members.size() - 1];
+
+                for (int i = 0; i < members.size(); i++) {
+                    members_[i] = members.get(i).getUid();
+                }
+
+                // Put it in the project root
+                data.put("members", members_);
+            }
 
             try {
                 data.put("sha512sum", swProj.sha512sum());
@@ -268,32 +294,6 @@ public class UploadActivity extends AppCompatActivity {
                                     }
                                 });
                     });
-
-            /*
-            projectReference
-                    .child(pushKey)
-                    .setValue(data)
-                    .addOnSuccessListener(unused ->
-                            // Update the commit informations
-                            commitsReference
-                                .child(pushKey)
-                                .child("initial")
-                                .setValue(commit_data)
-                                .addOnSuccessListener(unused1 -> {
-                                    progressDialog.dismiss();
-
-                                    Toast.makeText(UploadActivity.this, "Project Uploaded", Toast.LENGTH_LONG).show();
-                                    finish();
-                                }).addOnFailureListener(e -> {
-                                    progressDialog.dismiss();
-                                    Toast.makeText(UploadActivity.this, "An error occured: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                                })
-                    ).addOnFailureListener(e -> {
-                        progressDialog.dismiss();
-                        Toast.makeText(UploadActivity.this, "An error occured: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    });
-
-             */
         });
     }
 
@@ -301,17 +301,50 @@ public class UploadActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Help");
         builder.setMessage(
-                "Open Source:\n" +
-                "Enabled: People can view your project and your project's source code, only selected collaborators can contribute.\n" +
-                "Disabled: People cannot view or view your project's source code, only selected collaborators can view / contribute to your project.\n\n" +
+                Html.fromHtml(
+                    "<b>Member</b>:\n" +
+                    "Members are users that can directly make changes to your project. This can include your Team, Friends, Partner, and etc.\n" +
+                    "NOTE: Non-Member(s) can also make changes to your project. But, You / Your project's member(s) will need to review the changes manually\n\n" +
 
-                "Private:\n" +
-                "Enabled: Only YOU can view / edit the project, collaborators are disabled in this private mode.\n" +
-                "Disabled: People can view / contribute to your project depending if it's open source or not.\n\n" +
+                    "<b>Open Source:</b>\n" +
+                    "Enabled: People can view your project and your project's source code, only selected member(s) can make changes.\n" +
+                    "Disabled: People cannot view or view your project's source code, only selected member(s) can view / make changes to your project.\n\n" +
 
-                "Still need help? Ask it on https://github.com/Iyxan23/sk-collab/issues"
+                    "<b>Private:</b>\n" +
+                    "Enabled: Only YOU can view / edit the project, members are disabled in this private mode.\n" +
+                    "Disabled: People can view / make changes / contribute to your project depending if it's open source or not.\n\n" +
+
+                    "Still need help? Ask it on <a href=\"https://github.com/Iyxan23/sk-collab/issues\">https://github.com/Iyxan23/sk-collab/issues</a>"
+                )
         );
 
         builder.create().show();
+    }
+
+    final int MEMBER_USER_PICK_REQ_CODE = 20;
+    ArrayList<Userdata> members = new ArrayList<>();
+
+    TextView members_list;
+
+    public void add_member_click(View view) {
+        startActivityForResult(new Intent(this, UserPicker.class), MEMBER_USER_PICK_REQ_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == MEMBER_USER_PICK_REQ_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                members = data.getParcelableArrayListExtra("selected_users");
+
+                boolean is_first = false;
+                for (Userdata userdata: members) {
+                    members_list.setText((is_first ? "" : members_list.getText() + ",") + userdata.getName());
+
+                    is_first = true;
+                }
+            }
+        }
     }
 }

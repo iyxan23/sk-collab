@@ -25,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.iyxan23.sketch.collab.R;
+import com.iyxan23.sketch.collab.models.Userdata;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -127,7 +128,7 @@ public class UserPicker extends AppCompatActivity {
         private ArrayList<DocumentSnapshot> datas = new ArrayList<>();
 
         // ArrayList of Pair of Name and UID
-        public ArrayList<Pair<String, String>> picked_users = new ArrayList<>();
+        public ArrayList<Userdata> picked_users = new ArrayList<>();
 
         WeakReference<Activity> activity;
 
@@ -164,9 +165,9 @@ public class UserPicker extends AppCompatActivity {
             String username = item.getString("name");
             String uid = item.getId();
 
-            Pair<String, String> pair = new Pair<>(username, uid);
+            Userdata userdata = new Userdata(username, uid);
 
-            if (picked_users.contains(pair)) {
+            if (picked_users.contains(userdata)) {
                 // This item is already selected
                 holder.check.setVisibility(View.VISIBLE);
             } else {
@@ -177,10 +178,10 @@ public class UserPicker extends AppCompatActivity {
             holder.username.setText(item.getString("name"));
 
             holder.body.setOnClickListener(v -> {
-                if (picked_users.contains(pair)) {
-                    picked_users.remove(pair);
+                if (picked_users.contains(userdata)) {
+                    picked_users.remove(userdata);
                 } else {
-                    picked_users.add(pair);
+                    picked_users.add(userdata);
                 }
             });
         }
