@@ -113,11 +113,11 @@ public class UploadActivity extends AppCompatActivity {
 
             // Check if the user has added any members yet
             if (!members.isEmpty()) {
-                // Put all of those members into one String array
-                String[] members_ = new String[members.size() - 1];
+                // Put all of those members into one String arraylist
+                ArrayList<String> members_ = new ArrayList<>();
 
                 for (int i = 0; i < members.size(); i++) {
-                    members_[i] = members.get(i).getUid();
+                    members_.add(members.get(i).getUid());
                 }
 
                 // Put it in the project root
