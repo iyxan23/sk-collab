@@ -290,7 +290,7 @@ public class UploadActivity extends AppCompatActivity {
                                         finish();
                                     } else {
                                         // Sad, it failed
-                                        Toast.makeText(UploadActivity.this, "An error occured while uploading: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(UploadActivity.this, "An error occured while uploading: " + task1.getException().getMessage(), Toast.LENGTH_LONG).show();
                                     }
                                 });
                     });
