@@ -219,10 +219,12 @@ public class UploadActivity extends AppCompatActivity {
                     .commit()
                     .addOnCompleteListener(task -> {
                         Toast.makeText(UploadActivity.this, "Project Uploaded, refresh the homepage to see your project.", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
                         finish();
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(UploadActivity.this, "An error occured: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        progressDialog.dismiss();
                     });
 
             /*
