@@ -118,6 +118,8 @@ public class UserPicker extends AppCompatActivity {
         finish();
     }
 
+    // TODO: ADD SEARCH
+
     // The UserAdapter used for the UsersRecyclerView
     public static class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         private static final String TAG = "UserAdapter";
