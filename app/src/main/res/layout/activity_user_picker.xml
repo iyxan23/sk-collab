@@ -23,6 +23,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
+            android:onClick="go_back"
             android:background="?android:selectableItemBackgroundBorderless"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,6 +43,18 @@
             app:layout_constraintStart_toEndOf="@+id/imageButton"
             app:layout_constraintTop_toTopOf="@+id/imageButton" />
 
+        <TextView
+            android:id="@+id/count_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/sourcecodepro_regular"
+            android:text="0 selected"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -60,9 +73,9 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/colorPrimary"
+        android:onClick="done_button_click"
         android:text="Done"
         android:textColor="#FFFFFF"
-        android:onClick="done_button_click"
         app:icon="@drawable/ic_check"
         app:iconTint="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"

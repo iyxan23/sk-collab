@@ -14,28 +14,17 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Filter;
-import android.widget.Filterable;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.iyxan23.sketch.collab.R;
-import com.iyxan23.sketch.collab.Util;
-import com.iyxan23.sketch.collab.adapters.ChangesAdapter;
-import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
-import com.iyxan23.sketch.collab.online.PushCommitActivity;
-
-import org.json.JSONException;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -48,9 +37,6 @@ public class UserPicker extends AppCompatActivity {
 
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     CollectionReference users_collection = firestore.collection("userdata");
-
-    // ArrayList of Pair of Name and UID
-    ArrayList<Pair<String, String>> selected_users = new ArrayList<>();
 
     RecyclerView users_rv;
     UserAdapter adapter;
@@ -103,19 +89,32 @@ public class UserPicker extends AppCompatActivity {
     }
 
     private void load_users() throws ExecutionException, InterruptedException {
-        QuerySnapshot res = Tasks.await(users_collection.get());
+        QuerySnapshot res = Tasks.await(users_collection.orderBy("name", Query.Direction.ASCENDING).get());
         users = res.getDocuments();
     }
 
     private void bind_views() {
         adapter = new UserAdapter((ArrayList<DocumentSnapshot>) users, this);
         users_rv.setLayoutManager(new LinearLayoutManager(this));
+        users_rv.setAdapter(adapter);
     }
 
     public void done_button_click(View view) {
+        if (adapter.picked_users.size() == 0) {
+            go_back(null);
+            return;
+        }
+
         Intent resultIntent = new Intent();
-        resultIntent.putExtra("selected_users", selected_users);
+        resultIntent.putExtra("selected_users", adapter.picked_users);
         setResult(Activity.RESULT_OK, resultIntent);
+        finish();
+    }
+
+    public void go_back(View view) {
+        // The user cancelled the activity
+        Intent resultIntent = new Intent();
+        setResult(Activity.RESULT_CANCELED, resultIntent);
         finish();
     }
 
@@ -124,6 +123,10 @@ public class UserPicker extends AppCompatActivity {
         private static final String TAG = "UserAdapter";
 
         private ArrayList<DocumentSnapshot> datas = new ArrayList<>();
+
+        // ArrayList of Pair of Name and UID
+        public ArrayList<Pair<String, String>> picked_users = new ArrayList<>();
+
         WeakReference<Activity> activity;
 
         public UserAdapter(Activity activity) {
@@ -146,7 +149,7 @@ public class UserPicker extends AppCompatActivity {
             return new ViewHolder(
                     LayoutInflater
                             .from(parent.getContext())
-                            .inflate(R.layout.rv_last_changes, parent, false)
+                            .inflate(R.layout.rv_user_pick_item, parent, false)
             );
         }
 
@@ -155,7 +158,29 @@ public class UserPicker extends AppCompatActivity {
         public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
             Log.d(TAG, "onBindViewHolder: called.");
             DocumentSnapshot item = datas.get(position);
-            // TODO: THIS
+
+            String username = item.getString("name");
+            String uid = item.getId();
+
+            Pair<String, String> pair = new Pair<>(username, uid);
+
+            if (picked_users.contains(pair)) {
+                // This item is already selected
+                holder.check.setVisibility(View.VISIBLE);
+            } else {
+                // Plain unselected user
+                holder.check.setVisibility(View.GONE);
+            }
+
+            holder.username.setText(item.getString("name"));
+
+            holder.body.setOnClickListener(v -> {
+                if (picked_users.contains(pair)) {
+                    picked_users.remove(pair);
+                } else {
+                    picked_users.add(pair);
+                }
+            });
         }
 
         @Override
@@ -165,9 +190,16 @@ public class UserPicker extends AppCompatActivity {
 
         public static class ViewHolder extends RecyclerView.ViewHolder {
 
+            TextView username;
+
+            View check;
+            View body;
+
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
-                // TODO: DESIGN A RECYCLERVIEW ITEM LAYOUT
+                username = itemView.findViewById(R.id.user_pick_item_username);
+                check = itemView.findViewById(R.id.user_pick_item_check);
+                body = itemView.findViewById(R.id.user_pick_item_body);
             }
         }
     }
