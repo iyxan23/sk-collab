@@ -86,7 +86,7 @@ public class UserPicker extends AppCompatActivity {
             } catch (ExecutionException | InterruptedException e) {
                 runOnUiThread(() -> Toast.makeText(this, "Error while fetching: " + e.getMessage(), Toast.LENGTH_LONG).show());
             }
-        });
+        }).start();
     }
 
     private void load_users() throws ExecutionException, InterruptedException {
