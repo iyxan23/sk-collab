@@ -22,6 +22,7 @@ import com.google.firebase.firestore.Blob;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.Util;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
@@ -102,6 +103,8 @@ public class UploadActivity extends AppCompatActivity {
         uploadButton.setOnClickListener(v -> {
             CollectionReference projectRef = firestore.collection("/" + (isPrivate.isChecked() ? "userdata/" + auth.getUid() + "/projects" : "projects"));
 
+            WriteBatch upload_batch = firestore.batch();
+
             HashMap<String, Object> data = new HashMap<String, Object>() {{
                 put("name", name.getText().toString());
                 put("description", description.getText().toString());
@@ -151,6 +154,78 @@ public class UploadActivity extends AppCompatActivity {
             progressDialog.setIndeterminate(true);
             progressDialog.show();
 
+            DocumentReference projectRefDoc = projectRef.document();
+            CollectionReference snapshotRef = projectRefDoc.collection("logic");
+            CollectionReference commitRef = projectRefDoc.collection("commits");
+
+            // Upload the project metadata
+            upload_batch.set(projectRefDoc, data);
+
+            // Upload project datas ================================================================
+            upload_batch.set(
+                    snapshotRef.document("logic"),
+                    new HashMap<String, Object>() {{
+                        put("data", Blob.fromBytes(swProj.logic));
+                        put("shasum", Util.sha512(swProj.logic));
+                    }}
+            );
+
+            upload_batch.set(
+                    snapshotRef.document("view"),
+                    new HashMap<String, Object>() {{
+                        put("data", Blob.fromBytes(swProj.view));
+                        put("shasum", Util.sha512(swProj.view));
+                    }}
+            );
+
+            upload_batch.set(
+                    snapshotRef.document("file"),
+                    new HashMap<String, Object>() {{
+                        put("data", Blob.fromBytes(swProj.file));
+                        put("shasum", Util.sha512(swProj.file));
+                    }}
+            );
+
+            upload_batch.set(
+                    snapshotRef.document("library"),
+                    new HashMap<String, Object>() {{
+                        put("data", Blob.fromBytes(swProj.library));
+                        put("shasum", Util.sha512(swProj.library));
+                    }}
+            );
+
+            upload_batch.set(
+                    snapshotRef.document("resource"),
+                    new HashMap<String, Object>() {{
+                        put("data", Blob.fromBytes(swProj.resource));
+                        put("shasum", Util.sha512(swProj.resource));
+                    }}
+            );
+
+            upload_batch.set(
+                    snapshotRef.document("mysc_project"),
+                    new HashMap<String, Object>() {{
+                        put("data", Blob.fromBytes(swProj.mysc_project));
+                        put("shasum", Util.sha512(swProj.mysc_project));
+                    }}
+            );
+            // Upload project datas ===============================================================/
+
+            // Upload the first initial commit data
+            upload_batch.set(commitRef.document("initial"), commit_data);
+
+            // Commit the upload!
+            upload_batch
+                    .commit()
+                    .addOnCompleteListener(task -> {
+                        Toast.makeText(UploadActivity.this, "Project Uploaded, refresh the homepage to see your project.", Toast.LENGTH_SHORT).show();
+                        finish();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(UploadActivity.this, "An error occured: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    });
+
+            /*
             projectRef
                     .add(data)
                     .addOnCompleteListener(task -> {
@@ -294,6 +369,7 @@ public class UploadActivity extends AppCompatActivity {
                                     }
                                 });
                     });
+             */
         });
     }
 
