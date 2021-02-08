@@ -302,19 +302,19 @@ public class UploadActivity extends AppCompatActivity {
         builder.setTitle("Help");
         builder.setMessage(
                 Html.fromHtml(
-                    "<b>Member</b>:\n" +
-                    "Members are users that can directly make changes to your project. This can include your Team, Friends, Partner, and etc.\n" +
-                    "NOTE: Non-Member(s) can also make changes to your project. But, You / Your project's member(s) will need to review the changes manually\n\n" +
+                    "<b>Member</b>:" +
+                    "<p>Members are users that can directly make changes to your project. This can include your Team, Friends, Partner, and etc.</p>" +
+                    "<p>NOTE: Non-Member(s) can also make changes to your project. But, You / Your project's member(s) will need to review the changes manually</p><br/>" +
 
-                    "<b>Open Source:</b>\n" +
-                    "Enabled: People can view your project and your project's source code, only selected member(s) can make changes.\n" +
-                    "Disabled: People cannot view or view your project's source code, only selected member(s) can view / make changes to your project.\n\n" +
+                    "<b>Open Source:</b>" +
+                    "<p>Enabled: People can view your project and your project's source code, only selected member(s) can make changes.</p>" +
+                    "<p>Disabled: People cannot view or view your project's source code, only selected member(s) can view / make changes to your project.</p><br/>" +
 
-                    "<b>Private:</b>\n" +
-                    "Enabled: Only YOU can view / edit the project, members are disabled in this private mode.\n" +
-                    "Disabled: People can view / make changes / contribute to your project depending if it's open source or not.\n\n" +
+                    "<b>Private:</b>" +
+                    "<p>Enabled: Only YOU can view / edit the project, members are disabled in this private mode.</p>" +
+                    "<p>Disabled: People can view / make changes / contribute to your project depending if it's open source or not.</p><br/>" +
 
-                    "Still need help? Ask it on <a href=\"https://github.com/Iyxan23/sk-collab/issues\">https://github.com/Iyxan23/sk-collab/issues</a>"
+                    "<p>Still need help? Ask it on <a href=\"https://github.com/Iyxan23/sk-collab/issues\">https://github.com/Iyxan23/sk-collab/issues</a></p>"
                 )
         );
 
