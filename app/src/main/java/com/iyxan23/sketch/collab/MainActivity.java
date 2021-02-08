@@ -10,6 +10,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -249,6 +250,8 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     assert snapshot != null; // snapshot shouldn't be null
+
+                    Log.d("MainActivity", "initialize: " + snapshot.getDocuments());
 
                     DocumentSnapshot commit_info = snapshot.getDocuments().get(0);
 

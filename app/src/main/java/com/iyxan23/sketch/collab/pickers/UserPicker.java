@@ -39,6 +39,8 @@ public class UserPicker extends AppCompatActivity {
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     CollectionReference users_collection = firestore.collection("userdata");
 
+    ArrayList<Userdata> initial_data;
+
     RecyclerView users_rv;
     UserAdapter adapter;
 
@@ -49,7 +51,7 @@ public class UserPicker extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        boolean multiple_users = intent.getBooleanExtra("multiple_users", false);
+        initial_data = getIntent().getParcelableArrayListExtra("initial_data");
 
         ExtendedFloatingActionButton efab = findViewById(R.id.button2);
 
@@ -96,8 +98,19 @@ public class UserPicker extends AppCompatActivity {
 
     private void bind_views() {
         adapter = new UserAdapter((ArrayList<DocumentSnapshot>) users, this);
+
+        if (!initial_data.isEmpty()) {
+            adapter.picked_users.addAll(initial_data);
+        }
+
         users_rv.setLayoutManager(new LinearLayoutManager(this));
         users_rv.setAdapter(adapter);
+    }
+
+    public void update_count() {
+        TextView count_selected = findViewById(R.id.count_selected);
+
+        count_selected.setText(adapter.picked_users.size() + " selected");
     }
 
     public void done_button_click(View view) {
