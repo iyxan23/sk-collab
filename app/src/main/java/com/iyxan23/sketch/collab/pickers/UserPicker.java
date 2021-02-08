@@ -193,8 +193,10 @@ public class UserPicker extends AppCompatActivity {
             holder.body.setOnClickListener(v -> {
                 if (picked_users.contains(userdata)) {
                     picked_users.remove(userdata);
+                    holder.check.setVisibility(View.GONE);
                 } else {
                     picked_users.add(userdata);
+                    holder.check.setVisibility(View.VISIBLE);
                 }
             });
         }
