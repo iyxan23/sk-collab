@@ -123,6 +123,12 @@ public class UserPicker extends AppCompatActivity {
         }
 
         Intent resultIntent = new Intent();
+
+        // Remove ANY duplicates
+        Set<Userdata> userdatas = new HashSet<>(adapter.picked_users);
+        adapter.picked_users.clear();
+        adapter.picked_users.addAll(userdatas);
+
         resultIntent.putExtra("selected_users", adapter.picked_users);
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
