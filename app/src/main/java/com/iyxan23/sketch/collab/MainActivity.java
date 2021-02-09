@@ -48,6 +48,8 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
+
     // List of local projects
     ArrayList<SketchwareProject> localProjects = new ArrayList<>();
 
@@ -251,17 +253,27 @@ public class MainActivity extends AppCompatActivity {
 
                     assert snapshot != null; // snapshot shouldn't be null
 
-                    Log.d("MainActivity", "initialize: " + snapshot.getDocuments());
+                    Log.d("MainActivity", "documents: " + snapshot.getDocuments());
+                    Log.d("MainActivity", "project_key: " + project_key);
+
+                    // Check if the project doesn't exists in the database.
+                    if (snapshot.getDocuments().size() == 0) continue;
 
                     DocumentSnapshot commit_info = snapshot.getDocuments().get(0);
 
                     if (!project_commit.equals(commit_info.getId())) {
                         // Hmm, looks like this man's project has an older commit, tell him to update his project
+                        Log.d(TAG, "initialize: Old Commit");
                     } else {
+                        Log.d(TAG, "initialize: Latest commit");
                         // This mans project has the same commit
                         // Check if this project also has the same shasum
                         String local_shasum = project.sha512sum();
                         String server_shasum = commit_info.getString("sha512sum");
+
+                        Log.d(TAG, "initialize: Checking shasum");
+                        Log.d(TAG, "shasum local:  " + local_shasum);
+                        Log.d(TAG, "shasum server: " + server_shasum);
 
                         // Check if they're the same
                         if (!local_shasum.equals(server_shasum)) {
