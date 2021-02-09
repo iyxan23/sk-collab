@@ -55,4 +55,12 @@ public class Userdata implements Parcelable {
         dest.writeString(name);
         dest.writeString(uid);
     }
+
+    @Override
+    public String toString() {
+        return "Userdata{" +
+                "name='" + name + '\'' +
+                ", uid='" + uid + '\'' +
+                '}';
+    }
 }
