@@ -116,7 +116,7 @@ public class BrowseActivity extends AppCompatActivity {
                                             .limit(count);
 
             // Check if the pointer has been set (if it hasn't then this is the first time we call this function)
-            if (after != null) fetch_projects_query.startAfter(after);
+            if (after != null) fetch_projects_query.startAt(after);
 
             Task<QuerySnapshot> task = fetch_projects_query.get();
 
