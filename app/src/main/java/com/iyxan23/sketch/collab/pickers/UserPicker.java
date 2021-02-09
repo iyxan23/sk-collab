@@ -86,7 +86,7 @@ public class UserPicker extends AppCompatActivity {
                 load_users();
 
                 // And bind the view, (set recyclerview adapter, update some stuff)
-                runOnUiThread(() -> bind_views());
+                runOnUiThread(this::bind_views);
             } catch (ExecutionException | InterruptedException e) {
                 runOnUiThread(() -> Toast.makeText(this, "Error while fetching: " + e.getMessage(), Toast.LENGTH_LONG).show());
             }
