@@ -405,7 +405,9 @@ public class UploadActivity extends AppCompatActivity {
     TextView members_list;
 
     public void add_member_click(View view) {
-        startActivityForResult(new Intent(this, UserPicker.class), MEMBER_USER_PICK_REQ_CODE);
+        Intent pick_user_intent = new Intent(this, UserPicker.class);
+        pick_user_intent.putExtra("initial_data", members);
+        startActivityForResult(pick_user_intent, MEMBER_USER_PICK_REQ_CODE);
     }
 
     @Override
