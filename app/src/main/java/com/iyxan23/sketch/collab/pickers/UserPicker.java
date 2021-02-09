@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -26,6 +27,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.models.Userdata;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -76,6 +79,17 @@ public class UserPicker extends AppCompatActivity {
                 if (dy > 0 || dy < 0 && efab.isExtended()) {
                     efab.shrink();
                 }
+            }
+        });
+
+        // Update the count everytime the recyclerview's item got clicked
+        users_rv.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override public boolean onInterceptTouchEvent(@NonNull @NotNull RecyclerView rv, @NonNull @NotNull MotionEvent e) { return false; }
+            @Override public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) { }
+
+            @Override
+            public void onTouchEvent(@NonNull @NotNull RecyclerView rv, @NonNull @NotNull MotionEvent e) {
+                update_count();
             }
         });
 
