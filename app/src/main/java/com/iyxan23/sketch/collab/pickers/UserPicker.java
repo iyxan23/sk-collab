@@ -39,7 +39,7 @@ public class UserPicker extends AppCompatActivity {
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     CollectionReference users_collection = firestore.collection("userdata");
 
-    ArrayList<Userdata> initial_data;
+    ArrayList<Userdata> initial_data = new ArrayList<>();
 
     RecyclerView users_rv;
     UserAdapter adapter;
@@ -99,8 +99,11 @@ public class UserPicker extends AppCompatActivity {
     private void bind_views() {
         adapter = new UserAdapter((ArrayList<DocumentSnapshot>) users, this);
 
-        if (!initial_data.isEmpty()) {
+        Log.d("UserPicker", "bind_views: initial_data: " + initial_data);
+
+        if (initial_data != null) {
             adapter.picked_users.addAll(initial_data);
+            adapter.notifyDataSetChanged();
         }
 
         users_rv.setLayoutManager(new LinearLayoutManager(this));
