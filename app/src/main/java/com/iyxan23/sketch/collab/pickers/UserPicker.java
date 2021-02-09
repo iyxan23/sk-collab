@@ -178,6 +178,15 @@ public class UserPicker extends AppCompatActivity {
             );
         }
 
+        private boolean uidExists(String uid) {
+            for (Userdata picked_user : picked_users) {
+                if (picked_user.getUid().equals(uid)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         @SuppressLint("SetTextI18n")
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
@@ -189,23 +198,29 @@ public class UserPicker extends AppCompatActivity {
 
             Userdata userdata = new Userdata(username, uid);
 
-            if (picked_users.contains(userdata)) {
+            Log.d(TAG, "onBindViewHolder: Userdata: " + userdata);
+
+            if (uidExists(uid)) {
                 // This item is already selected
                 holder.check.setVisibility(View.VISIBLE);
             } else {
-                // Plain unselected user
+                // Unselected item
                 holder.check.setVisibility(View.GONE);
             }
 
             holder.username.setText(item.getString("name"));
 
             holder.body.setOnClickListener(v -> {
-                if (picked_users.contains(userdata)) {
+                if (uidExists(uid)) {
                     picked_users.remove(userdata);
                     holder.check.setVisibility(View.GONE);
+
+                    Log.d(TAG, "onBindViewHolder: Remove " + username);
                 } else {
                     picked_users.add(userdata);
                     holder.check.setVisibility(View.VISIBLE);
+
+                    Log.d(TAG, "onBindViewHolder: Add " + username);
                 }
             });
         }
