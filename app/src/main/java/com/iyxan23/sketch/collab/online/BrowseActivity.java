@@ -43,7 +43,7 @@ public class BrowseActivity extends AppCompatActivity {
     BrowseItemAdapter adapter;
 
     // This variable is used to point at the bottom of our fetches
-    DocumentReference after;
+    DocumentSnapshot after;
 
     // This variable indicates if we're at the bottom of the fetch (or that we've basically fetched every projects), not the recyclerview
     boolean is_at_bottom = false;
@@ -198,7 +198,7 @@ public class BrowseActivity extends AppCompatActivity {
                 runOnUiThread(() -> adapter.updateView(items));
 
                 // Set the pointer of the last project loaded
-                after = project.getReference();
+                after = project;
             }
 
             // Check if we're at the bottom (means we've laoded less projects than we should've been)
