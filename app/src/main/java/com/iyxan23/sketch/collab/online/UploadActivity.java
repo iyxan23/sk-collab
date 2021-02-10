@@ -217,8 +217,8 @@ public class UploadActivity extends AppCompatActivity {
             // Commit the upload!
             upload_batch
                     .commit()
-                    .addOnCompleteListener(task -> {
-                        Toast.makeText(UploadActivity.this, "Project Uploaded, refresh the homepage to see your project.", Toast.LENGTH_SHORT).show();
+                    .addOnSuccessListener(result -> {
+                        Toast.makeText(UploadActivity.this, "Project Uploaded", Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
                         finish();
                     })
