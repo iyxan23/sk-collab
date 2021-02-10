@@ -56,7 +56,7 @@ public class UserPicker extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        initial_data = getIntent().getParcelableArrayListExtra("initial_data");
+        initial_data = intent.getParcelableArrayListExtra("initial_data");
 
         ExtendedFloatingActionButton efab = findViewById(R.id.button2);
 
