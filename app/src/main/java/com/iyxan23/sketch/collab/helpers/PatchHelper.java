@@ -13,6 +13,7 @@ import name.fraser.neil.plaintext.diff_match_patch;
 
 public class PatchHelper {
 
+    // FIXME: SOMETHING DOESN'T SEEM RIGHT
     public static String reverse_patch(String patch) {
         Pattern plus_pattern = Pattern.compile("^\\+", Pattern.MULTILINE);
         Pattern minus_pattern = Pattern.compile("^-", Pattern.MULTILINE);
@@ -55,7 +56,7 @@ public class PatchHelper {
 
         if (commit_destination > commit_current) {
             // The destination is above us, apply commits that are above the current commit
-            for (Commit commit: commits.subList(commit_current - 1, commit_destination)) {
+            for (Commit commit: commits.subList(commit_current, commit_destination)) {
                 if (commit.patch == null)
                     continue;
 
@@ -71,7 +72,7 @@ public class PatchHelper {
             }
         } else if (commit_destination < commit_current) {
             // The destination is below us, apply commits downward
-            for (Commit commit: commits.subList(commit_destination, commit_current - 1)) {
+            for (Commit commit: commits.subList(commit_destination, commit_current)) {
                 if (commit.patch == null)
                     continue;
 
