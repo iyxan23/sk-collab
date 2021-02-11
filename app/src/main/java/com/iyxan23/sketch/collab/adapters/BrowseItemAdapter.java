@@ -2,6 +2,8 @@ package com.iyxan23.sketch.collab.adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.Timestamp;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.models.BrowseItem;
+import com.iyxan23.sketch.collab.online.ViewOnlineProjectActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -36,6 +39,14 @@ public class BrowseItemAdapter extends RecyclerView.Adapter<BrowseItemAdapter.Vi
     }
 
     public void updateView(ArrayList<BrowseItem> datas) {
+        if (datas == null) {
+            return;
+        }
+
+        if (datas.size() == 0) {
+            return;
+        }
+
         this.datas = datas;
         notifyDataSetChanged();
     }
@@ -58,10 +69,23 @@ public class BrowseItemAdapter extends RecyclerView.Adapter<BrowseItemAdapter.Vi
 
         holder.title.setText(item.username + "/" + item.project_name);
 
-        // https://stackoverflow.com/questions/25710457/how-to-subtract-two-calendar-object-in-android
-        // TODO: IMPLEMENT A BETTER VERSION OF THIS THING
-        long difference = Timestamp.now().getSeconds() - item.latest_commit_timestamp.getSeconds();
-        holder.last_updated.setText("Last Updated " + (int) (difference / (60 * 60 * 24)) + " days ago");
+        // https://stackoverflow.com/questions/11275034/android-calculating-minutes-hours-days-from-point-in-time
+        CharSequence relativeTimeStr =
+                DateUtils.getRelativeTimeSpanString(
+                        item.latest_commit_timestamp.getSeconds() * 1000,
+                        System.currentTimeMillis(),
+
+                        DateUtils.SECOND_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE
+                );
+
+        holder.last_updated.setText("Last Updated " + relativeTimeStr);
+
+        holder.body.setOnClickListener(v -> {
+            // Move to ViewOnlineProjectActivity
+            Intent i = new Intent(activity.get(), ViewOnlineProjectActivity.class);
+            i.putExtra("project_key", item.project_id);
+            activity.get().startActivity(i);
+        });
     }
 
     @Override
@@ -74,10 +98,13 @@ public class BrowseItemAdapter extends RecyclerView.Adapter<BrowseItemAdapter.Vi
         TextView title;
         TextView last_updated;
 
+        View body;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.item_browse_title);
             last_updated = itemView.findViewById(R.id.item_browse_last_updated);
+            body = itemView.findViewById(R.id.body_item_browse);
         }
     }
 }

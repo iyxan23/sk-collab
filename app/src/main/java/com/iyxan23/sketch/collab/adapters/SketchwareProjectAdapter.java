@@ -55,6 +55,11 @@ public class SketchwareProjectAdapter extends RecyclerView.Adapter<SketchwarePro
         Log.d(TAG, "onBindViewHolder: called.");
         SketchwareProject project = datas.get(position);
 
+        // Fixes #18
+        // Check if the project metadata is null, if it is, the project is corrupted and we will
+        // just continue on with our day - RecyclerView
+        if (project.metadata == null) return;
+
         holder.title.setText(project.metadata.app_name);
         holder.subtitle.setText(project.metadata.project_name);
         holder.details.setText(project.metadata.project_package + "(" + project.metadata.id + ")");
@@ -84,7 +89,7 @@ public class SketchwareProjectAdapter extends RecyclerView.Adapter<SketchwarePro
 
     @Override
     public int getItemCount() {
-        return datas.size();
+        return datas == null ? 0 : datas.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -36,11 +36,14 @@
 
     <TextView
         android:id="@+id/status_check"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
         android:fontFamily="@font/roboto_regular"
         android:text="Checking if server is online..."
+        android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/progressBar_check"
@@ -65,7 +68,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/log_red" />
+        app:srcCompat="@drawable/logo_red" />
 
     <ImageView
         android:id="@+id/logo_branch_part_check"

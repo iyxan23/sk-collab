@@ -1,5 +1,6 @@
 package com.iyxan23.sketch.collab.online;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
@@ -7,15 +8,19 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.Util;
 import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,6 +38,7 @@ public class PushCommitActivity extends AppCompatActivity {
 
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     CollectionReference commits;
+    DocumentReference project;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,7 @@ public class PushCommitActivity extends AppCompatActivity {
         String project_key = getIntent().getStringExtra("project_key");
 
         commits = firestore.collection("projects/" + project_key + "/commits");
+        project = firestore.document("projects/" + project_key);
 
         patch_text = findViewById(R.id.patch_push);
 
@@ -66,6 +73,8 @@ public class PushCommitActivity extends AppCompatActivity {
                 put("author", user_uid);
             }};
 
+            Task<Void> update_last_commit_timestamp = project.update("latest_commit_timestamp", Timestamp.now());
+
             try {
                 data.put("sha512sum", commit_change.after.sha512sum());
             } catch (JSONException e) {
@@ -81,7 +90,8 @@ public class PushCommitActivity extends AppCompatActivity {
             progressDialog.setIndeterminate(true);
             progressDialog.show();
 
-            commits .add(data)
+            update_last_commit_timestamp
+                    .continueWithTask(task -> commits.add(data))
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             // Update the project's local commit id
@@ -118,26 +128,27 @@ public class PushCommitActivity extends AppCompatActivity {
             // Get the changed files
             int files_changed = commit_change.getFilesChanged();
 
-            // Yeah i gotta make this dry, i'll do it later
-            // TODO: MAKE THIS DRY
-            if ((files_changed & SketchwareProjectChanges.LOGIC) == SketchwareProjectChanges.LOGIC) {
-                patch.put("logic", commit_change.getPatch(SketchwareProjectChanges.LOGIC));
-            }
+            // Pack every patches into one map
+            int[] data_keys = new int[] {
+                    SketchwareProjectChanges.LOGIC      ,
+                    SketchwareProjectChanges.VIEW       ,
+                    SketchwareProjectChanges.FILE       ,
+                    SketchwareProjectChanges.LIBRARY    ,
+                    SketchwareProjectChanges.RESOURCES  ,
+            };
 
-            if ((files_changed & SketchwareProjectChanges.VIEW) == SketchwareProjectChanges.VIEW) {
-                patch.put("view", commit_change.getPatch(SketchwareProjectChanges.VIEW));
-            }
+            String[] data_keys_str = new String[] {
+                    "logic"      ,
+                    "view"       ,
+                    "file"       ,
+                    "library"    ,
+                    "resources"  ,
+            };
 
-            if ((files_changed & SketchwareProjectChanges.FILE) == SketchwareProjectChanges.FILE) {
-                patch.put("file", commit_change.getPatch(SketchwareProjectChanges.FILE));
-            }
-
-            if ((files_changed & SketchwareProjectChanges.LIBRARY) == SketchwareProjectChanges.LIBRARY) {
-                patch.put("library", commit_change.getPatch(SketchwareProjectChanges.LIBRARY));
-            }
-
-            if ((files_changed & SketchwareProjectChanges.RESOURCES) == SketchwareProjectChanges.RESOURCES) {
-                patch.put("resources", commit_change.getPatch(SketchwareProjectChanges.RESOURCES));
+            for (int index = 0; index < data_keys.length; index++) {
+                if ((files_changed & data_keys[index]) == data_keys[index]) {
+                    patch.put(data_keys_str[index], commit_change.getPatch(data_keys[index]));
+                }
             }
 
             // Alright, patch is ready!

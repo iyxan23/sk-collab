@@ -3,8 +3,16 @@ package com.iyxan23.sketch.collab;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextWatcher;
+import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -24,6 +32,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 import com.iyxan23.sketch.collab.adapters.ChangesAdapter;
+import com.iyxan23.sketch.collab.adapters.SearchAdapter;
+import com.iyxan23.sketch.collab.models.SearchItem;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
 import com.iyxan23.sketch.collab.online.BrowseActivity;
@@ -31,9 +41,14 @@ import com.iyxan23.sketch.collab.online.BrowseActivity;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
 
     // List of local projects
     ArrayList<SketchwareProject> localProjects = new ArrayList<>();
@@ -238,15 +253,27 @@ public class MainActivity extends AppCompatActivity {
 
                     assert snapshot != null; // snapshot shouldn't be null
 
+                    Log.d("MainActivity", "documents: " + snapshot.getDocuments());
+                    Log.d("MainActivity", "project_key: " + project_key);
+
+                    // Check if the project doesn't exists in the database.
+                    if (snapshot.getDocuments().size() == 0) continue;
+
                     DocumentSnapshot commit_info = snapshot.getDocuments().get(0);
 
                     if (!project_commit.equals(commit_info.getId())) {
                         // Hmm, looks like this man's project has an older commit, tell him to update his project
+                        Log.d(TAG, "initialize: Old Commit");
                     } else {
+                        Log.d(TAG, "initialize: Latest commit");
                         // This mans project has the same commit
                         // Check if this project also has the same shasum
                         String local_shasum = project.sha512sum();
                         String server_shasum = commit_info.getString("sha512sum");
+
+                        Log.d(TAG, "initialize: Checking shasum");
+                        Log.d(TAG, "shasum local:  " + local_shasum);
+                        Log.d(TAG, "shasum server: " + server_shasum);
 
                         // Check if they're the same
                         if (!local_shasum.equals(server_shasum)) {
@@ -287,5 +314,172 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+    // THE SEARCH / COMMANDS THING =================================================================
+
+    boolean isOpened = false;
+
+    SearchAdapter s_adapter;
+    ArrayList<SearchItem> s_items;
+    RecyclerView s_rv;
+    EditText s_edittext;
+
+    HashMap<String, Integer> index = new HashMap<>();
+
+    String[] commands = new String[] {
+            "upload",    // goes to UploadActivity
+            "local",     // goes to ViewLocalProjectActivity (soon)
+            "open",      // goes to ViewOnlineProjectActivity
+            "browse",    // goes to BrowseActivity
+            "show code", // goes to BrowseCodeActivity
+            "commits"    // goes to CommitsActivity
+    };
+
+    /* Syntaxes:
+     *
+     * upload (project name)
+     * local
+     * open (project name)
+     * browse
+     * show code (project name)
+     * commits (project name)
+     */
+
+    public void search_button_click(View view) {
+        s_edittext = findViewById(R.id.search_edittext);
+
+        View settings_button = findViewById(R.id.imageView);
+        View home_textview = findViewById(R.id.home_textview);
+        View search_autocomplete_layout = findViewById(R.id.inc_search);
+        View main_content = findViewById(R.id.scrollView2);
+
+        s_rv = findViewById(R.id.search_rv);
+
+        if (isOpened) {
+            // Do a search
+        } else {
+            // Open the thing
+            settings_button.setVisibility(View.GONE);
+            home_textview.setVisibility(View.GONE);
+            s_edittext.setVisibility(View.VISIBLE);
+            search_autocomplete_layout.setVisibility(View.VISIBLE);
+            main_content.setVisibility(View.GONE);
+
+            // Initialize some stuff
+            s_items = new ArrayList<>();
+            for (String item: commands) {
+                s_items.add(new SearchItem(item));
+            }
+
+            // Index localProjects to be a HashMap<String: Name, Integer: id>
+            // Oh yeah, we're including project name and app name
+            new Thread(() -> {
+                for (SketchwareProject project : localProjects) {
+                    if (project.metadata == null)
+                        continue;
+
+                    index.put(project.metadata.project_name, project.metadata.id);
+                    index.put(project.metadata.app_name, project.metadata.id);
+                }
+            }).start();
+
+            s_adapter = new SearchAdapter(s_items, this);
+
+            s_rv.setAdapter(s_adapter);
+            s_rv.setLayoutManager(new LinearLayoutManager(this));
+
+            s_edittext.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+                @Override
+                public void afterTextChanged(Editable s) { }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    update_rv(s.toString());
+                }
+            });
+        }
+    }
+
+    private void update_rv(String input) {
+        s_items.clear();
+
+        Pattern pattern = Pattern.compile(input);
+
+        for (String command: commands) {
+            boolean matched = false;
+
+            Matcher m = pattern.matcher(command);
+
+            SpannableString command_s = new SpannableString(command);
+            while (m.find()) {
+                matched = true;
+                command_s.setSpan(
+                        new StyleSpan(Typeface.BOLD),
+                        m.start(),
+                        m.end(),
+                        Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                );
+            }
+
+            if (matched)
+                s_items.add(new SearchItem(command_s, "Command"));
+        }
+
+        s_adapter.updateView(s_items);
+
+        // Find in local project(s)
+        for (String name: index.keySet()) {
+            boolean matched = false;
+
+            Matcher m = pattern.matcher(name);
+
+            SpannableString name_s = new SpannableString(name);
+            while (m.find()) {
+                matched = true;
+                name_s.setSpan(
+                        new StyleSpan(Typeface.BOLD),
+                        m.start(),
+                        m.end(),
+                        Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                );
+            }
+
+            if (matched)
+                s_items.add(new SearchItem(name_s, "Open Local Project"));
+        }
+
+        s_adapter.updateView(s_items);
+
+        // TODO: ADD PUBLIC PROJECTS FUNCTIONALITY
+    }
+
+    @Override
+    public void onBackPressed() {
+        s_edittext = findViewById(R.id.search_edittext);
+
+        View settings_button = findViewById(R.id.imageView);
+        View home_textview = findViewById(R.id.home_textview);
+        View search_autocomplete_layout = findViewById(R.id.inc_search);
+        View main_content = findViewById(R.id.scrollView2);
+
+        if (isOpened) {
+            // Close the search thing
+            settings_button.setVisibility(View.VISIBLE);
+            home_textview.setVisibility(View.VISIBLE);
+            s_edittext.setVisibility(View.GONE);
+            search_autocomplete_layout.setVisibility(View.GONE);
+            main_content.setVisibility(View.VISIBLE);
+
+            // Clear some stuff to reduce the memory usage
+            s_items.clear();
+            index.clear();
+
+        } else {
+            super.onBackPressed();
+        }
     }
 }
