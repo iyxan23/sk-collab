@@ -111,7 +111,7 @@ public class CommitsActivity extends AppCompatActivity {
                             c.author = commit.getString("author");
                             c.name = commit.getString("name");
                             c.sha512sum = commit.getString("sha512sum");
-                            // c.patch = commit.get("patch", Map.class); // Soon
+                            c.patch = (Map<String, String>) commit.get("patch");
                             c.timestamp = commit.getTimestamp("timestamp");
 
                             Log.d(TAG, "onCreate: Adding commit " + c.id + "to the list ");
