@@ -133,11 +133,6 @@ public class UserPicker extends AppCompatActivity {
     }
 
     public void done_button_click(View view) {
-        if (adapter.picked_users.size() == 0) {
-            go_back(null);
-            return;
-        }
-
         Intent resultIntent = new Intent();
 
         // Remove ANY duplicates

@@ -422,6 +422,13 @@ public class UploadActivity extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 members = data.getParcelableArrayListExtra("selected_users");
 
+                Log.d("UploadActivity", "onActivityResult: " + members);
+
+                if (members.size() == 0) {
+                    members_list.setText("None, Click the Add button to add Member(s)");
+                    return;
+                }
+
                 boolean is_first = false;
                 for (Userdata userdata: members) {
                     members_list.setText((!is_first ? "" : members_list.getText() + ", ") + userdata.getName());
