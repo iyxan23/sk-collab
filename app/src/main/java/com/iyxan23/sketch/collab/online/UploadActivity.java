@@ -161,7 +161,7 @@ public class UploadActivity extends AppCompatActivity {
             progressDialog.show();
 
             DocumentReference projectRefDoc = projectRef.document();
-            CollectionReference snapshotRef = projectRefDoc.collection("logic");
+            CollectionReference snapshotRef = projectRefDoc.collection("snapshot");
             CollectionReference commitRef = projectRefDoc.collection("commits");
 
             // Upload the project metadata
