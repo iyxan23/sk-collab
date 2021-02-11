@@ -49,7 +49,7 @@ public class BrowseActivity extends AppCompatActivity {
     boolean is_at_bottom = false;
 
     // The project count that should be loaded
-    int project_count_should_be_loaded = 5;
+    int project_count_should_be_loaded = 100;  // TEMP FIX, CURRENT PAGINATION IS BROKEN
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
