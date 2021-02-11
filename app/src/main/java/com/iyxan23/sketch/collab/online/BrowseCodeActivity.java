@@ -193,7 +193,7 @@ public class BrowseCodeActivity extends AppCompatActivity {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(this);
         builderSingle.setTitle("Select a commit to jump into: ");
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_singlechoice);
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         arrayAdapter.addAll(commit_ids);
 
         builderSingle.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
