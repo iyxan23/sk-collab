@@ -177,6 +177,12 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
     }
 
     private void fetchMembers(List<String> members_) {
+        // Check if members_ is null bruh
+        if (members_ == null) {
+            // kekw we're outta here
+            return;
+        }
+
         CollectionReference userdata = FirebaseFirestore.getInstance().collection("userdata");
 
         new Thread(() -> {
