@@ -106,9 +106,19 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.ViewHolder
 
             StringBuilder patch = new StringBuilder();
 
-            for (String key: item.patch.keySet()) {
-                patch.append(key).append(":\n").append(item.patch.get(key));
+            // Check if this commit doesn't have any commits
+            if (item.patch != null) {
+                for (String key : item.patch.keySet()) {
+                    Log.d(TAG, "onBindViewHolder: key: " + key + " | patch: " + item.patch.get(key));
+
+                    patch.append(key).append(":\n").append(item.patch.get(key));
+                }
+
+            } else {
+                patch.append("This commit doesn't have any patch");
             }
+
+            Log.d(TAG, "onBindViewHolder: result: " + patch.toString());
 
             code.setText(patch.toString());
 
