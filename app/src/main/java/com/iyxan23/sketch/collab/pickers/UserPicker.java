@@ -49,6 +49,8 @@ public class UserPicker extends AppCompatActivity {
     RecyclerView users_rv;
     UserAdapter adapter;
 
+    // TODO: PAGINATION
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
