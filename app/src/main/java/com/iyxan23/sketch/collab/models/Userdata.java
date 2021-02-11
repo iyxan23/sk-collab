@@ -3,6 +3,8 @@ package com.iyxan23.sketch.collab.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Objects;
+
 public class Userdata implements Parcelable {
     private String name;
     private String uid;
@@ -54,6 +56,22 @@ public class Userdata implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(uid);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Userdata userdata = (Userdata) o;
+
+        return Objects.equals(name, userdata.name) &&
+                Objects.equals(uid, userdata.uid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, uid);
     }
 
     @Override
