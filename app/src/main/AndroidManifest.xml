@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
@@ -60,9 +59,11 @@
         <activity
             android:name=".online.BrowseCodeActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
+        <activity
+            android:name=".pickers.UserPicker"
+            android:theme="@style/Theme.SketchCollab.NoActionBar" />
 
-        <service
-            android:name=".services.CloneService" />
+        <service android:name=".services.CloneService" />
     </application>
 
 </manifest>

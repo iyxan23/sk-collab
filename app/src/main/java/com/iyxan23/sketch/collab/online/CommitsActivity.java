@@ -54,6 +54,7 @@ public class CommitsActivity extends AppCompatActivity {
         commit_rv.setLayoutManager(new LinearLayoutManager(this));
         commit_rv.setAdapter(adapter);
 
+        // TODO: PAGINATION
         commits_reference
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .get()
@@ -110,7 +111,7 @@ public class CommitsActivity extends AppCompatActivity {
                             c.author = commit.getString("author");
                             c.name = commit.getString("name");
                             c.sha512sum = commit.getString("sha512sum");
-                            // c.patch = commit.get("patch", Map.class); // Soon
+                            c.patch = (Map<String, String>) commit.get("patch");
                             c.timestamp = commit.getTimestamp("timestamp");
 
                             Log.d(TAG, "onCreate: Adding commit " + c.id + "to the list ");

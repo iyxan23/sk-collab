@@ -1,7 +1,13 @@
 package com.iyxan23.sketch.collab.online;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -17,14 +23,18 @@ import com.google.firebase.firestore.Blob;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.Util;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
+import com.iyxan23.sketch.collab.models.Userdata;
+import com.iyxan23.sketch.collab.pickers.UserPicker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class UploadActivity extends AppCompatActivity {
@@ -57,6 +67,8 @@ public class UploadActivity extends AppCompatActivity {
         TextView projectName = findViewById(R.id.project_name_upload);
         projectName.setText(swProj.metadata.project_name);
 
+        members_list = findViewById(R.id.members_upload);
+
         Button uploadButton = findViewById(R.id.upload_upload);
         SwitchMaterial isPrivate = findViewById(R.id.private_upload);
         SwitchMaterial isOpenSource = findViewById(R.id.open_source_upload);
@@ -67,19 +79,37 @@ public class UploadActivity extends AppCompatActivity {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
-        uploadButton.setOnClickListener(v -> {
-            // DatabaseReference projectReference = database.getReference("/" + (isPrivate.isChecked() ? "userprojects/" + auth.getUid() + "/projects" : "projects"));
-            CollectionReference projectRef = firestore.collection("/" + (isPrivate.isChecked() ? "userdata/" + auth.getUid() + "/projects" : "projects"));
-            // String pushKey = projectReference.push().getKey();
-            // DatabaseReference commitsReference = database.getReference("/" + (isPrivate.isChecked() ? "userprojects/" + auth.getUid() + "/commits" : "commits"));
+        isPrivate.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // Private project cannot be open source
+            isOpenSource.setChecked(!isChecked);
+            isOpenSource.setEnabled(!isChecked);
 
-            // Nullcheck
-            /*
-            if (pushKey == null) {
-                Toast.makeText(UploadActivity.this, "An error occured: pushKey is null", Toast.LENGTH_LONG).show();
+            if (isChecked) {
+                findViewById(R.id.add_member_button).setEnabled(false);
+                members_list.setText("Members are disabled. To add members, make the project to be public.");
+
+                members_list.animate().setDuration(500).alpha(0.25f);
+                findViewById(R.id.members_title).animate().setDuration(500).alpha(0.25f);
+
+                members.clear();
+            } else {
+                findViewById(R.id.add_member_button).setEnabled(true);
+                members_list.setText("None, click the Add button to add Member(s).");
+
+                members_list.animate().setDuration(500).alpha(1f);
+                findViewById(R.id.members_title).animate().setDuration(500).alpha(1f);
+            }
+        });
+
+        uploadButton.setOnClickListener(v -> {
+            if (name.getText().toString().trim().equals("")) {
+                Toast.makeText(this, "Project name shouldn't be empty!", Toast.LENGTH_SHORT).show();
                 return;
             }
-             */
+            
+            CollectionReference projectRef = firestore.collection("/" + (isPrivate.isChecked() ? "userdata/" + auth.getUid() + "/projects" : "projects"));
+
+            WriteBatch upload_batch = firestore.batch();
 
             HashMap<String, Object> data = new HashMap<String, Object>() {{
                 put("name", name.getText().toString());
@@ -89,6 +119,19 @@ public class UploadActivity extends AppCompatActivity {
                 put("open", isOpenSource.isChecked());
                 put("latest_commit_timestamp", Timestamp.now());
             }};
+
+            // Check if the user has added any members yet
+            if (!members.isEmpty()) {
+                // Put all of those members into one String arraylist
+                ArrayList<String> members_ = new ArrayList<>();
+
+                for (int i = 0; i < members.size(); i++) {
+                    members_.add(members.get(i).getUid());
+                }
+
+                // Put it in the project root
+                data.put("members", members_);
+            }
 
             try {
                 data.put("sha512sum", swProj.sha512sum());
@@ -117,6 +160,80 @@ public class UploadActivity extends AppCompatActivity {
             progressDialog.setIndeterminate(true);
             progressDialog.show();
 
+            DocumentReference projectRefDoc = projectRef.document();
+            CollectionReference snapshotRef = projectRefDoc.collection("logic");
+            CollectionReference commitRef = projectRefDoc.collection("commits");
+
+            // Upload the project metadata
+            upload_batch.set(projectRefDoc, data);
+
+            // Upload project datas ================================================================
+            upload_batch.set(
+                    snapshotRef.document("logic"),
+                    new HashMap<String, Object>() {{
+                        put("data", Blob.fromBytes(swProj.logic));
+                        put("shasum", Util.sha512(swProj.logic));
+                    }}
+            );
+
+            upload_batch.set(
+                    snapshotRef.document("view"),
+                    new HashMap<String, Object>() {{
+                        put("data", Blob.fromBytes(swProj.view));
+                        put("shasum", Util.sha512(swProj.view));
+                    }}
+            );
+
+            upload_batch.set(
+                    snapshotRef.document("file"),
+                    new HashMap<String, Object>() {{
+                        put("data", Blob.fromBytes(swProj.file));
+                        put("shasum", Util.sha512(swProj.file));
+                    }}
+            );
+
+            upload_batch.set(
+                    snapshotRef.document("library"),
+                    new HashMap<String, Object>() {{
+                        put("data", Blob.fromBytes(swProj.library));
+                        put("shasum", Util.sha512(swProj.library));
+                    }}
+            );
+
+            upload_batch.set(
+                    snapshotRef.document("resource"),
+                    new HashMap<String, Object>() {{
+                        put("data", Blob.fromBytes(swProj.resource));
+                        put("shasum", Util.sha512(swProj.resource));
+                    }}
+            );
+
+            upload_batch.set(
+                    snapshotRef.document("mysc_project"),
+                    new HashMap<String, Object>() {{
+                        put("data", Blob.fromBytes(swProj.mysc_project));
+                        put("shasum", Util.sha512(swProj.mysc_project));
+                    }}
+            );
+            // Upload project datas ===============================================================/
+
+            // Upload the first initial commit data
+            upload_batch.set(commitRef.document("initial"), commit_data);
+
+            // Commit the upload!
+            upload_batch
+                    .commit()
+                    .addOnSuccessListener(result -> {
+                        Toast.makeText(UploadActivity.this, "Project Uploaded", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                        finish();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(UploadActivity.this, "An error occured: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        progressDialog.dismiss();
+                    });
+
+            /*
             projectRef
                     .add(data)
                     .addOnCompleteListener(task -> {
@@ -256,36 +373,75 @@ public class UploadActivity extends AppCompatActivity {
                                         finish();
                                     } else {
                                         // Sad, it failed
-                                        Toast.makeText(UploadActivity.this, "An error occured while uploading: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(UploadActivity.this, "An error occured while uploading: " + task1.getException().getMessage(), Toast.LENGTH_LONG).show();
                                     }
                                 });
                     });
-
-            /*
-            projectReference
-                    .child(pushKey)
-                    .setValue(data)
-                    .addOnSuccessListener(unused ->
-                            // Update the commit informations
-                            commitsReference
-                                .child(pushKey)
-                                .child("initial")
-                                .setValue(commit_data)
-                                .addOnSuccessListener(unused1 -> {
-                                    progressDialog.dismiss();
-
-                                    Toast.makeText(UploadActivity.this, "Project Uploaded", Toast.LENGTH_LONG).show();
-                                    finish();
-                                }).addOnFailureListener(e -> {
-                                    progressDialog.dismiss();
-                                    Toast.makeText(UploadActivity.this, "An error occured: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                                })
-                    ).addOnFailureListener(e -> {
-                        progressDialog.dismiss();
-                        Toast.makeText(UploadActivity.this, "An error occured: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    });
-
              */
         });
+    }
+
+    public void show_help(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Help");
+        builder.setMessage(
+                Html.fromHtml(
+                    "<b>Member</b>:" +
+                    "<p>Members are users that can directly make changes to your project. This can include your Team, Friends, Partner, and etc.</p>" +
+                    "<p>NOTE: Non-Member(s) can also make changes to your project. But, You / Your project's member(s) will need to review the changes manually</p><br/>" +
+
+                    "<b>Open Source:</b>" +
+                    "<p>Enabled: People can view your project and your project's source code, only selected member(s) can make changes.</p>" +
+                    "<p>Disabled: People cannot view or view your project's source code, only selected member(s) can view / make changes to your project.</p><br/>" +
+
+                    "<b>Private:</b>" +
+                    "<p>Enabled: Only YOU can view / edit the project, members are disabled in this private mode.</p>" +
+                    "<p>Disabled: People can view / make changes / contribute to your project depending if it's open source or not.</p><br/>" +
+
+                    "<p>Still need help? Ask it on <a href=\"https://github.com/Iyxan23/sk-collab/issues\">https://github.com/Iyxan23/sk-collab/issues</a></p>"
+                )
+        );
+
+        builder.create().show();
+    }
+
+    final int MEMBER_USER_PICK_REQ_CODE = 20;
+    ArrayList<Userdata> members = new ArrayList<>();
+
+    TextView members_list;
+
+    public void add_member_click(View view) {
+        view.setEnabled(false);
+
+        Intent pick_user_intent = new Intent(this, UserPicker.class);
+        pick_user_intent.putExtra("initial_data", members);
+        startActivityForResult(pick_user_intent, MEMBER_USER_PICK_REQ_CODE);
+
+        view.setEnabled(true);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == MEMBER_USER_PICK_REQ_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                members = data.getParcelableArrayListExtra("selected_users");
+
+                Log.d("UploadActivity", "onActivityResult: " + members);
+
+                if (members.size() == 0) {
+                    members_list.setText("None, Click the Add button to add Member(s)");
+                    return;
+                }
+
+                boolean is_first = false;
+                for (Userdata userdata: members) {
+                    members_list.setText((!is_first ? "" : members_list.getText() + ", ") + userdata.getName());
+
+                    is_first = true;
+                }
+            }
+        }
     }
 }

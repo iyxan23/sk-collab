@@ -89,7 +89,7 @@ public class SketchwareProjectAdapter extends RecyclerView.Adapter<SketchwarePro
 
     @Override
     public int getItemCount() {
-        return datas.size();
+        return datas == null ? 0 : datas.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

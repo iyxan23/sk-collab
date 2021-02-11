@@ -1,47 +1,41 @@
 package com.iyxan23.sketch.collab.online;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.Util;
 import com.iyxan23.sketch.collab.databinding.ActivityViewOnlineProjectBinding;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
+import com.iyxan23.sketch.collab.models.Userdata;
 import com.iyxan23.sketch.collab.services.CloneService;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 public class ViewOnlineProjectActivity extends AppCompatActivity {
 
@@ -52,6 +46,10 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
     String project_key;
     String project_name;
 
+    HashMap<String, String> cached_names = new HashMap<>();
+
+    ArrayList<Userdata> members = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +58,11 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         Toolbar toolbar = binding.toolbar;
+
         setSupportActionBar(toolbar);
+
+        Objects.requireNonNull(getSupportActionBar());
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -79,6 +81,7 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
             Intent i = new Intent(this, EditProjectActivity.class);
             i.putExtra("description", description_);
             i.putExtra("project_key", project_key);
+            i.putExtra("members", members);
             startActivity(i);
         });
 
@@ -130,10 +133,10 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
                     return project_commits.orderBy("timestamp", Query.Direction.ASCENDING).limit(1).get();
                 })
                  */
-                .addOnCompleteListener(task -> {
+                .addOnSuccessListener(result -> {
                     DocumentSnapshot project_data = tmp[0];
                     DocumentSnapshot uploader_userdata = tmp[1];
-                    DocumentSnapshot latest_commit = task.getResult().getDocuments().get(0);
+                    DocumentSnapshot latest_commit = result.getDocuments().get(0);
 
                     TextView commit_end = findViewById(R.id.commit_end);
                     TextView commit_end_id = findViewById(R.id.commit_end_id);
@@ -150,6 +153,9 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
                     String first_commit_id = "initial";
                     String first_commit_message = "Initial Commit";
 
+                    List<String> members_ = (List<String>) project_data.get("members");
+                    // Aahhh, we need to fetch the member's usernames, k hold on
+
                     project_name = name;
                     description_ = description;
 
@@ -162,9 +168,59 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
                     commit_start_id.setText(first_commit_id);
                     description_textview.setText(description);
 
+                    fetchMembers(members_);
+
                     // Hide the progressbar
                     findViewById(R.id.progress_project).setVisibility(View.GONE);
-                });
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, "Error while fetching: " + e.getMessage(), Toast.LENGTH_LONG).show());
+    }
+
+    private void fetchMembers(List<String> members_) {
+        // Check if members_ is null bruh
+        if (members_ == null) {
+            // kekw we're outta here
+            return;
+        }
+
+        CollectionReference userdata = FirebaseFirestore.getInstance().collection("userdata");
+
+        new Thread(() -> {
+            for (String uid : members_) {
+                String username;
+                if (cached_names.containsKey(uid)) {
+                    username = cached_names.get(uid);
+
+                } else {
+                    // Fetch it's username
+                    Task<DocumentSnapshot> userdata_fetch = userdata.document(uid).get();
+
+                    try {
+                        Tasks.await(userdata_fetch);
+
+                        if (!userdata_fetch.isSuccessful()) {
+                            runOnUiThread(() -> Toast.makeText(this, "Error while fetching userdata: " + userdata_fetch.getException().getMessage(), Toast.LENGTH_LONG).show());
+
+                            return;
+                        }
+
+                        DocumentSnapshot user = userdata_fetch.getResult();
+
+                        username = user.getString("name");
+
+                        cached_names.put(uid, username);
+
+                    } catch (ExecutionException | InterruptedException e) {
+                        e.printStackTrace();
+                        runOnUiThread(() -> Toast.makeText(this, "Error while fetching userdata: " + e.getMessage(), Toast.LENGTH_LONG).show());
+
+                        return;
+                    }
+                }
+
+                members.add(new Userdata(username, uid));
+            }
+        }).start();
     }
 
     // onClick for the "Browse Code" button
@@ -194,6 +250,7 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
             dialog.dismiss();
             do_clone();
         });
+
         AlertDialog exists_dialog = exists_dialog_builder.create();
 
         new Thread(() -> {
