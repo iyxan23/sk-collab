@@ -82,17 +82,6 @@ public class UserPicker extends AppCompatActivity {
             }
         });
 
-        // Update the count everytime the recyclerview's item got clicked
-        users_rv.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-            @Override public boolean onInterceptTouchEvent(@NonNull @NotNull RecyclerView rv, @NonNull @NotNull MotionEvent e) { return false; }
-            @Override public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) { }
-
-            @Override
-            public void onTouchEvent(@NonNull @NotNull RecyclerView rv, @NonNull @NotNull MotionEvent e) {
-                update_count();
-            }
-        });
-
         // Run these in a new thread
         new Thread(() -> {
             try {
@@ -189,9 +178,9 @@ public class UserPicker extends AppCompatActivity {
             );
         }
 
-        private boolean uidExists(String uid) {
+        private boolean userdataExists(Userdata ud) {
             for (Userdata picked_user : picked_users) {
-                if (picked_user.getUid().equals(uid)) {
+                if (picked_user.equals(ud)) {
                     return true;
                 }
             }
@@ -211,7 +200,7 @@ public class UserPicker extends AppCompatActivity {
 
             Log.d(TAG, "onBindViewHolder: Userdata: " + userdata);
 
-            if (uidExists(uid)) {
+            if (userdataExists(userdata)) {
                 // This item is already selected
                 holder.check.setVisibility(View.VISIBLE);
             } else {
@@ -222,7 +211,7 @@ public class UserPicker extends AppCompatActivity {
             holder.username.setText(item.getString("name"));
 
             holder.body.setOnClickListener(v -> {
-                if (uidExists(uid)) {
+                if (userdataExists(userdata)) {
                     picked_users.remove(userdata);
                     holder.check.setVisibility(View.GONE);
 
