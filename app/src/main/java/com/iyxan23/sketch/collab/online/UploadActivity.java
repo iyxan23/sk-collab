@@ -102,6 +102,11 @@ public class UploadActivity extends AppCompatActivity {
         });
 
         uploadButton.setOnClickListener(v -> {
+            if (name.getText().toString().trim().equals("")) {
+                Toast.makeText(this, "Project name shouldn't be empty!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
             CollectionReference projectRef = firestore.collection("/" + (isPrivate.isChecked() ? "userdata/" + auth.getUid() + "/projects" : "projects"));
 
             WriteBatch upload_batch = firestore.batch();
