@@ -36,6 +36,8 @@ public class EditProjectActivity extends AppCompatActivity {
         members = getIntent().getParcelableArrayListExtra("members");
         members_before.addAll(members);
 
+        update_members_text();
+
         TextInputEditText description_edit = findViewById(R.id.description_edit_project_text);
         description_edit.setText(description_before);
     }
