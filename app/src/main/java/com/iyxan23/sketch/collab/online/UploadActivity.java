@@ -224,6 +224,29 @@ public class UploadActivity extends AppCompatActivity {
             upload_batch
                     .commit()
                     .addOnSuccessListener(result -> {
+                        // Add a custom key to the sketchware project named "sk-colab-key": "(pushkey)" and "sk-collab-owner": "(uid)"
+                        try {
+                            swProj.mysc_project = Util.encrypt(
+                                    new JSONObject(
+                                            Util.decrypt(swProj.mysc_project)
+                                    )
+                                            .put("sk-collab-key", projectRefDoc.getId())  // The document id (location of the project)
+                                            .put("sk-collab-owner", auth.getUid())  // The owner of the project (used to access private projects)
+                                            .put("sk-collab-latest-commit", "initial")   // The latest commit id of this project
+                                            .put("sk-collab-project-visibility", isPrivate.isChecked() ? "private" : "public")   // The project visibility. Don't worry, it's used to determine where is the project located in the database
+                                            .toString()
+                                            .getBytes()
+                            );
+                            swProj.applyChanges();
+                        } catch (JSONException | IOException e) {
+                            // This shouldn't happen
+                            e.printStackTrace();
+                            Toast.makeText(UploadActivity.this, "An error occured while applying the key: " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                            // Stop
+                            return;
+                        }
+
                         Toast.makeText(UploadActivity.this, "Project Uploaded", Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
                         finish();
