@@ -3,6 +3,7 @@ package com.iyxan23.sketch.collab.online;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +39,8 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 public class ViewOnlineProjectActivity extends AppCompatActivity {
+
+    private static final String TAG = "ViewOnlineProjectActivi";
 
     private ActivityViewOnlineProjectBinding binding;
 
@@ -134,6 +137,8 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
                 })
                  */
                 .addOnSuccessListener(result -> {
+                    Log.d(TAG, "onCreate: Fetch success");
+                    
                     DocumentSnapshot project_data = tmp[0];
                     DocumentSnapshot uploader_userdata = tmp[1];
                     DocumentSnapshot latest_commit = result.getDocuments().get(0);
@@ -168,15 +173,15 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
                     commit_start_id.setText(first_commit_id);
                     description_textview.setText(description);
 
+                    Log.d(TAG, "onCreate: Fetching members");
                     fetchMembers(members_);
-
-                    // Hide the progressbar
-                    findViewById(R.id.progress_project).setVisibility(View.GONE);
                 })
                 .addOnFailureListener(e -> Toast.makeText(this, "Error while fetching: " + e.getMessage(), Toast.LENGTH_LONG).show());
     }
 
     private void fetchMembers(List<String> members_) {
+        Log.d(TAG, "fetchMembers: members_: " + members_);
+
         // Check if members_ is null bruh
         if (members_ == null) {
             // kekw we're outta here
@@ -190,6 +195,8 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
                 String username;
                 if (cached_names.containsKey(uid)) {
                     username = cached_names.get(uid);
+
+                    Log.d(TAG, "fetchMembers: Username already cached: " + uid + "; value: " + username);
 
                 } else {
                     // Fetch it's username
@@ -208,6 +215,8 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
 
                         username = user.getString("name");
 
+                        Log.d(TAG, "fetchMembers: Username fetched, uid: " + uid + ", name: " + username);
+
                         cached_names.put(uid, username);
 
                     } catch (ExecutionException | InterruptedException e) {
@@ -218,8 +227,26 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
                     }
                 }
 
+                Log.d(TAG, "fetchMembers: Add member: " + username + " (" + uid + ")");
                 members.add(new Userdata(username, uid));
             }
+
+            // Update the textview
+            runOnUiThread(() -> {
+                TextView members_list = findViewById(R.id.members_list);
+                members_list.setText("");
+
+                boolean is_start = false;
+
+                for (Userdata member_userdata: members) {
+                    members_list.append((is_start ? ", " : "") + member_userdata.getName());
+
+                    is_start = true;
+                }
+
+                // Hide the progressbar
+                findViewById(R.id.progress_project).setVisibility(View.GONE);
+            });
         }).start();
     }
 

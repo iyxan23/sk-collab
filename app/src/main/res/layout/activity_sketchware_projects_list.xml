@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
-    tools:context=".SketchwareProjectsListActivity">
+    tools:context=".pman.SketchwareProjectsListActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/app_bar_proj_list"
