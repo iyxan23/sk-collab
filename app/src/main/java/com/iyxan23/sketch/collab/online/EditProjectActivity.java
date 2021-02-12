@@ -129,7 +129,7 @@ public class EditProjectActivity extends AppCompatActivity {
 
         if (requestCode == MEMBER_USER_PICK_REQ_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                members.addAll( Objects.requireNonNull(data) .getParcelableArrayListExtra("selected_users"));
+                members = Objects.requireNonNull(data) .getParcelableArrayListExtra("selected_users");
 
                 update_members_text();
             }
