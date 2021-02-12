@@ -244,6 +244,10 @@ public class MainActivity extends AppCompatActivity {
 
                     ArrayList<String> members = (ArrayList<String>) project_data.get("members");
 
+                    // Fallback to an empty arraylist if members is null / doesn't exist
+                    // (To avoid NPE)
+                    members = members == null ? new ArrayList<>() : members;
+
                     // Check if user is an author / a member of this project
                     if (!author.equals(auth.getUid()) && !members.contains(auth.getUid())) {
                         // Hmm, the user "stole" another user's project
