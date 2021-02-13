@@ -90,7 +90,7 @@ public class ViewProjectActivity extends AppCompatActivity {
             Intent i = new Intent(this, ViewOnlineProjectActivity.class);
 
             try {
-                i.putExtra("project_key", project.getProjectID());
+                i.putExtra("project_key", project.getSketchCollabKey());
             } catch (JSONException e) {
                 e.printStackTrace();
                 Toast.makeText(this, "Failed to get project key, this project is possibly corrupted.", Toast.LENGTH_SHORT).show();
