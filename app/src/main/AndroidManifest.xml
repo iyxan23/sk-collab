@@ -17,7 +17,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SketchCollab">
-        <activity android:name=".pman.ViewProjectActivity"></activity>
         <activity
             android:name=".CheckActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar">
@@ -62,6 +61,9 @@
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
         <activity
             android:name=".pickers.UserPicker"
+            android:theme="@style/Theme.SketchCollab.NoActionBar" />
+        <activity
+            android:name=".pman.ViewProjectActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
 
         <service android:name=".services.CloneService" />
