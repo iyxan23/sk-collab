@@ -43,6 +43,14 @@ public class ViewProjectActivity extends AppCompatActivity {
             finish_corrupted();
         }
 
+        TextView project_name   = findViewById(R.id.project_name_vp);
+        TextView app_name       = findViewById(R.id.app_name);
+        TextView id             = findViewById(R.id.project_id);
+
+        project_name    .setText(project.metadata.project_name);
+        app_name        .setText(project.metadata.app_name);
+        id              .setText(String.valueOf(project.metadata.id));
+
         // Is this a SketchCollab Project?
         try {
             is_sketchcollab_project = project.isSketchCollabProject();
