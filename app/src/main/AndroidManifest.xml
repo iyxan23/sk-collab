@@ -39,7 +39,7 @@
             android:name=".online.UploadActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
         <activity
-            android:name=".SketchwareProjectsListActivity"
+            android:name=".pman.SketchwareProjectsListActivity"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
         <activity
             android:name=".LoginActivity"

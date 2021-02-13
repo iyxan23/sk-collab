@@ -37,6 +37,7 @@ import com.iyxan23.sketch.collab.models.SearchItem;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
 import com.iyxan23.sketch.collab.online.BrowseActivity;
+import com.iyxan23.sketch.collab.pman.SketchwareProjectsListActivity;
 
 import org.json.JSONException;
 
@@ -223,7 +224,32 @@ public class MainActivity extends AppCompatActivity {
                     boolean is_project_public = project.isSketchCollabProjectPublic();
                     String author = project.getSketchCollabAuthorUid();
 
-                    if (!author.equals(auth.getUid())) {
+                    // Fetch the project data
+                    Task<DocumentSnapshot> task_proj =
+                            database.collection(is_project_public ? "projects" : "userdata/" + author + "/projects").document(project_key)
+                                    .get(Source.SERVER); // Don't get the cache :/
+
+                    // Wait for the task to finish, i don't want to query a lot of tasks in a short amount of time
+                    DocumentSnapshot project_data = Tasks.await(task_proj);
+
+                    // Check if task is successful or not
+                    if (!task_proj.isSuccessful()) {
+                        assert task_proj.getException() != null; // Exception shouldn't be null if the task is not successful
+
+                        Toast.makeText(MainActivity.this, "Error: " + task_proj.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    assert project_data != null; // This shouldn't be null
+
+                    ArrayList<String> members = (ArrayList<String>) project_data.get("members");
+
+                    // Fallback to an empty arraylist if members is null / doesn't exist
+                    // (To avoid NPE)
+                    members = members == null ? new ArrayList<>() : members;
+
+                    // Check if user is an author / a member of this project
+                    if (!author.equals(auth.getUid()) && !members.contains(auth.getUid())) {
                         // Hmm, the user "stole" another user's project
                         // Let's skip this one :e_sweat_smile:
                         // =========================================================================
@@ -241,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
                                     .get(Source.SERVER); // Don't get the cache :/
 
                     // Wait for the task to finish, i don't want to query a lot of tasks in a short amount of time
-                    QuerySnapshot snapshot = Tasks.await(task);
+                    QuerySnapshot commit_snapshot = Tasks.await(task);
 
                     // Check if task is successful or not
                     if (!task.isSuccessful()) {
@@ -251,15 +277,15 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
 
-                    assert snapshot != null; // snapshot shouldn't be null
+                    assert commit_snapshot != null; // snapshot shouldn't be null
 
-                    Log.d("MainActivity", "documents: " + snapshot.getDocuments());
+                    Log.d("MainActivity", "documents: " + commit_snapshot.getDocuments());
                     Log.d("MainActivity", "project_key: " + project_key);
 
                     // Check if the project doesn't exists in the database.
-                    if (snapshot.getDocuments().size() == 0) continue;
+                    if (commit_snapshot.getDocuments().size() == 0) continue;
 
-                    DocumentSnapshot commit_info = snapshot.getDocuments().get(0);
+                    DocumentSnapshot commit_info = commit_snapshot.getDocuments().get(0);
 
                     if (!project_commit.equals(commit_info.getId())) {
                         // Hmm, looks like this man's project has an older commit, tell him to update his project
@@ -280,13 +306,13 @@ public class MainActivity extends AppCompatActivity {
                             // Alright looks like he's got some local updates with the same head commit
 
                             // Fetch the project
-                            Task<QuerySnapshot> project_data =
+                            Task<QuerySnapshot> project_snapshot =
                                     database.collection(is_project_public ? "projects" : "userdata/" + author + "/projects").document(project_key).collection("snapshot")
                                             .get(Source.SERVER); // Don't get the cache :/
 
                             // Wait for the task to finish, i don't want to query a lot of tasks in a short amount of time,
                             // it can cause some performance issues
-                            QuerySnapshot project_data_snapshot = Tasks.await(project_data);
+                            QuerySnapshot project_data_snapshot = Tasks.await(project_snapshot);
                             SketchwareProject head_project = querySnapshotToSketchwareProject(project_data_snapshot);
 
                             // Add this to the changed sketchcollab sketchware projects arraylist

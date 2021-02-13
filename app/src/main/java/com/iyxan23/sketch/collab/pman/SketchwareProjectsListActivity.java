@@ -1,4 +1,4 @@
-package com.iyxan23.sketch.collab;
+package com.iyxan23.sketch.collab.pman;
 
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.iyxan23.sketch.collab.R;
+import com.iyxan23.sketch.collab.Util;
 import com.iyxan23.sketch.collab.adapters.SketchwareProjectAdapter;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 
