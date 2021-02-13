@@ -17,6 +17,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.adapters.BrowseItemAdapter;
@@ -26,9 +27,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class BrowseActivity extends AppCompatActivity {
+
+    private static final String TAG = "BrowseActivity";
 
     // Used to cache uid -> names
     HashMap<String, String> cached_names = new HashMap<>();
@@ -48,7 +52,7 @@ public class BrowseActivity extends AppCompatActivity {
     boolean is_at_bottom = false;
 
     // The project count that should be loaded
-    int project_count_should_be_loaded = 100;  // TEMP FIX, CURRENT PAGINATION IS BROKEN
+    int project_count_should_be_loaded = 5;  // TEMP FIX, CURRENT PAGINATION IS BROKEN
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -109,13 +113,19 @@ public class BrowseActivity extends AppCompatActivity {
                 // Don't load more projects :doggo_cheems:
                 return;
 
-            Query fetch_projects_query = projects
-                                            .orderBy("name")
-                                            .whereEqualTo("open", true)
-                                            .limit(count);
+            Query fetch_projects_query;
 
             // Check if the pointer has been set (if it hasn't then this is the first time we call this function)
-            if (after != null) fetch_projects_query.startAt(after);
+            if (after != null) {
+                fetch_projects_query = projects
+                        .whereEqualTo("open", true)
+                        .startAfter(after)
+                        .limit(count);
+            } else {
+                fetch_projects_query = projects
+                        .whereEqualTo("open", true)
+                        .limit(count);
+            }
 
             Task<QuerySnapshot> task = fetch_projects_query.get();
 
@@ -135,7 +145,11 @@ public class BrowseActivity extends AppCompatActivity {
             int counter = 0;    // This counter is used if we've reached to the bottom of the projects list
                                 // and if we did, don't load more projects
 
-            for (DocumentSnapshot project: task.getResult().getDocuments()) {
+            List<DocumentSnapshot> projects = task.getResult().getDocuments();
+
+            Log.d(TAG, "load_projects: projects: " + projects);
+
+            for (DocumentSnapshot project: projects) {
                 counter++;
 
                 Log.d("BrowseActivity", "At loop: " + counter);
@@ -195,9 +209,13 @@ public class BrowseActivity extends AppCompatActivity {
 
                 Log.d("BrowseActivity", "load_projects: UpdateView");
                 runOnUiThread(() -> adapter.updateView(items));
+            }
 
+            if (projects.size() != 0) {
                 // Set the pointer of the last project loaded
-                after = project;
+                after = projects.get(projects.size() - 1);
+
+                Log.d(TAG, "load_projects: after: " + after);
             }
 
             // Check if we're at the bottom (means we've laoded less projects than we should've been)
