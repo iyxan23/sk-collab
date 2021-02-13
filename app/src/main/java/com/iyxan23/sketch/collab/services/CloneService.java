@@ -165,7 +165,7 @@ public class CloneService extends Service {
 
                 project_json.put("sc_id", String.valueOf(free_id));
 
-                project_json.put("sk-collab-project-key", project_key);
+                project_json.put("sk-collab-key", project_key);
                 project_json.put("sk-collab-owner", project_metadata.getString("author"));
                 project_json.put("sk-collab-latest-commit", commits.getDocuments().get(commits.getDocuments().size() - 1).getId());
                 project_json.put("sk-collab-project-visibility", "public");
