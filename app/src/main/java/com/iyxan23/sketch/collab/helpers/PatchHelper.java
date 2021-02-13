@@ -1,11 +1,11 @@
 package com.iyxan23.sketch.collab.helpers;
 
 import com.iyxan23.sketch.collab.models.Commit;
-import com.iyxan23.sketch.collab.models.SketchwareProject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -95,5 +95,41 @@ public class PatchHelper {
 
         // Return the final product
         return project_data;
+    }
+
+    /**
+     * This function basically converts the patch into a readable patch
+     * or convert a Map into a more readable string
+     *
+     * Example input:
+     * <code>
+     *     {view=(view patch), logic=(logic patch)}
+     * </code>
+     *
+     * Example output:
+     * <code>
+     *     view:
+     *     (view patch)
+     *
+     *     logic:
+     *     (logic patch)
+     * </code>
+     * @param patch The Map we're going to convert into
+     * @return Readable version of the Map
+     */
+    public static String convert_to_readable_patch(Map<String, String> patch) {
+        StringBuilder result = new StringBuilder();
+
+        // Check if this commit doesn't have any commits
+        if (patch != null) {
+            for (String key : patch.keySet()) {
+                result.append(key).append(":\n").append(patch.get(key));
+            }
+
+        } else {
+            result.append("This commit doesn't have any patch");
+        }
+
+        return result.toString();
     }
 }
