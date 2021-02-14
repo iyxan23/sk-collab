@@ -225,7 +225,8 @@ public class ViewProjectActivity extends AppCompatActivity {
 
                     // Update the UI
                     runOnUiThread(() -> {
-
+                        TextView patch_text = findViewById(R.id.patch_text);
+                        patch_text.setText(changes.toString());
                     });
                 }
             }
