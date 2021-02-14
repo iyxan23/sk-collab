@@ -15,6 +15,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SketchwareProject implements Parcelable {
 
@@ -39,6 +41,21 @@ public class SketchwareProject implements Parcelable {
         this.library = library;
         this.file = file;
         this.mysc_project = mysc_project;
+
+        try {
+            setProjectID();
+            metadata = new SketchwareProjectMetadata(new JSONObject(Util.decrypt(mysc_project)));
+
+        } catch (JSONException ignored) { }
+    }
+
+    public SketchwareProject(Map<String, String> data) {
+        this.logic          = Util.encrypt(data.get("logic"         ).getBytes());
+        this.view           = Util.encrypt(data.get("view"          ).getBytes());
+        this.resource       = Util.encrypt(data.get("resource"      ).getBytes());
+        this.library        = Util.encrypt(data.get("library"       ).getBytes());
+        this.file           = Util.encrypt(data.get("file"          ).getBytes());
+        this.mysc_project   = Util.encrypt(data.get("mysc_project"  ).getBytes());
 
         try {
             setProjectID();
