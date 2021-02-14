@@ -25,6 +25,7 @@ import com.google.firebase.firestore.Source;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.Util;
 import com.iyxan23.sketch.collab.helpers.PatchHelper;
+import com.iyxan23.sketch.collab.helpers.SyntaxHighlightingHelper;
 import com.iyxan23.sketch.collab.models.Commit;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 
@@ -181,7 +182,7 @@ public class BrowseCodeActivity extends AppCompatActivity {
 
     private void updateCode(HashMap<String, String> project_data) {
         runOnUiThread(() -> {
-            code_logic.setText(project_data.get("logic"));
+            code_logic.setText(SyntaxHighlightingHelper.highlight_logic(project_data.get("logic")));
             code_view.setText(project_data.get("view"));
             code_file.setText(project_data.get("file"));
             code_library.setText(project_data.get("library"));
