@@ -47,8 +47,6 @@ public class ViewProjectActivity extends AppCompatActivity {
 
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
-    FirebaseAuth auth = FirebaseAuth.getInstance();
-
     String project_commit;
     String project_key;
     boolean is_project_public;
