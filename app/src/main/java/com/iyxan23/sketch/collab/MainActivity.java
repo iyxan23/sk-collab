@@ -33,6 +33,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 import com.iyxan23.sketch.collab.adapters.ChangesAdapter;
 import com.iyxan23.sketch.collab.adapters.SearchAdapter;
+import com.iyxan23.sketch.collab.helpers.OnlineProjectHelper;
 import com.iyxan23.sketch.collab.models.SearchItem;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
@@ -47,6 +48,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.iyxan23.sketch.collab.helpers.OnlineProjectHelper.hasPermission;
 import static com.iyxan23.sketch.collab.helpers.OnlineProjectHelper.querySnapshotToSketchwareProject;
 public class MainActivity extends AppCompatActivity {
 
@@ -216,21 +218,9 @@ public class MainActivity extends AppCompatActivity {
 
                     assert project_data != null; // This shouldn't be null
 
-                    ArrayList<String> members = (ArrayList<String>) project_data.get("members");
-
-                    // Fallback to an empty arraylist if members is null / doesn't exist
-                    // (To avoid NPE)
-                    members = members == null ? new ArrayList<>() : members;
-
-                    // Check if user is an author / a member of this project
-                    if (!author.equals(auth.getUid()) && !members.contains(auth.getUid())) {
-                        // Hmm, the user "stole" another user's project
-                        // Let's skip this one :e_sweat_smile:
-                        // =========================================================================
-                        // Anyway, don't worry the user cannot edit the data in the database, it's
-                        // protected by the firebase firestore rules.
-
-                        continue;
+                    // Don't go further if we don't have a permission to make changes in it.
+                    if (!hasPermission(project_data)) {
+                        return;
                     }
 
                     // Fetch the latest project commit in the database
