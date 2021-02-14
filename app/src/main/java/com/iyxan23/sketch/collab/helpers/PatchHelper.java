@@ -1,6 +1,7 @@
 package com.iyxan23.sketch.collab.helpers;
 
 import com.iyxan23.sketch.collab.models.Commit;
+import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -131,5 +132,9 @@ public class PatchHelper {
         }
 
         return result.toString();
+    }
+
+    public static String convert_to_readable_patch(SketchwareProjectChanges changes) {
+        return convert_to_readable_patch(changes.generatePatch());
     }
 }
