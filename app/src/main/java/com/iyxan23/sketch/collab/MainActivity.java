@@ -269,15 +269,8 @@ public class MainActivity extends AppCompatActivity {
                         if (!local_shasum.equals(server_shasum)) {
                             // Alright looks like he's got some local updates with the same head commit
 
-                            // Fetch the project
-                            Task<QuerySnapshot> project_snapshot =
-                                    database.collection(is_project_public ? "projects" : "userdata/" + author + "/projects").document(project_key).collection("snapshot")
-                                            .get(Source.SERVER); // Don't get the cache :/
-
-                            // Wait for the task to finish, i don't want to query a lot of tasks in a short amount of time,
-                            // it can cause some performance issues
-                            QuerySnapshot project_data_snapshot = Tasks.await(project_snapshot);
-                            SketchwareProject head_project = querySnapshotToSketchwareProject(project_data_snapshot);
+                            // Fetch the latest project
+                            SketchwareProject head_project = (SketchwareProject) OnlineProjectHelper.fetch_project_latest_commit(project_key);
 
                             // Add this to the changed sketchcollab sketchware projects arraylist
                             changes.add(new SketchwareProjectChanges(project, head_project));
