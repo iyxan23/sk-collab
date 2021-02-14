@@ -18,6 +18,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.Util;
+import com.iyxan23.sketch.collab.helpers.PatchHelper;
 import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
 
 import org.jetbrains.annotations.NotNull;
@@ -123,45 +124,11 @@ public class PushCommitActivity extends AppCompatActivity {
         });
 
         new Thread(() -> {
-            // Get the patch and set it to the patch text thing
+            patch = commit_change.generatePatch();
 
-            // Get the changed files
-            int files_changed = commit_change.getFilesChanged();
-
-            // Pack every patches into one map
-            int[] data_keys = new int[] {
-                    SketchwareProjectChanges.LOGIC      ,
-                    SketchwareProjectChanges.VIEW       ,
-                    SketchwareProjectChanges.FILE       ,
-                    SketchwareProjectChanges.LIBRARY    ,
-                    SketchwareProjectChanges.RESOURCES  ,
-            };
-
-            String[] data_keys_str = new String[] {
-                    "logic"      ,
-                    "view"       ,
-                    "file"       ,
-                    "library"    ,
-                    "resources"  ,
-            };
-
-            for (int index = 0; index < data_keys.length; index++) {
-                if ((files_changed & data_keys[index]) == data_keys[index]) {
-                    patch.put(data_keys_str[index], commit_change.getPatch(data_keys[index]));
-                }
-            }
-
-            // Alright, patch is ready!
             isReady = true;
 
-            // Put the patch in the TextView
-            StringBuilder full_patch = new StringBuilder();
-
-            for (String key: patch.keySet()) {
-                full_patch.append(key).append("\n").append(patch.get(key)).append("\n");
-            }
-
-            patch_text.setText(full_patch.toString());
+            patch_text.setText(PatchHelper.convert_to_readable_patch(patch));
         }).start();
     }
 }
