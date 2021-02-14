@@ -81,7 +81,7 @@ public class PatchHelper {
 
         if (commit_destination > commit_current) {
             // The destination is above us, apply commits that are above the current commit
-            for (Commit commit: commits.subList(commit_current, commit_destination)) {
+            for (Commit commit: commits.subList(commit_current - 1, commit_destination)) {
                 if (commit.patch == null)
                     continue;
 
@@ -97,7 +97,7 @@ public class PatchHelper {
             }
         } else if (commit_destination < commit_current) {
             // The destination is below us, apply commits downward
-            for (Commit commit: commits.subList(commit_destination, commit_current)) {
+            for (Commit commit: commits.subList(commit_destination, commit_current - 1)) {
                 if (commit.patch == null)
                     continue;
 
