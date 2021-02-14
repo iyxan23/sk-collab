@@ -4,18 +4,27 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.ImageViewCompat;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.Util;
+import com.iyxan23.sketch.collab.helpers.OnlineProjectHelper;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
+import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
 import com.iyxan23.sketch.collab.online.UploadActivity;
 import com.iyxan23.sketch.collab.online.ViewOnlineProjectActivity;
 
@@ -23,11 +32,29 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
+import static com.iyxan23.sketch.collab.helpers.OnlineProjectHelper.hasPermission;
+import static com.iyxan23.sketch.collab.helpers.OnlineProjectHelper.querySnapshotToSketchwareProject;
 
 public class ViewProjectActivity extends AppCompatActivity {
 
+    private static final String TAG = "ViewProjectActivity";
+
     SketchwareProject project;
     boolean is_sketchcollab_project;
+
+    FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+
+    FirebaseAuth auth = FirebaseAuth.getInstance();
+
+    String project_commit;
+    String project_key;
+    boolean is_project_public;
+    String author;
+
+    SketchwareProjectChanges changes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +98,138 @@ public class ViewProjectActivity extends AppCompatActivity {
 
             ((TextView) findViewById(R.id.textView26)).setTextColor(0xFFFFFFFF);
             ImageViewCompat.setImageTintList(findViewById(R.id.imageView17), ColorStateList.valueOf(0xFFFFFFFF));
+        } else {
+            // This is a sketchcollab project, initialize some stuff
+            try {
+                project_commit = project.getSketchCollabLatestCommitID();
+                project_key = project.getSketchCollabKey();
+                is_project_public = project.isSketchCollabProjectPublic();
+                author = project.getSketchCollabAuthorUid();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+
+                finish_corrupted();
+            }
         }
+    }
+
+    private void fetch_changes() {
+        new Thread(() -> {
+            // Fetch the project data
+            Task<DocumentSnapshot> task_proj =
+                    firestore.collection(is_project_public ? "projects" : "userdata/" + author + "/projects").document(project_key)
+                            .get(Source.SERVER); // Don't get the cache :/
+
+            DocumentSnapshot project_data;
+
+            try {
+                project_data = Tasks.await(task_proj);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+                return;
+            }
+
+            // Check if task is successful or not
+            if (!task_proj.isSuccessful()) {
+                assert task_proj.getException() != null; // Exception shouldn't be null if the task is not successful
+
+                Toast.makeText(this, "Error: " + task_proj.getException().getMessage(), Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            assert project_data != null; // This shouldn't be null
+
+            // Don't go further if we don't have a permission to make changes in it.
+            if (!hasPermission(project_data)) {
+                return;
+            }
+
+            // Fetch the latest project commit in the database
+            Task<QuerySnapshot> task =
+                    firestore.collection(is_project_public ? "projects" : "userdata/" + author + "/projects").document(project_key).collection("commits")
+                            .orderBy("timestamp", Query.Direction.DESCENDING) // Order by the timestamp
+                            .limit(1) // I just wanted the latest commit, not every commit
+                            .get(Source.SERVER); // Don't get the cache :/
+
+            // Wait for the task to finish
+            QuerySnapshot commit_snapshot;
+
+            try {
+                commit_snapshot = Tasks.await(task);
+
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+
+                return;
+            }
+
+            // Check if task is successful or not
+            if (!task.isSuccessful()) {
+                assert task.getException() != null; // Exception shouldn't be null if the task is not successful
+
+                Toast.makeText(this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            assert commit_snapshot != null; // snapshot shouldn't be null
+
+            Log.d(TAG, "documents: " + commit_snapshot.getDocuments());
+            Log.d(TAG, "project_key: " + project_key);
+
+            // Check if the project doesn't exists in the database.
+            if (commit_snapshot.getDocuments().size() == 0) return;
+
+            DocumentSnapshot commit_info = commit_snapshot.getDocuments().get(0);
+
+            if (!project_commit.equals(commit_info.getId())) {
+                // Hmm, looks like this man's project has an older commit, tell him to update his project
+                Log.d(TAG, "initialize: Old Commit");
+            } else {
+                Log.d(TAG, "initialize: Latest commit");
+                // This mans project has the same commit
+                // Check if this project also has the same shasum
+                String local_shasum;
+
+                try {
+                    local_shasum = project.sha512sum();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+
+                    return;
+                }
+
+                String server_shasum = commit_info.getString("sha512sum");
+
+                Log.d(TAG, "initialize: Checking shasum");
+                Log.d(TAG, "shasum local:  " + local_shasum);
+                Log.d(TAG, "shasum server: " + server_shasum);
+
+                // Check if they're the same
+                if (!local_shasum.equals(server_shasum)) {
+                    // Alright looks like he's got some local updates with the same head commit
+
+                    // Get the project with the latest commit
+                    SketchwareProject head_project;
+
+                    try {
+                        head_project = (SketchwareProject) OnlineProjectHelper.fetch_project_latest_commit(project_key);
+                    } catch (ExecutionException | InterruptedException e) {
+                        e.printStackTrace();
+
+                        return;
+                    }
+
+                    // Set this as the changes
+                    changes = new SketchwareProjectChanges(project, head_project);
+
+                    // Update the UI
+                    runOnUiThread(() -> {
+
+                    });
+                }
+            }
+        }).start();
     }
 
     private void finish_corrupted() {
