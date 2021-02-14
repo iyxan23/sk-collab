@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.iyxan23.sketch.collab.Util;
+import com.iyxan23.sketch.collab.helpers.PatchHelper;
 
 import org.json.JSONException;
 
@@ -146,5 +147,10 @@ public class SketchwareProjectChanges implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(before, flags);
         dest.writeParcelable(after, flags);
+    }
+
+    @Override
+    public String toString() {
+        return PatchHelper.convert_to_readable_patch(this);
     }
 }
