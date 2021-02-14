@@ -17,7 +17,7 @@ SketchCollab is an android application that let's you collaborate in sketchware 
 
 ### Versions
 * ***Release:*** Unreleased, still in development
-* ***Development:*** Unknown, project is unfinished
+* ***Development:*** [v0.1-alpha2](https://github.com/Iyxan23/sk-collab/releases/tag/v0.1-alpha2)
 
 ### So, what's the deal?
 Sketchware users are usually using the one-way-sending project way of collaborating, or sending the modifided project to the other person, until they finished modifying it / improving it, and the cycle goes on and on. *(Showed in diagram below)*

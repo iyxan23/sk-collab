@@ -18,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.iyxan23.sketch.collab.R;
+import com.iyxan23.sketch.collab.helpers.PatchHelper;
 import com.iyxan23.sketch.collab.models.BrowseItem;
 import com.iyxan23.sketch.collab.models.Commit;
 import com.iyxan23.sketch.collab.online.ViewOnlineProjectActivity;
@@ -104,23 +105,11 @@ public class CommitAdapter extends RecyclerView.Adapter<CommitAdapter.ViewHolder
             title.setText(item.name);
             author.setText(item.author_username + " (Commit ID: " + item.id + ")");
 
-            StringBuilder patch = new StringBuilder();
+            String patch = PatchHelper.convert_to_readable_patch(item.patch);
 
-            // Check if this commit doesn't have any commits
-            if (item.patch != null) {
-                for (String key : item.patch.keySet()) {
-                    Log.d(TAG, "onBindViewHolder: key: " + key + " | patch: " + item.patch.get(key));
+            Log.d(TAG, "onBindViewHolder: result: " + patch);
 
-                    patch.append(key).append(":\n").append(item.patch.get(key));
-                }
-
-            } else {
-                patch.append("This commit doesn't have any patch");
-            }
-
-            Log.d(TAG, "onBindViewHolder: result: " + patch.toString());
-
-            code.setText(patch.toString());
+            code.setText(patch);
 
             CharSequence relativeTimeStr_ =
                     DateUtils.getRelativeTimeSpanString(

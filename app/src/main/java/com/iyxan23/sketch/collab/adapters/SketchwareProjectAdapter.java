@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 import com.iyxan23.sketch.collab.online.UploadActivity;
+import com.iyxan23.sketch.collab.pman.ViewProjectActivity;
 
 import org.json.JSONException;
 
@@ -85,6 +86,14 @@ public class SketchwareProjectAdapter extends RecyclerView.Adapter<SketchwarePro
             e.printStackTrace();
             Toast.makeText(activity.get(), "An error occured: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
+
+        holder.body.setOnClickListener(v -> {
+            // Alright let's move to ViewProjectActivity
+            Intent i = new Intent(activity.get(), ViewProjectActivity.class);
+            i.putExtra("project", project);
+
+            activity.get().startActivity(i);
+        });
     }
 
     @Override
@@ -97,14 +106,20 @@ public class SketchwareProjectAdapter extends RecyclerView.Adapter<SketchwarePro
         TextView title;
         TextView subtitle;
         TextView details;
+
         Button upload_button;
+
+        View body;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.project_name);
             subtitle = itemView.findViewById(R.id.project_details);
             details = itemView.findViewById(R.id.details);
+
             upload_button = itemView.findViewById(R.id.upload_button_rv);
+
+            body = itemView.findViewById(R.id.sketchware_project_body);
         }
     }
 }

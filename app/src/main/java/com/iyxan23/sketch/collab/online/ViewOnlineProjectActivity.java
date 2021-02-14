@@ -185,6 +185,8 @@ public class ViewOnlineProjectActivity extends AppCompatActivity {
         // Check if members_ is null bruh
         if (members_ == null) {
             // kekw we're outta here
+            findViewById(R.id.progress_project).setVisibility(View.GONE);
+
             return;
         }
 

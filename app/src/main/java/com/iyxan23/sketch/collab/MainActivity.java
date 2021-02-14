@@ -344,13 +344,17 @@ public class MainActivity extends AppCompatActivity {
 
     // THE SEARCH / COMMANDS THING =================================================================
 
+    // This variable indicates if the searchbar is opened or not
     boolean isOpened = false;
 
-    SearchAdapter s_adapter;
-    ArrayList<SearchItem> s_items;
-    RecyclerView s_rv;
-    EditText s_edittext;
+    SearchAdapter s_adapter;        // This is the adapter used in the recyclerview
+    ArrayList<SearchItem> s_items;  // This is the items that's going to be displayed in the recylerview
+    RecyclerView s_rv;              // This is the recyclerview
+    EditText s_edittext;            // This is the edittext of the searchbar itself
 
+    // This index, is.. uhhh, index of Local SketchwareProjects
+    // HashMap<String: project_name / app_name, Integer: project_id>
+    // I should've used ArrayList<Pair<String, Integer>> instead, but well, this works for now.
     HashMap<String, Integer> index = new HashMap<>();
 
     String[] commands = new String[] {
@@ -427,22 +431,35 @@ public class MainActivity extends AppCompatActivity {
                     update_rv(s.toString());
                 }
             });
+
+            // Set isOpened to be true coz this thing has opened
+            isOpened = true;
         }
     }
 
     private void update_rv(String input) {
+        // Clear the items so it will update
         s_items.clear();
 
+        // Match a regex (command) with the input, well we technically can use the .contain method,
+        // but im kinda lazy and not sure if it will work, but this'll work for now.
         Pattern pattern = Pattern.compile(input);
 
+        // Loop per every commands and check the occurences in it
         for (String command: commands) {
+            // This variable is to indicate if this string matched the command / regex
             boolean matched = false;
 
+            // match it with the command
             Matcher m = pattern.matcher(command);
 
+            // Yeah, this spannable is used to highlighted the matched string
             SpannableString command_s = new SpannableString(command);
             while (m.find()) {
+                // Boom, it matched
                 matched = true;
+
+                // Alright set a bold span around it
                 command_s.setSpan(
                         new StyleSpan(Typeface.BOLD),
                         m.start(),
@@ -451,14 +468,20 @@ public class MainActivity extends AppCompatActivity {
                 );
             }
 
+            // If this matched, then add this spannable to the list of items
             if (matched)
                 s_items.add(new SearchItem(command_s, "Command"));
         }
 
+        // Yup, early update, to not waste time
         s_adapter.updateView(s_items);
 
-        // Find in local project(s)
+        // Loop per every projects, this index hashmap stores <String: project_name / app_name, String: project_id>
+        // Why you may ask? why not lol
+        // Yeah, I might use ArrayList<Pair<Str, Str>> instead, but well, this works for now.
         for (String name: index.keySet()) {
+            // Yup, same thing going on with this for loop, maybe try to merge the commands
+            // with these project files to just keep it in one for loop, and to make it clean
             boolean matched = false;
 
             Matcher m = pattern.matcher(name);
@@ -485,14 +508,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        s_edittext = findViewById(R.id.search_edittext);
-
-        View settings_button = findViewById(R.id.imageView);
-        View home_textview = findViewById(R.id.home_textview);
-        View search_autocomplete_layout = findViewById(R.id.inc_search);
-        View main_content = findViewById(R.id.scrollView2);
-
+        // Is the searchbar opened?
         if (isOpened) {
+            // Oh ye, time to close it
+            s_edittext = findViewById(R.id.search_edittext);
+
+            View settings_button = findViewById(R.id.imageView);
+            View home_textview = findViewById(R.id.home_textview);
+            View search_autocomplete_layout = findViewById(R.id.inc_search);
+            View main_content = findViewById(R.id.scrollView2);
+
             // Close the search thing
             settings_button.setVisibility(View.VISIBLE);
             home_textview.setVisibility(View.VISIBLE);
@@ -505,6 +530,7 @@ public class MainActivity extends AppCompatActivity {
             index.clear();
 
         } else {
+            // nope, do the usual thing instead
             super.onBackPressed();
         }
     }

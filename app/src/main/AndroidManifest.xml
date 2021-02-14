@@ -62,6 +62,9 @@
         <activity
             android:name=".pickers.UserPicker"
             android:theme="@style/Theme.SketchCollab.NoActionBar" />
+        <activity
+            android:name=".pman.ViewProjectActivity"
+            android:theme="@style/Theme.SketchCollab.NoActionBar" />
 
         <service android:name=".services.CloneService" />
     </application>
