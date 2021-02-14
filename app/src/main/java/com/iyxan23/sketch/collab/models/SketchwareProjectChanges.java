@@ -7,6 +7,9 @@ import com.iyxan23.sketch.collab.Util;
 
 import org.json.JSONException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import name.fraser.neil.plaintext.diff_match_patch;
 
 public class SketchwareProjectChanges implements Parcelable {
@@ -100,6 +103,38 @@ public class SketchwareProjectChanges implements Parcelable {
                         Util.decrypt(before)
                 )
         );
+    }
+
+    public HashMap<String, String> generatePatch() {
+        HashMap<String, String> patch = new HashMap<>();
+
+        // Get the changed files
+        int files_changed = getFilesChanged();
+
+        // Pack every patches into one map
+        int[] data_keys = new int[] {
+                SketchwareProjectChanges.LOGIC      ,
+                SketchwareProjectChanges.VIEW       ,
+                SketchwareProjectChanges.FILE       ,
+                SketchwareProjectChanges.LIBRARY    ,
+                SketchwareProjectChanges.RESOURCES  ,
+        };
+
+        String[] data_keys_str = new String[] {
+                "logic"      ,
+                "view"       ,
+                "file"       ,
+                "library"    ,
+                "resources"  ,
+        };
+
+        for (int index = 0; index < data_keys.length; index++) {
+            if ((files_changed & data_keys[index]) == data_keys[index]) {
+                patch.put(data_keys_str[index], getPatch(data_keys[index]));
+            }
+        }
+
+        return patch;
     }
 
     @Override
