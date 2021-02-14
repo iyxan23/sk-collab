@@ -14,7 +14,31 @@ import name.fraser.neil.plaintext.diff_match_patch;
 
 public class PatchHelper {
 
-    // FIXME: SOMETHING DOESN'T SEEM RIGHT
+    /**
+     * This function reverses a patch, that's it
+     * Example:
+     *
+     * Before:
+     * <code>
+     * /@@ -3,9 +3,23 @@
+     *  llo
+     * -World
+     * +Earth, I'm Iyxan23!
+     * </code>
+     *
+     * After:
+     * <code>
+     * /@@ -3,9 +3,23 @@
+     *  llo
+     * +World
+     * -Earth, I'm Iyxan23!
+     * </code>
+     *
+     * The + is reversed into -, and vice versa
+     *
+     * @param patch The patch string that will be reversed
+     * @return The reversed version of the patch parameter given
+     */
     public static String reverse_patch(String patch) {
         Pattern plus_pattern = Pattern.compile("^\\+", Pattern.MULTILINE);
         Pattern minus_pattern = Pattern.compile("^-", Pattern.MULTILINE);
