@@ -2,15 +2,15 @@ package com.iyxan23.sketch.collab.helpers;
 
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SpannableHelper {
 
-    public static SpannableStringBuilder span_regex(Object what, SpannableStringBuilder data, String regex, int regex_flags) {
-        SpannableStringBuilder result = new SpannableStringBuilder(data);
 
+    public static void span_regex(int color, SpannableString data, String regex, int regex_flags) {
         Pattern p;
 
         if (regex_flags != -1) {
@@ -22,13 +22,12 @@ public class SpannableHelper {
         Matcher m = p.matcher(data);
 
         while (m.find()) {
-            result.setSpan(what, m.start(), m.end(), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
 
-        return result;
+            data.setSpan(new ForegroundColorSpan(color), m.start(), m.end(), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
     }
 
-    public static SpannableStringBuilder span_regex(Object what, SpannableStringBuilder data, String regex) {
-        return span_regex(what, data, regex, -1);
+    public static void span_regex(int color, SpannableString data, String regex) {
+        span_regex(color, data, regex, -1);
     }
 }

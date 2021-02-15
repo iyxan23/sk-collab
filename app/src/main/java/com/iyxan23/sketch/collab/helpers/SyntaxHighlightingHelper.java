@@ -1,49 +1,72 @@
 package com.iyxan23.sketch.collab.helpers;
 
 import android.graphics.Color;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
 
 import java.util.regex.Pattern;
 
 public class SyntaxHighlightingHelper {
 
-    public static SpannableStringBuilder highlight_patch(String data) {
-        SpannableStringBuilder builder = new SpannableStringBuilder(data);
+    // TODO: MAKE THIS CUSTOMIZEABLE IN SETTINGS ACTIVITY (SOON)
+
+    public static SpannableString highlight_patch(String data) {
+        SpannableString spannable = new SpannableString(data);
 
         // Highlight the @@ thing
-        builder = SpannableHelper.span_regex(new ForegroundColorSpan(Color.MAGENTA), builder, "@@");
+        SpannableHelper.span_regex(Color.MAGENTA, spannable, "@@");
 
         // Highlight the +
-        builder = SpannableHelper.span_regex(new ForegroundColorSpan(Color.GREEN), builder, "^\\+.+", Pattern.MULTILINE);
+        SpannableHelper.span_regex(Color.GREEN, spannable, "^\\+.+", Pattern.MULTILINE);
 
         // Highlight the -
-        builder = SpannableHelper.span_regex(new ForegroundColorSpan(Color.GREEN), builder, "^-.+", Pattern.MULTILINE);
+        SpannableHelper.span_regex(Color.GREEN, spannable, "^-.+", Pattern.MULTILINE);
 
-        return builder;
+        return spannable;
     }
 
-    public static SpannableStringBuilder highlight_logic(String data) {
-        SpannableStringBuilder builder = new SpannableStringBuilder(data);
+    public static SpannableString highlight_logic(String data) {
+        SpannableString spannable = new SpannableString(data);
 
         // Highlight the title's activity name
-        builder = SpannableHelper.span_regex(new ForegroundColorSpan(0xFFD19A66), builder, "^@\\w+", Pattern.MULTILINE);
+        SpannableHelper.span_regex(0xFFEF596F, spannable, "^@\\w+", Pattern.MULTILINE);
 
         // Highlight the title's type
-        builder = SpannableHelper.span_regex(new ForegroundColorSpan(0xFFB856D8), builder, "\\.java_.+", Pattern.MULTILINE);
+        SpannableHelper.span_regex(0xFFB856D8, spannable, "\\.java_.+");
 
         // Highlight the variable types
-        builder = SpannableHelper.span_regex(new ForegroundColorSpan(0xFFD19A66), builder, "^\\w+:", Pattern.MULTILINE);
+        SpannableHelper.span_regex(0xFFD19A66, spannable, "^\\w+:", Pattern.MULTILINE);
 
         // Highlight the variable names
-        builder = SpannableHelper.span_regex(new ForegroundColorSpan(0xFFB59448), builder, ":\\w+$", Pattern.MULTILINE);
+        SpannableHelper.span_regex(0xFFB59448, spannable, ":\\w+$", Pattern.MULTILINE);
 
-        // Highlight the string in json
-        builder = SpannableHelper.span_regex(new ForegroundColorSpan(0xFF89CA78), builder, "\"\\w*\"");
+        highlight_json(spannable);
 
         // Highlight the %s, %m.view thingy
-        builder = SpannableHelper.span_regex(new ForegroundColorSpan(0xFFE5C07B), builder, "%[a-z]\\.(\\w+)|%[a-z]");
+        SpannableHelper.span_regex(0xFFE5C07B, spannable, "%[a-z]\\.(\\w+)|%[a-z]");
 
-        return builder;
+        return spannable;
+    }
+
+    public static SpannableString highlight_view(String data) {
+        SpannableString spannable = new SpannableString(data);
+
+        highlight_json(spannable);
+
+        // Highlight the @activity
+        SpannableHelper.span_regex(0xFFEF596F, spannable, "^@\\w+", Pattern.MULTILINE);
+
+        // Highlight the .xml_thing
+        SpannableHelper.span_regex(0xFFB856D8, spannable, "\\.xml_.+|\\.xml");
+
+        return spannable;
+    }
+
+    public static void highlight_json(SpannableString data) {
+        // Highlight the numbers
+        SpannableHelper.span_regex(0xFFD19A66, data, "\\d+|-\\d+|\\.\\d*");
+
+        // Highlight the string in json
+        SpannableHelper.span_regex(0xFF89CA78, data, "(\"[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\")");
     }
 }
