@@ -33,6 +33,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 import com.iyxan23.sketch.collab.adapters.ChangesAdapter;
 import com.iyxan23.sketch.collab.adapters.SearchAdapter;
+import com.iyxan23.sketch.collab.helpers.OnlineProjectHelper;
 import com.iyxan23.sketch.collab.models.SearchItem;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
@@ -47,6 +48,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.iyxan23.sketch.collab.helpers.OnlineProjectHelper.hasPermission;
+import static com.iyxan23.sketch.collab.helpers.OnlineProjectHelper.querySnapshotToSketchwareProject;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -172,33 +175,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private SketchwareProject querySnapshotToSketchwareProject(QuerySnapshot snapshot) {
-        SketchwareProject project = new SketchwareProject();
-        // Loop through the document and get every data/ files
-        for (DocumentSnapshot doc_snapshot : snapshot.getDocuments()) {
-            if (doc_snapshot.getId().equals("logic")) {
-                project.logic = doc_snapshot.getBlob("data").toBytes();
-
-            } else if (doc_snapshot.getId().equals("view")) {
-                project.view = doc_snapshot.getBlob("data").toBytes();
-
-            } else if (doc_snapshot.getId().equals("file")) {
-                project.file = doc_snapshot.getBlob("data").toBytes();
-
-            } else if (doc_snapshot.getId().equals("mysc_project")) {
-                project.mysc_project = doc_snapshot.getBlob("data").toBytes();
-
-            } else if (doc_snapshot.getId().equals("library")) {
-                project.library = doc_snapshot.getBlob("data").toBytes();
-
-            } else if (doc_snapshot.getId().equals("resource")) {
-                project.resource = doc_snapshot.getBlob("data").toBytes();
-            }
-        }
-
-        return project;
-    }
-
     private void initialize() {
         new Thread(() -> {
             // Fetch sketchware projects
@@ -242,21 +218,9 @@ public class MainActivity extends AppCompatActivity {
 
                     assert project_data != null; // This shouldn't be null
 
-                    ArrayList<String> members = (ArrayList<String>) project_data.get("members");
-
-                    // Fallback to an empty arraylist if members is null / doesn't exist
-                    // (To avoid NPE)
-                    members = members == null ? new ArrayList<>() : members;
-
-                    // Check if user is an author / a member of this project
-                    if (!author.equals(auth.getUid()) && !members.contains(auth.getUid())) {
-                        // Hmm, the user "stole" another user's project
-                        // Let's skip this one :e_sweat_smile:
-                        // =========================================================================
-                        // Anyway, don't worry the user cannot edit the data in the database, it's
-                        // protected by the firebase firestore rules.
-
-                        continue;
+                    // Don't go further if we don't have a permission to make changes in it.
+                    if (!hasPermission(project_data)) {
+                        return;
                     }
 
                     // Fetch the latest project commit in the database
@@ -305,15 +269,8 @@ public class MainActivity extends AppCompatActivity {
                         if (!local_shasum.equals(server_shasum)) {
                             // Alright looks like he's got some local updates with the same head commit
 
-                            // Fetch the project
-                            Task<QuerySnapshot> project_snapshot =
-                                    database.collection(is_project_public ? "projects" : "userdata/" + author + "/projects").document(project_key).collection("snapshot")
-                                            .get(Source.SERVER); // Don't get the cache :/
-
-                            // Wait for the task to finish, i don't want to query a lot of tasks in a short amount of time,
-                            // it can cause some performance issues
-                            QuerySnapshot project_data_snapshot = Tasks.await(project_snapshot);
-                            SketchwareProject head_project = querySnapshotToSketchwareProject(project_data_snapshot);
+                            // Fetch the latest project
+                            SketchwareProject head_project = (SketchwareProject) OnlineProjectHelper.fetch_project_latest_commit(project_key);
 
                             // Add this to the changed sketchcollab sketchware projects arraylist
                             changes.add(new SketchwareProjectChanges(project, head_project));

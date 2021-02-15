@@ -4,8 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.iyxan23.sketch.collab.Util;
+import com.iyxan23.sketch.collab.helpers.PatchHelper;
 
 import org.json.JSONException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import name.fraser.neil.plaintext.diff_match_patch;
 
@@ -102,6 +106,38 @@ public class SketchwareProjectChanges implements Parcelable {
         );
     }
 
+    public HashMap<String, String> generatePatch() {
+        HashMap<String, String> patch = new HashMap<>();
+
+        // Get the changed files
+        int files_changed = getFilesChanged();
+
+        // Pack every patches into one map
+        int[] data_keys = new int[] {
+                SketchwareProjectChanges.LOGIC      ,
+                SketchwareProjectChanges.VIEW       ,
+                SketchwareProjectChanges.FILE       ,
+                SketchwareProjectChanges.LIBRARY    ,
+                SketchwareProjectChanges.RESOURCES  ,
+        };
+
+        String[] data_keys_str = new String[] {
+                "logic"      ,
+                "view"       ,
+                "file"       ,
+                "library"    ,
+                "resources"  ,
+        };
+
+        for (int index = 0; index < data_keys.length; index++) {
+            if ((files_changed & data_keys[index]) == data_keys[index]) {
+                patch.put(data_keys_str[index], getPatch(data_keys[index]));
+            }
+        }
+
+        return patch;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -111,5 +147,10 @@ public class SketchwareProjectChanges implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(before, flags);
         dest.writeParcelable(after, flags);
+    }
+
+    @Override
+    public String toString() {
+        return PatchHelper.convert_to_readable_patch(this);
     }
 }

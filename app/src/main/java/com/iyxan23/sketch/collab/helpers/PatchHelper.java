@@ -1,6 +1,7 @@
 package com.iyxan23.sketch.collab.helpers;
 
 import com.iyxan23.sketch.collab.models.Commit;
+import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +14,31 @@ import name.fraser.neil.plaintext.diff_match_patch;
 
 public class PatchHelper {
 
-    // FIXME: SOMETHING DOESN'T SEEM RIGHT
+    /**
+     * This function reverses a patch, that's it
+     * Example:
+     *
+     * Before:
+     * <code>
+     * /@@ -3,9 +3,23 @@
+     *  llo
+     * -World
+     * +Earth, I'm Iyxan23!
+     * </code>
+     *
+     * After:
+     * <code>
+     * /@@ -3,9 +3,23 @@
+     *  llo
+     * +World
+     * -Earth, I'm Iyxan23!
+     * </code>
+     *
+     * The + is reversed into -, and vice versa
+     *
+     * @param patch The patch string that will be reversed
+     * @return The reversed version of the patch parameter given
+     */
     public static String reverse_patch(String patch) {
         Pattern plus_pattern = Pattern.compile("^\\+", Pattern.MULTILINE);
         Pattern minus_pattern = Pattern.compile("^-", Pattern.MULTILINE);
@@ -48,15 +73,13 @@ public class PatchHelper {
         if (commit_destination >= commits.size())
             throw new IndexOutOfBoundsException("commit_destination shouldn't be bigger than commits size");
 
-        HashMap<String, String> project_data = current;
-
         String[] project_keys = new String[] {"mysc_project", "logic", "view", "library", "resource", "file"};
 
         diff_match_patch dmp = new diff_match_patch();
 
         if (commit_destination > commit_current) {
             // The destination is above us, apply commits that are above the current commit
-            for (Commit commit: commits.subList(commit_current, commit_destination)) {
+            for (Commit commit: commits.subList(commit_current - 1, commit_destination)) {
                 if (commit.patch == null)
                     continue;
 
@@ -65,14 +88,14 @@ public class PatchHelper {
 
                     LinkedList<diff_match_patch.Patch> patches = (LinkedList<diff_match_patch.Patch>) dmp.patch_fromText(commit.patch.get(key));
                     // TODO: CHECK PATCH STATUSES
-                    Object[] result = dmp.patch_apply(patches, project_data.get(key));
+                    Object[] result = dmp.patch_apply(patches, current.get(key));
 
-                    project_data.put(key, (String) result[0]);
+                    current.put(key, (String) result[0]);
                 }
             }
         } else if (commit_destination < commit_current) {
             // The destination is below us, apply commits downward
-            for (Commit commit: commits.subList(commit_destination, commit_current)) {
+            for (Commit commit: commits.subList(commit_destination, commit_current - 1)) {
                 if (commit.patch == null)
                     continue;
 
@@ -84,9 +107,9 @@ public class PatchHelper {
 
                     LinkedList<diff_match_patch.Patch> patches = (LinkedList<diff_match_patch.Patch>) dmp.patch_fromText(reversed_patch);
                     // TODO: CHECK PATCH STATUSES
-                    Object[] result = dmp.patch_apply(patches, project_data.get(key));
+                    Object[] result = dmp.patch_apply(patches, current.get(key));
 
-                    project_data.put(key, (String) result[0]);
+                    current.put(key, (String) result[0]);
                 }
             }
         } else {
@@ -94,7 +117,7 @@ public class PatchHelper {
         }
 
         // Return the final product
-        return project_data;
+        return current;
     }
 
     /**
@@ -131,5 +154,9 @@ public class PatchHelper {
         }
 
         return result.toString();
+    }
+
+    public static String convert_to_readable_patch(SketchwareProjectChanges changes) {
+        return convert_to_readable_patch(changes.generatePatch());
     }
 }
