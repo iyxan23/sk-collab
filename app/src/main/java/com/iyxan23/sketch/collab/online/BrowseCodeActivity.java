@@ -182,11 +182,11 @@ public class BrowseCodeActivity extends AppCompatActivity {
 
     private void updateCode(HashMap<String, String> project_data) {
         runOnUiThread(() -> {
-            code_logic.setText(SyntaxHighlightingHelper.highlight_logic(project_data.get("logic")));
-            code_view.setText(SyntaxHighlightingHelper.highlight_view(project_data.get("view")));
-            code_file.setText(project_data.get("file"));
-            code_library.setText(project_data.get("library"));
-            code_resource.setText(project_data.get("resource"));
+            code_logic      .setText(SyntaxHighlightingHelper.highlight_logic       (project_data.get("logic"       )));
+            code_view       .setText(SyntaxHighlightingHelper.highlight_view        (project_data.get("view"        )));
+            code_file       .setText(SyntaxHighlightingHelper.highlight_file        (project_data.get("file"        )));
+            code_library    .setText(SyntaxHighlightingHelper.highlight_library     (project_data.get("library"     )));
+            code_resource   .setText(SyntaxHighlightingHelper.highlight_resource    (project_data.get("resource"    )));
         });
     }
 

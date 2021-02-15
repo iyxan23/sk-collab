@@ -51,15 +51,46 @@ public class SyntaxHighlightingHelper {
     public static SpannableString highlight_view(String data) {
         SpannableString spannable = new SpannableString(data);
 
-        highlight_json(spannable);
-
         // Highlight the @activity
         SpannableHelper.span_regex(0xFFEF596F, spannable, "^@\\w+", Pattern.MULTILINE);
 
         // Highlight the .xml_thing
         SpannableHelper.span_regex(0xFFB856D8, spannable, "\\.xml_.+|\\.xml");
 
+        highlight_json(spannable);
+
         return spannable;
+    }
+
+    public static SpannableString highlight_file(String data) {
+        SpannableString spannable = new SpannableString(data);
+
+        // Highlight the @activity
+        SpannableHelper.span_regex(0xFFEF596F, spannable, "^@activity", Pattern.MULTILINE);
+
+        // Highlight the @customview
+        SpannableHelper.span_regex(0xFFB856D8, spannable, "^@customview", Pattern.MULTILINE);
+
+        highlight_json(spannable);
+
+        return spannable;
+    }
+
+    public static SpannableString highlight_library(String data) {
+        SpannableString spannable = new SpannableString(data);
+
+        // Highlight the @stuff
+        SpannableHelper.span_regex(0xFFEF596F, spannable, "^@\\w+", Pattern.MULTILINE);
+
+        highlight_json(spannable);
+
+        return spannable;
+    }
+
+    public static SpannableString highlight_resource(String data) {
+        // Basically the same as library, but putting this with a different function name will make
+        // the code to be more consistent / no weird functions
+        return highlight_library(data);
     }
 
     public static void highlight_json(SpannableString data) {
