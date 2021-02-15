@@ -14,13 +14,13 @@ public class SyntaxHighlightingHelper {
         SpannableString spannable = new SpannableString(data);
 
         // Highlight the @@ thing
-        SpannableHelper.span_regex(Color.MAGENTA, spannable, "@@");
+        SpannableHelper.span_regex(0xFFD55FDE, spannable, "@@");
 
         // Highlight the +
-        SpannableHelper.span_regex(Color.GREEN, spannable, "^\\+.+", Pattern.MULTILINE);
+        SpannableHelper.span_regex(0xFF89CA78, spannable, "^\\+.+", Pattern.MULTILINE);
 
         // Highlight the -
-        SpannableHelper.span_regex(Color.GREEN, spannable, "^-.+", Pattern.MULTILINE);
+        SpannableHelper.span_regex(0xFFEF596F, spannable, "^-.+", Pattern.MULTILINE);
 
         return spannable;
     }
