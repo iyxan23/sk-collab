@@ -73,8 +73,6 @@ public class PatchHelper {
         if (commit_destination >= commits.size())
             throw new IndexOutOfBoundsException("commit_destination shouldn't be bigger than commits size");
 
-        HashMap<String, String> project_data = current;
-
         String[] project_keys = new String[] {"mysc_project", "logic", "view", "library", "resource", "file"};
 
         diff_match_patch dmp = new diff_match_patch();
@@ -90,9 +88,9 @@ public class PatchHelper {
 
                     LinkedList<diff_match_patch.Patch> patches = (LinkedList<diff_match_patch.Patch>) dmp.patch_fromText(commit.patch.get(key));
                     // TODO: CHECK PATCH STATUSES
-                    Object[] result = dmp.patch_apply(patches, project_data.get(key));
+                    Object[] result = dmp.patch_apply(patches, current.get(key));
 
-                    project_data.put(key, (String) result[0]);
+                    current.put(key, (String) result[0]);
                 }
             }
         } else if (commit_destination < commit_current) {
@@ -109,9 +107,9 @@ public class PatchHelper {
 
                     LinkedList<diff_match_patch.Patch> patches = (LinkedList<diff_match_patch.Patch>) dmp.patch_fromText(reversed_patch);
                     // TODO: CHECK PATCH STATUSES
-                    Object[] result = dmp.patch_apply(patches, project_data.get(key));
+                    Object[] result = dmp.patch_apply(patches, current.get(key));
 
-                    project_data.put(key, (String) result[0]);
+                    current.put(key, (String) result[0]);
                 }
             }
         } else {
@@ -119,7 +117,7 @@ public class PatchHelper {
         }
 
         // Return the final product
-        return project_data;
+        return current;
     }
 
     /**
