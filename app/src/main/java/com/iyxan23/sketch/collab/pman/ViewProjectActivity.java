@@ -23,6 +23,7 @@ import com.google.firebase.firestore.Source;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.Util;
 import com.iyxan23.sketch.collab.helpers.OnlineProjectHelper;
+import com.iyxan23.sketch.collab.helpers.SyntaxHighlightingHelper;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
 import com.iyxan23.sketch.collab.online.UploadActivity;
@@ -224,7 +225,7 @@ public class ViewProjectActivity extends AppCompatActivity {
                     // Update the UI
                     runOnUiThread(() -> {
                         TextView patch_text = findViewById(R.id.patch_text);
-                        patch_text.setText(changes.toString());
+                        patch_text.setText(SyntaxHighlightingHelper.highlight_patch(changes.toString()));
                     });
                 }
             }
