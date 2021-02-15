@@ -53,6 +53,10 @@ public class OnlineProjectHelper {
         ArrayList<String> members = (ArrayList<String>) project_data.get("members");
         String author = project_data.getString("author");
 
+        if (author == null) {
+            return false;
+        }
+
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
         // Fallback to an empty arraylist if members is null / doesn't exist
