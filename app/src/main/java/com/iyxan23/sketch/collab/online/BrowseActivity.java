@@ -51,6 +51,9 @@ public class BrowseActivity extends AppCompatActivity {
     // This variable indicates if we're at the bottom of the fetch (or that we've basically fetched every projects), not the recyclerview
     boolean is_at_bottom = false;
 
+    // This variable indicates if we're currently loading some items, this is used to prevent duplicates
+    boolean isLoading = false;
+
     // The project count that should be loaded
     int project_count_should_be_loaded = 5;  // TEMP FIX, CURRENT PAGINATION IS BROKEN
 
@@ -106,6 +109,10 @@ public class BrowseActivity extends AppCompatActivity {
     }
 
     private void load_projects(int count) {
+        if (isLoading) return;
+
+        isLoading = true;
+
         Log.d("BrowseActivity", "load_projects: called.");
         new Thread(() -> {
             // Check if we're at the bottom
@@ -135,10 +142,15 @@ public class BrowseActivity extends AppCompatActivity {
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
                 runOnUiThread(() -> Toast.makeText(BrowseActivity.this, "An error occured while fetching data: " + task.getException().getMessage(), Toast.LENGTH_LONG).show());
+
+                isLoading = false;
+                return;
             }
 
             if (!task.isSuccessful()) {
                 runOnUiThread(() -> Toast.makeText(BrowseActivity.this, "An error occured while retrieving data: " + task.getException().getMessage(), Toast.LENGTH_LONG).show());
+
+                isLoading = false;
                 return;
             }
 
@@ -170,6 +182,7 @@ public class BrowseActivity extends AppCompatActivity {
                         if (!userdata_fetch.isSuccessful()) {
                             runOnUiThread(() -> Toast.makeText(BrowseActivity.this, "Error while fetching userdata: " + userdata_fetch.getException().getMessage(), Toast.LENGTH_LONG).show());
 
+                            isLoading = false;
                             return;
                         }
 
@@ -183,6 +196,7 @@ public class BrowseActivity extends AppCompatActivity {
                         e.printStackTrace();
                         runOnUiThread(() -> Toast.makeText(BrowseActivity.this, "Error while fetching userdata: " + e.getMessage(), Toast.LENGTH_LONG).show());
 
+                        isLoading = false;
                         return;
                     }
                 }
@@ -217,6 +231,9 @@ public class BrowseActivity extends AppCompatActivity {
 
                 Log.d(TAG, "load_projects: after: " + after);
             }
+
+            // ok, we finished loading the items.
+            isLoading = false;
 
             // Check if we're at the bottom (means we've laoded less projects than we should've been)
             if (counter < count)
