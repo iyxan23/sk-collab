@@ -97,6 +97,11 @@ public class ViewProjectActivity extends AppCompatActivity {
 
             ((TextView) findViewById(R.id.textView26)).setTextColor(0xFFFFFFFF);
             ImageViewCompat.setImageTintList(findViewById(R.id.imageView17), ColorStateList.valueOf(0xFFFFFFFF));
+
+            // Remove the local changes thing
+            findViewById(R.id.local_changes_title).setVisibility(View.GONE);
+            findViewById(R.id.patch_text).setVisibility(View.GONE);
+            findViewById(R.id.push_button_vp).setVisibility(View.GONE);
         } else {
             // This is a sketchcollab project, initialize some stuff
             try {
