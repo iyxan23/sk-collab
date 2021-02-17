@@ -64,6 +64,19 @@ public class SketchwareProject implements Parcelable {
         } catch (JSONException ignored) { }
     }
 
+    public HashMap<String, String> toHashMap() {
+        HashMap<String, String> project_data = new HashMap<>();
+
+        project_data.put("logic", Util.decrypt(logic));
+        project_data.put("view", Util.decrypt(view));
+        project_data.put("resource", Util.decrypt(resource));
+        project_data.put("library", Util.decrypt(library));
+        project_data.put("file", Util.decrypt(file));
+        project_data.put("mysc_project", Util.decrypt(mysc_project));
+
+        return project_data;
+    }
+
     public void applyChanges() throws IOException {
         String project_folder = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/" + project_id + "/";
 
