@@ -65,8 +65,8 @@ public class PatchHelper {
      *
      * @param current The current sketchware project in hashmap
      * @param commits ArrayList of commits (should be in a ascending sorted order)
-     * @param commit_current The current commit index
-     * @param commit_destination The destination commit index
+     * @param commit_current The current commit index (should be the index of that commit, cannot be >=size)
+     * @param commit_destination The destination commit index (should be the index of that commit, cannot be >=size)
      * @return The current string but in the destination commit index
      */
     public static HashMap<String, String> go_to_commit(HashMap<String, String> current, ArrayList<Commit> commits, int commit_current, int commit_destination) {
@@ -79,7 +79,7 @@ public class PatchHelper {
 
         if (commit_destination > commit_current) {
             // The destination is above us, apply commits that are above the current commit
-            for (Commit commit: commits.subList(commit_current - 1, commit_destination)) {
+            for (Commit commit: commits.subList(commit_current + 1, commit_destination)) {
                 if (commit.patch == null)
                     continue;
 
