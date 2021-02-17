@@ -47,9 +47,11 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
+        android:id="@+id/scrollView4"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/outdated_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout9">
@@ -265,8 +267,8 @@
                     android:layout_marginTop="18dp"
                     android:text="Local Changes"
                     android:textColor="#FFFFFF"
-                    android:textStyle="bold"
                     android:textSize="16sp"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@+id/divider11"
                     app:layout_constraintTop_toBottomOf="@+id/divider11" />
 
@@ -276,7 +278,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:text="Push"
                     app:layout_constraintBottom_toBottomOf="@+id/local_changes_title"
                     app:layout_constraintEnd_toEndOf="@+id/divider11"
@@ -300,5 +302,30 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <TextView
+        android:id="@+id/outdated_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/sourcecodepro_regular"
+        android:text="This project is outdated"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/update_project_button"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="Update"
+        android:textColor="@color/colorAccent"
+        android:onClick="updateProject"
+        app:layout_constraintBottom_toBottomOf="@+id/outdated_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/outdated_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

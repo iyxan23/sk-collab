@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.ImageViewCompat;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -16,14 +17,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 import com.iyxan23.sketch.collab.R;
 import com.iyxan23.sketch.collab.Util;
 import com.iyxan23.sketch.collab.helpers.OnlineProjectHelper;
+import com.iyxan23.sketch.collab.helpers.PatchHelper;
 import com.iyxan23.sketch.collab.helpers.SyntaxHighlightingHelper;
+import com.iyxan23.sketch.collab.models.Commit;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 import com.iyxan23.sketch.collab.models.SketchwareProjectChanges;
 import com.iyxan23.sketch.collab.online.UploadActivity;
@@ -34,8 +39,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static com.iyxan23.sketch.collab.helpers.OnlineProjectHelper.convert_document_snapshots_into_commits;
 import static com.iyxan23.sketch.collab.helpers.OnlineProjectHelper.hasPermission;
 import static com.iyxan23.sketch.collab.helpers.OnlineProjectHelper.querySnapshotToSketchwareProject;
 
@@ -50,10 +57,14 @@ public class ViewProjectActivity extends AppCompatActivity {
 
     String project_commit;
     String project_key;
-    boolean is_project_public;
     String author;
 
     SketchwareProjectChanges changes;
+
+    boolean is_project_public;
+
+    boolean is_outdated;
+    boolean has_changes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,53 +200,56 @@ public class ViewProjectActivity extends AppCompatActivity {
 
             DocumentSnapshot commit_info = commit_snapshot.getDocuments().get(0);
 
-            if (!project_commit.equals(commit_info.getId())) {
-                // Hmm, looks like this man's project has an older commit, tell him to update his project
-                Log.d(TAG, "initialize: Old Commit");
-            } else {
-                Log.d(TAG, "initialize: Latest commit");
-                // This mans project has the same commit
-                // Check if this project also has the same shasum
-                String local_shasum;
+            // Check if thie project has an older commit, and save it to a variable
+            is_outdated = !project_commit.equals(commit_info.getId());
+
+            // Check if this project also has the same shasum
+            String local_shasum;
+
+            try {
+                local_shasum = project.sha512sum();
+            } catch (JSONException e) {
+                e.printStackTrace();
+
+                return;
+            }
+
+            String server_shasum = commit_info.getString("sha512sum");
+
+            Log.d(TAG, "initialize: Checking shasum");
+            Log.d(TAG, "shasum local:  " + local_shasum);
+            Log.d(TAG, "shasum server: " + server_shasum);
+
+            // Check if they're the same
+            if (!local_shasum.equals(server_shasum)) {
+                // Alright looks like he's got some local updates with the same head commit
+                has_changes = true;
+
+                // Get the project with the latest commit
+                SketchwareProject head_project;
 
                 try {
-                    local_shasum = project.sha512sum();
-                } catch (JSONException e) {
+                    head_project = (SketchwareProject) OnlineProjectHelper.fetch_project_latest_commit(project_key);
+                } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
 
                     return;
                 }
 
-                String server_shasum = commit_info.getString("sha512sum");
+                // Set this as the changes
+                changes = new SketchwareProjectChanges(project, head_project);
 
-                Log.d(TAG, "initialize: Checking shasum");
-                Log.d(TAG, "shasum local:  " + local_shasum);
-                Log.d(TAG, "shasum server: " + server_shasum);
+                // Update the UI
+                runOnUiThread(() -> {
+                    // Update the patch text
+                    TextView patch_text = findViewById(R.id.patch_text);
+                    patch_text.setText(SyntaxHighlightingHelper.highlight_patch(changes.toString()));
 
-                // Check if they're the same
-                if (!local_shasum.equals(server_shasum)) {
-                    // Alright looks like he's got some local updates with the same head commit
-
-                    // Get the project with the latest commit
-                    SketchwareProject head_project;
-
-                    try {
-                        head_project = (SketchwareProject) OnlineProjectHelper.fetch_project_latest_commit(project_key);
-                    } catch (ExecutionException | InterruptedException e) {
-                        e.printStackTrace();
-
-                        return;
+                    if (!is_outdated) {
+                        findViewById(R.id.outdated_text).setVisibility(View.GONE);
+                        findViewById(R.id.update_project_button).setVisibility(View.GONE);
                     }
-
-                    // Set this as the changes
-                    changes = new SketchwareProjectChanges(project, head_project);
-
-                    // Update the UI
-                    runOnUiThread(() -> {
-                        TextView patch_text = findViewById(R.id.patch_text);
-                        patch_text.setText(SyntaxHighlightingHelper.highlight_patch(changes.toString()));
-                    });
-                }
+                });
             }
         }).start();
     }
@@ -325,6 +339,74 @@ public class ViewProjectActivity extends AppCompatActivity {
 
             // Alright, let's fire it up!
             startActivity(i);
+        }
+    }
+
+    public void updateProject(View view) {
+        view.setEnabled(false);
+        if (has_changes) {
+            // ohno, conflicts!
+        } else {
+            // Ah, yes, we can merge this automatically
+            ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("Updating project");
+            progressDialog.setMessage("Doing automatic merging");
+            progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+            new Thread(() -> {
+                Task<QuerySnapshot> task = firestore.collection("projects").document(project_key).collection("commits")
+                                                    .orderBy(FieldPath.documentId())
+                                                    .orderBy("timestamp", Query.Direction.ASCENDING)
+                                                    .startAt(project_key)
+                                                    .get();
+
+                try {
+                    Tasks.await(task);
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+
+                    progressDialog.dismiss();
+                    Toast.makeText(this, "Error while retreiving data from the server: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                if (!task.isSuccessful()) {
+                    progressDialog.dismiss();
+                    Toast.makeText(this, "Error while retreiving data from the server: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                List<DocumentSnapshot> commits = task.getResult().getDocuments();
+
+                int current_commit = 0;
+                int commit_destination = commits.size() - 1;
+
+                ArrayList<Commit> commits_ = convert_document_snapshots_into_commits(commits, false);
+
+                if (commits_ == null) {
+                    progressDialog.dismiss();
+                    Toast.makeText(this, "Error while retreiving data from the server: Failed to parse commits", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                SketchwareProject new_project = new SketchwareProject(PatchHelper.go_to_commit(project.toHashMap(), commits_, current_commit, commit_destination));
+
+                // aaaand apply those changes
+                try {
+                    new_project.applyChanges();
+                    Toast.makeText(this, "Successful, refresh your sketchware project to check it out", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Error while applying changes: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Error while applying changes, your project is possibly corrupted", Toast.LENGTH_LONG).show();
+                }
+                
+                progressDialog.dismiss();
+            }).start();
         }
     }
 }
