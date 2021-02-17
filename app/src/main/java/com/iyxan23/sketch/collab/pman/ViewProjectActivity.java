@@ -110,6 +110,9 @@ public class ViewProjectActivity extends AppCompatActivity {
                 is_project_public = project.isSketchCollabProjectPublic();
                 author = project.getSketchCollabAuthorUid();
 
+                // oh ye, fetch some changes too
+                fetch_changes();
+
             } catch (JSONException e) {
                 e.printStackTrace();
 
