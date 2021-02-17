@@ -1,5 +1,6 @@
 package com.iyxan23.sketch.collab.helpers;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.google.android.gms.tasks.Tasks;
@@ -11,11 +12,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.iyxan23.sketch.collab.Util;
+import com.iyxan23.sketch.collab.models.Commit;
 import com.iyxan23.sketch.collab.models.SketchwareProject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -135,5 +138,58 @@ public class OnlineProjectHelper {
         }
 
         return project_data;
+    }
+
+    /**
+     * This function converts a List<\DocumentSnapshot\> into an ArrayList<\Commit\>
+     *
+     * @param commits The commits
+     * @param with_usernames Do you want username in them? This variable is used to reduce internet usage
+     * @return Converted arraylist of commits
+     */
+    @Nullable
+    @WorkerThread
+    public static ArrayList<Commit> convert_document_snapshots_into_commits(List<DocumentSnapshot> commits, boolean with_usernames) {
+        ArrayList<Commit> commits_ = new ArrayList<>();
+        HashMap<String, String> cached_usernames = new HashMap<>();
+
+        for (DocumentSnapshot commit: commits) {
+            String username = null;
+            String author_uid = commit.getString("author");
+
+            if (with_usernames) {
+                if (!cached_usernames.containsKey(author_uid)) {
+                    DocumentReference userdata = FirebaseFirestore.getInstance().collection("userdata").document(author_uid);
+
+                    try {
+                        DocumentSnapshot userdata_snapshot = Tasks.await(userdata.get());
+                        username = userdata_snapshot.getString("name");
+
+                        cached_usernames.put(author_uid, username);
+
+                    } catch (ExecutionException | InterruptedException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+
+                } else {
+                    username = cached_usernames.get(author_uid);
+                }
+            }
+
+            Commit c = new Commit();
+
+            c.id = commit.getId();
+            if (with_usernames) c.author_username = username;
+            c.author = commit.getString("author");
+            c.name = commit.getString("name");
+            c.sha512sum = commit.getString("sha512sum");
+            c.patch = (Map<String, String>) commit.get("patch");
+            c.timestamp = commit.getTimestamp("timestamp");
+
+            commits_.add(c);
+        }
+
+        return commits_;
     }
 }
