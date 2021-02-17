@@ -346,6 +346,15 @@ public class ViewProjectActivity extends AppCompatActivity {
         view.setEnabled(false);
         if (has_changes) {
             // ohno, conflicts!
+            // firstly, you need to merge commits from the current commit to the latest commit with your commit
+            // and then do a simplification / remove stuff like:
+            /* commit 1
+             * +hello world!
+             * commit 2
+             * -hello world!
+             */
+
+            // TODO: THIS
         } else {
             // Ah, yes, we can merge this automatically
             ProgressDialog progressDialog = new ProgressDialog(this);
