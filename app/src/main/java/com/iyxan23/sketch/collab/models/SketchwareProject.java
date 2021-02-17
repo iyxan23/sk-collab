@@ -78,7 +78,11 @@ public class SketchwareProject implements Parcelable {
     }
 
     public void applyChanges() throws IOException {
-        String project_folder = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/" + project_id + "/";
+        if (metadata == null) {
+            throw new NullPointerException("metadata is null");
+        }
+
+        String project_folder = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/data/" + metadata.id + "/";
 
         File file       = new File(project_folder + "file");
         File logic      = new File(project_folder + "logic");
@@ -86,7 +90,7 @@ public class SketchwareProject implements Parcelable {
         File view       = new File(project_folder + "view");
         File resource   = new File(project_folder + "resource");
 
-        File mysc_project = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/" + project_id + "/project");
+        File mysc_project = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/.sketchware/mysc/list/" + metadata.id + "/project");
 
         Util.writeFile(file     , this.file     );
         Util.writeFile(logic    , this.logic    );
