@@ -258,7 +258,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/linear_upload" />
 
                 <TextView
-                    android:id="@+id/textView31"
+                    android:id="@+id/local_changes_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -271,15 +271,16 @@
                     app:layout_constraintTop_toBottomOf="@+id/divider11" />
 
                 <Button
-                    android:id="@+id/button4"
+                    android:id="@+id/push_button_vp"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
+                    android:enabled="false"
                     android:text="Push"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView31"
+                    app:layout_constraintBottom_toBottomOf="@+id/local_changes_title"
                     app:layout_constraintEnd_toEndOf="@+id/divider11"
-                    app:layout_constraintTop_toTopOf="@+id/textView31" />
+                    app:layout_constraintTop_toTopOf="@+id/local_changes_title" />
 
                 <TextView
                     android:id="@+id/patch_text"
@@ -291,9 +292,9 @@
                     android:textColor="#BEBEBE"
                     android:textIsSelectable="true"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/button4"
-                    app:layout_constraintStart_toStartOf="@+id/textView31"
-                    app:layout_constraintTop_toBottomOf="@+id/textView31" />
+                    app:layout_constraintEnd_toEndOf="@+id/push_button_vp"
+                    app:layout_constraintStart_toStartOf="@+id/local_changes_title"
+                    app:layout_constraintTop_toBottomOf="@+id/local_changes_title" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
